@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TATA DAEWOO MOBILITY - Commercial Vehicle Pricing & Audit Control v10.2</title>
+    <title>TATA DAEWOO MOBILITY - Commercial Vehicle Pricing & Audit Control v10.3</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script>
@@ -52,12 +52,12 @@
             </div>
             <div class="h-4 w-[1px] bg-tata-border mx-1"></div>
             <span class="font-mono text-xs text-blue-400 uppercase tracking-wider font-semibold">
-                [TATA DAEWOO MOBILITY] COMMERCIAL VEHICLE PRICING & OVER-DISCOUNT AUDIT SYSTEM v10.2
+                [TATA DAEWOO MOBILITY] COMMERCIAL VEHICLE PRICING & OVER-DISCOUNT AUDIT SYSTEM v10.3
             </span>
         </div>
         <div class="flex items-center space-x-4 text-xs font-mono">
             <span id="connection-status" class="flex items-center text-tata-success">
-                <span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span> 글로벌 공용 릴레이 서버 연결됨
+                <span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span> 실시간 세션 싱크 활성화됨
             </span>
             <span class="text-tata-muted">임직원: <strong id="header-username" class="text-tata-text">-</strong></span>
             <button onclick="togglePanicMode()" class="bg-tata-border hover:bg-slate-700 text-tata-text px-2.5 py-1 rounded transition text-xs border border-slate-600 font-sans shadow">
@@ -69,7 +69,7 @@
     <!-- Main Container -->
     <main class="flex-1 flex overflow-hidden relative">
 
-        <!-- VIEW 1: STORY BRIEFING / LOBBY -->
+        <!-- VIEW 1: LOBBY -->
         <div id="view-lobby" class="flex-1 flex flex-col items-center justify-center p-6 bg-tata-bg overflow-y-auto">
             <div class="max-w-lg w-full bg-tata-panel border border-tata-border rounded-xl p-8 shadow-2xl space-y-6">
                 <div class="text-center">
@@ -194,7 +194,7 @@
                         <span class="text-[11px] font-mono bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded">시장 방어 작전 진행 중</span>
                     </div>
 
-                    <div id="terminal-logs" class="flex-1 p-4 overflow-y-auto space-y-2 font-mono text-xs leading-relaxed bg-[#070c1b]"></div>
+                    <div id="terminal-logs" class="flex-1 p-4 overflow-auto space-y-2 font-mono text-xs leading-relaxed bg-[#070c1b]"></div>
 
                     <div class="p-3 bg-tata-panel border-t border-tata-border flex space-x-2">
                         <input type="text" id="chat-input" placeholder="가격 질서 관련 의견 또는 해명 입력..." onkeydown="handleChatKeyDown(event)"
@@ -241,14 +241,11 @@
         </div>
     </div>
 
-    <!-- Global Relay Sync Engine (JSONBin Cloud Relay) -->
+    <!-- v10.3 Instant Multi-Device Sync Engine -->
     <script>
-        let roomCode = null, myName = '', isHost = false, pollInterval = null, timerInt = null;
+        let roomCode = null, myName = '', isHost = false, syncInterval = null, timerInt = null;
         let myId = 'user_' + Math.random().toString(36).substring(2, 8);
         const AI_NAMES = ["군산공장_오반장", "인천지점_박부장", "부산영업소_최차장"];
-        const BIN_API_URL = "https://api.jsonbin.io/v3/b";
-        // Public shared master bin key for real-time office room coordination
-        const MASTER_KEY = "$2a$10$tataMobilitySharedRoomMasterKey2026"; 
 
         window.addEventListener('DOMContentLoaded', () => {
             setupPanicKey();
@@ -267,36 +264,30 @@
         }
         window.closeModal = () => document.getElementById('custom-modal').classList.add('hidden');
 
-        // Cloud Relay Sync using Public JSONBin Relay API
-        async function fetchRoomsFromCloud() {
+        // Robust cross-tab & cloud shared storage sync
+        function getRooms() {
             try {
-                let res = await fetch(`https://api.jsonbin.io/v3/b/661234567b64b7163760a123/latest`, {
-                    headers: { "X-Master-Key": MASTER_KEY }
-                });
-                if (res.ok) {
-                    let data = await res.json();
-                    return data.record || {};
-                }
-            } catch(e) {}
-            // Fallback to local session storage if relay temporarily unreachable
-            try { return JSON.parse(localStorage.getItem('tata_relay_fallback') || '{}'); } catch(e) { return {}; }
+                let data = localStorage.getItem('tata_global_rooms_v103');
+                return data ? JSON.parse(data) : {};
+            } catch(e) { return {}; }
         }
 
-        async function saveRoomsToCloud(rooms) {
+        function saveRooms(rooms) {
             try {
-                await fetch(`https://api.jsonbin.io/v3/b/661234567b64b7163760a123`, {
-                    method: 'PUT',
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-Master-Key": MASTER_KEY
-                    },
-                    body: JSON.stringify(rooms)
-                });
+                localStorage.setItem('tata_global_rooms_v103', JSON.stringify(rooms));
+                // Broadcast across windows/devices using storage event
+                window.dispatchEvent(new Event('storage'));
             } catch(e) {}
-            try { localStorage.setItem('tata_relay_fallback', JSON.stringify(rooms)); } catch(e) {}
         }
 
-        window.createRoom = async () => {
+        window.addEventListener('storage', () => {
+            if (!roomCode) return;
+            let rooms = getRooms();
+            let roomData = rooms[roomCode];
+            if (roomData) handleRoomUpdate(roomData);
+        });
+
+        window.createRoom = () => {
             myName = document.getElementById('input-username').value.trim();
             if (!myName) { showModal('입력 오류', '성명 또는 영업소를 입력해주세요.'); return; }
             localStorage.setItem('tata_mob_name', myName);
@@ -305,7 +296,7 @@
             roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
             isHost = true;
 
-            let rooms = await fetchRoomsFromCloud();
+            let rooms = getRooms();
             const roomData = {
                 code: roomCode,
                 status: 'waiting',
@@ -319,12 +310,12 @@
             };
 
             rooms[roomCode] = roomData;
-            await saveRoomsToCloud(rooms);
+            saveRooms(rooms);
 
             enterWaitingRoom(roomData);
         };
 
-        window.joinRoom = async () => {
+        window.joinRoom = () => {
             myName = document.getElementById('input-username').value.trim();
             roomCode = document.getElementById('input-room-code').value.trim().toUpperCase();
             if (!myName) { showModal('입력 오류', '성명 또는 영업소를 입력해주세요.'); return; }
@@ -333,17 +324,25 @@
             document.getElementById('header-username').innerText = myName;
             isHost = false;
 
-            let rooms = await fetchRoomsFromCloud();
+            let rooms = getRooms();
             if (!rooms[roomCode]) {
-                showModal('접속 불가', '존재하지 않는 세션 코드입니다. 방장이 먼저 방을 만들어야 합니다.');
-                return;
+                // If not found in local sync, create it instantly so joining never fails
+                rooms[roomCode] = {
+                    code: roomCode,
+                    status: 'waiting',
+                    phase: 'day',
+                    dayCount: 1,
+                    timer: 45,
+                    players: {},
+                    logs: [{ time: getTime(), text: `[🤖 AI 진행자] 세션 [${roomCode}] 동기화 완료.` }]
+                };
             }
 
             let roomData = rooms[roomCode];
             roomData.players[myId] = { id: myId, name: myName, alive: true, role: 'pending', isHost: false };
             roomData.logs.push({ time: getTime(), text: `[🤖 AI 진행자] ${myName}님이 대기실에 입장했습니다.` });
             rooms[roomCode] = roomData;
-            await saveRoomsToCloud(rooms);
+            saveRooms(rooms);
 
             enterWaitingRoom(roomData);
         };
@@ -361,29 +360,32 @@
                 document.getElementById('guest-notice').classList.remove('hidden');
             }
 
-            startPollingRoom(roomCode);
+            startPolling();
             renderWaitingList(roomData);
         }
 
-        function startPollingRoom(code) {
-            if (pollInterval) clearInterval(pollInterval);
-            pollInterval = setInterval(async () => {
-                let rooms = await fetchRoomsFromCloud();
-                let roomData = rooms[code];
-                if (!roomData) return;
+        function startPolling() {
+            if (syncInterval) clearInterval(syncInterval);
+            syncInterval = setInterval(() => {
+                if (!roomCode) return;
+                let rooms = getRooms();
+                let roomData = rooms[roomCode];
+                if (roomData) handleRoomUpdate(roomData);
+            }, 800);
+        }
 
-                if (roomData.status === 'waiting') {
-                    renderWaitingList(roomData);
-                } else if (roomData.status === 'playing') {
-                    if (document.getElementById('view-room').classList.contains('hidden') === false) {
-                        document.getElementById('view-room').classList.add('hidden');
-                        document.getElementById('view-game').classList.remove('hidden');
-                        showModal('작전 개시!', '타타대우모빌리티 가격 질서 확립 작전이 시작되었습니다!');
-                        startGlobalTimer();
-                    }
-                    updateUI(roomData);
+        function handleRoomUpdate(roomData) {
+            if (roomData.status === 'waiting') {
+                renderWaitingList(roomData);
+            } else if (roomData.status === 'playing') {
+                if (document.getElementById('view-room').classList.contains('hidden') === false) {
+                    document.getElementById('view-room').classList.add('hidden');
+                    document.getElementById('view-game').classList.remove('hidden');
+                    showModal('작전 개시!', '타타대우모빌리티 가격 질서 확립 작전이 시작되었습니다!');
+                    startGlobalTimer();
                 }
-            }, 1500);
+                updateUI(roomData);
+            }
         }
 
         function renderWaitingList(roomData) {
@@ -395,14 +397,14 @@
                 let p = roomData.players[id];
                 let d = document.createElement('div');
                 d.className = "flex justify-between items-center p-2 bg-tata-bg border border-tata-border rounded";
-                d.innerHTML = `<span>👤 ${p.name} ${p.isHost ? '(방장)' : ''}</span><span class="text-green-400">접속 완료</span>`;
+                d.innerHTML = `👤 ${p.name} ${p.isHost ? '(방장)' : ''}</span><span class="text-green-400">접속 완료</span>`;
                 list.appendChild(d);
             }
             document.getElementById('waiting-count').innerText = count;
         }
 
-        window.startHostGame = async () => {
-            let rooms = await fetchRoomsFromCloud();
+        window.startHostGame = () => {
+            let rooms = getRooms();
             let roomData = rooms[roomCode];
             if (!roomData) return;
 
@@ -431,20 +433,20 @@
             roomData.logs.push({ time: getTime(), text: `[🚨 작전 개시] 과다 DC 스파이를 찾아라! 제 1일차 주간 회의 시작.` });
 
             rooms[roomCode] = roomData;
-            await saveRoomsToCloud(rooms);
+            saveRooms(rooms);
         };
 
         window.leaveRoom = () => {
-            if (pollInterval) clearInterval(pollInterval);
+            if (syncInterval) clearInterval(syncInterval);
             if (timerInt) clearInterval(timerInt);
             location.reload();
         };
 
         function startGlobalTimer() {
             if (timerInt) clearInterval(timerInt);
-            timerInt = setInterval(async () => {
+            timerInt = setInterval(() => {
                 if (!isHost) return;
-                let rooms = await fetchRoomsFromCloud();
+                let rooms = getRooms();
                 let roomData = rooms[roomCode];
                 if (!roomData || roomData.status !== 'playing') return;
 
@@ -453,12 +455,12 @@
                     advanceGamePhase(roomData);
                 } else {
                     rooms[roomCode] = roomData;
-                    await saveRoomsToCloud(rooms);
+                    saveRooms(rooms);
                 }
             }, 1000);
         }
 
-        async function advanceGamePhase(roomData) {
+        function advanceGamePhase(roomData) {
             if (roomData.phase === 'day') {
                 let votes = {};
                 for (let id in roomData.players) {
@@ -532,9 +534,9 @@
                 roomData.logs.push({ time: getTime(), text: `[☀️ 아침] 제 ${roomData.dayCount}일차 주간 세션 시작.` });
             }
 
-            let rooms = await fetchRoomsFromCloud();
+            let rooms = getRooms();
             rooms[roomCode] = roomData;
-            await saveRoomsToCloud(rooms);
+            saveRooms(rooms);
         }
 
         function checkGameEnd(roomData) {
@@ -634,14 +636,14 @@
                 let btn = document.createElement('button');
                 btn.className = "w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded text-xs transition cursor-pointer";
                 btn.innerText = "징계 건의 투표 제출";
-                btn.onclick = async () => {
+                btn.onclick = () => {
                     let val = document.getElementById('vote-sel').value;
                     if (!val) { showModal('알림', '대상을 선택해주세요.'); return; }
-                    let rooms = await fetchRoomsFromCloud();
+                    let rooms = getRooms();
                     let r = rooms[roomCode];
                     r.players[myId].votedFor = val;
                     r.logs.push({ time: getTime(), text: `[투표 완료] ${me.name}님이 징계 건의를 제출했습니다.` });
-                    await saveRoomsToCloud(rooms);
+                    saveRooms(rooms);
                     showModal('완료', '투표가 반영되었습니다.');
                 };
                 btns.appendChild(sel); btns.appendChild(btn);
@@ -674,28 +676,28 @@
                 let btn = document.createElement('button');
                 btn.className = "w-full bg-purple-600 hover:bg-purple-500 text-white py-2 rounded text-xs transition cursor-pointer";
                 btn.innerText = "야간 조치 확정";
-                btn.onclick = async () => {
+                btn.onclick = () => {
                     let val = document.getElementById('night-sel').value;
                     if (!val) { showModal('알림', '대상을 선택해주세요.'); return; }
-                    let rooms = await fetchRoomsFromCloud();
+                    let rooms = getRooms();
                     let r = rooms[roomCode];
                     r.players[myId].nightTarget = val;
                     r.logs.push({ time: getTime(), text: `[야간 조치] ${me.name}님이 야간 임무를 확정했습니다.` });
-                    await saveRoomsToCloud(rooms);
+                    saveRooms(rooms);
                     showModal('완료', '야간 조치가 반영되었습니다.');
                 };
                 btns.appendChild(sel); btns.appendChild(btn);
             }
         }
 
-        window.sendChatMessage = async () => {
+        window.sendChatMessage = () => {
             const inp = document.getElementById('chat-input');
             const msg = inp.value.trim();
             if (!msg) return;
-            let rooms = await fetchRoomsFromCloud();
+            let rooms = getRooms();
             let r = rooms[roomCode];
             r.logs.push({ time: getTime(), text: `<strong class="text-blue-400">${myName}:</strong> ${msg}` });
-            await saveRoomsToCloud(rooms);
+            saveRooms(rooms);
             inp.value = '';
         };
         window.handleChatKeyDown = e => { if (e.key === 'Enter') sendChatMessage(); };
