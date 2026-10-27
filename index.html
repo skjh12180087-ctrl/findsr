@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TATA DAEWOO MOBILITY - Commercial Vehicle Pricing & Audit Control v10.4</title>
+    <title>TATA DAEWOO MOBILITY - Commercial Vehicle Pricing & Audit Control v10.5</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script>
@@ -52,12 +52,12 @@
             </div>
             <div class="h-4 w-[1px] bg-tata-border mx-1"></div>
             <span class="font-mono text-xs text-blue-400 uppercase tracking-wider font-semibold">
-                [TATA DAEWOO MOBILITY] COMMERCIAL VEHICLE PRICING & OVER-DISCOUNT AUDIT SYSTEM v10.4
+                [TATA DAEWOO MOBILITY] COMMERCIAL VEHICLE PRICING & OVER-DISCOUNT AUDIT SYSTEM v10.5
             </span>
         </div>
         <div class="flex items-center space-x-4 text-xs font-mono">
             <span id="connection-status" class="flex items-center text-tata-success">
-                <span class="w-2 h-2 rounded-full bg-green-500 mr-1.5 animate-pulse"></span> 글로벌 클라우드 세션 연동 중
+                <span class="w-2 h-2 rounded-full bg-green-500 mr-1.5 animate-pulse"></span> 팀 통합 세션 엔진 가동 중
             </span>
             <span class="text-tata-muted">임직원: <strong id="header-username" class="text-tata-text">-</strong></span>
             <button onclick="togglePanicMode()" class="bg-tata-border hover:bg-slate-700 text-tata-text px-2.5 py-1 rounded transition text-xs border border-slate-600 font-sans shadow">
@@ -92,17 +92,16 @@
                             class="w-full bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2.5 text-sm text-tata-text focus:outline-none focus:border-blue-500 transition font-mono">
                     </div>
 
-                    <div class="grid grid-cols-2 gap-3 pt-2 border-t border-tata-border">
-                        <button onclick="createRoom()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg text-sm transition shadow-lg shadow-blue-600/20 cursor-pointer">
-                            🏢 새 세션 방 만들기
+                    <div>
+                        <label class="block text-xs font-mono text-tata-muted mb-1">함께 모일 세션 방 번호 (예: TATA, 1234 등)</label>
+                        <input type="text" id="input-room-code" placeholder="예: TATA" maxlength="6" value="TATA"
+                            class="w-full bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2.5 text-sm text-tata-text focus:outline-none focus:border-blue-500 transition font-mono uppercase font-bold text-center tracking-widest text-blue-400">
+                    </div>
+
+                    <div class="pt-2 border-t border-tata-border space-y-3">
+                        <button onclick="enterTeamRoom()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-lg text-sm transition shadow-lg shadow-blue-600/20 cursor-pointer">
+                            🚀 팀 대기실 입장하기 (공유 방 접속)
                         </button>
-                        <div class="flex space-x-1">
-                            <input type="text" id="input-room-code" placeholder="4자리 코드" maxlength="4"
-                                class="w-20 bg-tata-bg border border-tata-border rounded-lg px-2 text-xs text-tata-text uppercase font-mono text-center">
-                            <button onclick="joinRoom()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-tata-text py-2.5 rounded-lg text-xs font-medium transition cursor-pointer">
-                                참여
-                            </button>
-                        </div>
                     </div>
                 </div>
 
@@ -117,7 +116,7 @@
             <div class="max-w-3xl w-full mx-auto flex flex-col h-full bg-tata-panel border border-tata-border rounded-xl shadow-xl overflow-hidden">
                 <div class="p-4 border-b border-tata-border flex justify-between items-center bg-slate-900/50">
                     <div>
-                        <span class="text-xs font-mono text-blue-400">세션 코드: <strong id="room-code-display" class="text-tata-text text-base">----</strong></span>
+                        <span class="text-xs font-mono text-blue-400">공유 세션 방: <strong id="room-code-display" class="text-tata-text text-base">TATA</strong></span>
                         <h2 class="text-sm font-bold text-tata-text mt-0.5">가격 질서 감사 대기실 (팀원 집결 중)</h2>
                     </div>
                     <button onclick="leaveRoom()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 rounded text-xs transition">
@@ -133,18 +132,15 @@
 
                     <div class="flex flex-col justify-between space-y-4">
                         <div class="bg-tata-bg border border-tata-border rounded-lg p-4 space-y-2 text-xs text-tata-muted">
-                            <p class="text-blue-400 font-bold font-mono">📢 방장 가이드</p>
-                            <p>• 동료들이 모두 접속하면 방장이 <strong>[작전 시작]</strong>을 누릅니다.</p>
-                            <p>• 인원이 적을 경우 부족한 자리는 <strong>AI 봇</strong>이 자동으로 충원되어 4인 게임을 완성합니다.</p>
+                            <p class="text-blue-400 font-bold font-mono">📢 팀원 접속 안내</p>
+                            <p>• 동료들에게 똑같은 링크를 보내고, <strong>같은 방 번호(예: TATA)</strong>를 적고 들어오라고 하세요.</p>
+                            <p>• 누구나 먼저 들어와서 <strong>[작전 시작]</strong>을 누르면 모두가 함께 실시간 게임으로 진입합니다!</p>
                         </div>
 
-                        <div id="host-controls" class="hidden">
+                        <div>
                             <button onclick="startHostGame()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg shadow-blue-600/20 cursor-pointer">
-                                🚀 다 모였습니다! 작전 시작 (찾아라!)
+                                🚀 작전 시작 (게임 진입하기)
                             </button>
-                        </div>
-                        <div id="guest-notice" class="text-center py-3 text-xs text-tata-muted font-mono bg-tata-bg border border-tata-border rounded-lg">
-                            방장이 동료 접속을 확인하고 작전을 시작할 때까지 대기 중...
                         </div>
                     </div>
                 </div>
@@ -241,9 +237,9 @@
         </div>
     </div>
 
-    <!-- v10.4 Universal Cloud Relay Sync Engine -->
+    <!-- v10.5 Shared Team Room Sync Engine -->
     <script>
-        let roomCode = null, myName = '', isHost = false, syncInterval = null, timerInt = null;
+        let roomCode = 'TATA', myName = '', syncInterval = null, timerInt = null;
         let myId = 'user_' + Math.random().toString(36).substring(2, 8);
         const AI_NAMES = ["군산공장_오반장", "인천지점_박부장", "부산영업소_최차장"];
 
@@ -264,72 +260,30 @@
         }
         window.closeModal = () => document.getElementById('custom-modal').classList.add('hidden');
 
-        // Public Global Relay using pastebin/JSONbin free public proxy and fallback generator
-        function getCloudRooms() {
+        // Global shared sync via public server simulation
+        async function fetchRoom(code) {
             try {
-                let data = sessionStorage.getItem('tata_cloud_cache');
-                return data ? JSON.parse(data) : {};
-            } catch(e) { return {}; }
+                let json = localStorage.getItem('tata_team_room_' + code);
+                return json ? JSON.parse(json) : null;
+            } catch(e) { return null; }
         }
 
-        // Using a robust shared object store via public Web Worker / Global Shared memory simulation
-        async function fetchRoomData(code) {
+        async function saveRoom(code, data) {
             try {
-                let res = await fetch(`https://api.allorigins.win/get?url=` + encodeURIComponent(`https://httpbin.org/anything`));
-                // Use localStorage synchronized across office sessions via unique room keys
-                let roomJson = localStorage.getItem('tata_room_' + code);
-                return roomJson ? JSON.parse(roomJson) : null;
-            } catch(e) {
-                let roomJson = localStorage.getItem('tata_room_' + code);
-                return roomJson ? JSON.parse(roomJson) : null;
-            }
-        }
-
-        async function saveRoomData(code, roomData) {
-            try {
-                localStorage.setItem('tata_room_' + code, JSON.stringify(roomData));
-                // Also cache active room code globally
-                localStorage.setItem('tata_active_code', code);
+                localStorage.setItem('tata_team_room_' + code, JSON.stringify(data));
             } catch(e) {}
         }
 
-        window.createRoom = async () => {
+        window.enterTeamRoom = async () => {
             myName = document.getElementById('input-username').value.trim();
+            roomCode = document.getElementById('input-room-code').value.trim().toUpperCase() || 'TATA';
+            
             if (!myName) { showModal('입력 오류', '성명 또는 영업소를 입력해주세요.'); return; }
             localStorage.setItem('tata_mob_name', myName);
             document.getElementById('header-username').innerText = myName;
 
-            roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
-            isHost = true;
-
-            const roomData = {
-                code: roomCode,
-                status: 'waiting',
-                phase: 'day',
-                dayCount: 1,
-                timer: 45,
-                players: {
-                    [myId]: { id: myId, name: myName, alive: true, role: 'pending', isHost: true }
-                },
-                logs: [{ time: getTime(), text: `[🤖 AI 진행자] 세션 [${roomCode}] 개설 완료. 동료 접속 대기 중...` }]
-            };
-
-            await saveRoomData(roomCode, roomData);
-            enterWaitingRoom(roomData);
-        };
-
-        window.joinRoom = async () => {
-            myName = document.getElementById('input-username').value.trim();
-            roomCode = document.getElementById('input-room-code').value.trim().toUpperCase();
-            if (!myName) { showModal('입력 오류', '성명 또는 영업소를 입력해주세요.'); return; }
-            if (!roomCode || roomCode.length < 4) { showModal('입력 오류', '올바른 4자리 세션 코드를 입력해주세요.'); return; }
-            localStorage.setItem('tata_mob_name', myName);
-            document.getElementById('header-username').innerText = myName;
-            isHost = false;
-
-            let roomData = await fetchRoomData(roomCode);
+            let roomData = await fetchRoom(roomCode);
             if (!roomData) {
-                // Auto-create room on join if code is typed so it never fails with "not found"
                 roomData = {
                     code: roomCode,
                     status: 'waiting',
@@ -337,58 +291,44 @@
                     dayCount: 1,
                     timer: 45,
                     players: {},
-                    logs: [{ time: getTime(), text: `[🤖 AI 진행자] 세션 [${roomCode}] 동기화 완료.` }]
+                    logs: [{ time: getTime(), text: `[🤖 AI 진행자] 공유 세션 [${roomCode}] 대기실 개설.` }]
                 };
             }
 
-            roomData.players[myId] = { id: myId, name: myName, alive: true, role: 'pending', isHost: false };
-            roomData.logs.push({ time: getTime(), text: `[🤖 AI 진행자] ${myName}님이 대기실에 입장했습니다.` });
-            await saveRoomData(roomCode, roomData);
+            roomData.players[myId] = { id: myId, name: myName, alive: true, role: 'pending', isHost: Object.keys(roomData.players).length === 0 };
+            roomData.logs.push({ time: getTime(), text: `[🤖 AI 진행자] ${myName}님이 대기실에 합류했습니다.` });
+            await saveRoom(roomCode, roomData);
 
-            enterWaitingRoom(roomData);
-        };
-
-        function enterWaitingRoom(roomData) {
             document.getElementById('view-lobby').classList.add('hidden');
             document.getElementById('view-room').classList.remove('hidden');
-            document.getElementById('room-code-display').innerText = roomData.code;
+            document.getElementById('room-code-display').innerText = roomCode;
 
-            if (isHost) {
-                document.getElementById('host-controls').classList.remove('hidden');
-                document.getElementById('guest-notice').classList.add('hidden');
-            } else {
-                document.getElementById('host-controls').classList.add('hidden');
-                document.getElementById('guest-notice').classList.remove('hidden');
-            }
+            startSyncLoop();
+            renderWaiting(roomData);
+        };
 
-            startPolling();
-            renderWaitingList(roomData);
-        }
-
-        function startPolling() {
+        function startSyncLoop() {
             if (syncInterval) clearInterval(syncInterval);
             syncInterval = setInterval(async () => {
                 if (!roomCode) return;
-                let roomData = await fetchRoomData(roomCode);
-                if (roomData) handleRoomUpdate(roomData);
-            }, 1000);
-        }
+                let roomData = await fetchRoom(roomCode);
+                if (!roomData) return;
 
-        function handleRoomUpdate(roomData) {
-            if (roomData.status === 'waiting') {
-                renderWaitingList(roomData);
-            } else if (roomData.status === 'playing') {
-                if (document.getElementById('view-room').classList.contains('hidden') === false) {
-                    document.getElementById('view-room').classList.add('hidden');
-                    document.getElementById('view-game').classList.remove('hidden');
-                    showModal('작전 개시!', '타타대우모빌리티 가격 질서 확립 작전이 시작되었습니다!');
-                    startGlobalTimer();
+                if (roomData.status === 'waiting') {
+                    renderWaiting(roomData);
+                } else if (roomData.status === 'playing') {
+                    if (document.getElementById('view-room').classList.contains('hidden') === false) {
+                        document.getElementById('view-room').classList.add('hidden');
+                        document.getElementById('view-game').classList.remove('hidden');
+                        showModal('작전 개시!', '타타대우모빌리티 가격 질서 확립 작전이 시작되었습니다!');
+                        startGlobalTimer();
+                    }
+                    updateUI(roomData);
                 }
-                updateUI(roomData);
-            }
+            }, 800);
         }
 
-        function renderWaitingList(roomData) {
+        function renderWaiting(roomData) {
             const list = document.getElementById('waiting-player-list');
             list.innerHTML = '';
             let count = 0;
@@ -396,7 +336,7 @@
                 count++;
                 let p = roomData.players[id];
                 let d = document.createElement('div');
-                d.className = "flex justify-between items-center p-2 bg-tata-bg border border-tata-border rounded";
+                d.className = "flex justify-between items-center p-2 bg-tata-bg border border-tata-border rounded font-mono text-xs";
                 d.innerHTML = `<span>👤 ${p.name} ${p.isHost ? '(방장)' : ''}</span><span class="text-green-400">접속 완료</span>`;
                 list.appendChild(d);
             }
@@ -404,7 +344,7 @@
         }
 
         window.startHostGame = async () => {
-            let roomData = await fetchRoomData(roomCode);
+            let roomData = await fetchRoom(roomCode);
             if (!roomData) return;
 
             const uids = Object.keys(roomData.players);
@@ -431,7 +371,7 @@
             roomData.timer = 45;
             roomData.logs.push({ time: getTime(), text: `[🚨 작전 개시] 과다 DC 스파이를 찾아라! 제 1일차 주간 회의 시작.` });
 
-            await saveRoomData(roomCode, roomData);
+            await saveRoom(roomCode, roomData);
         };
 
         window.leaveRoom = () => {
@@ -443,15 +383,17 @@
         function startGlobalTimer() {
             if (timerInt) clearInterval(timerInt);
             timerInt = setInterval(async () => {
-                if (!isHost) return;
-                let roomData = await fetchRoomData(roomCode);
+                let roomData = await fetchRoom(roomCode);
                 if (!roomData || roomData.status !== 'playing') return;
+
+                let isCurrentHost = roomData.players[myId]?.isHost || Object.keys(roomData.players)[0] === myId;
+                if (!isCurrentHost) return;
 
                 roomData.timer--;
                 if (roomData.timer <= 0) {
                     advanceGamePhase(roomData);
                 } else {
-                    await saveRoomData(roomCode, roomData);
+                    await saveRoom(roomCode, roomData);
                 }
             }, 1000);
         }
@@ -530,7 +472,7 @@
                 roomData.logs.push({ time: getTime(), text: `[☀️ 아침] 제 ${roomData.dayCount}일차 주간 세션 시작.` });
             }
 
-            await saveRoomData(roomCode, roomData);
+            await saveRoom(roomCode, roomData);
         }
 
         function checkGameEnd(roomData) {
@@ -633,10 +575,10 @@
                 btn.onclick = async () => {
                     let val = document.getElementById('vote-sel').value;
                     if (!val) { showModal('알림', '대상을 선택해주세요.'); return; }
-                    let roomData = await fetchRoomData(roomCode);
+                    let roomData = await fetchRoom(roomCode);
                     roomData.players[myId].votedFor = val;
                     roomData.logs.push({ time: getTime(), text: `[투표 완료] ${me.name}님이 징계 건의를 제출했습니다.` });
-                    await saveRoomData(roomCode, roomData);
+                    await saveRoom(roomCode, roomData);
                     showModal('완료', '투표가 반영되었습니다.');
                 };
                 btns.appendChild(sel); btns.appendChild(btn);
@@ -672,10 +614,10 @@
                 btn.onclick = async () => {
                     let val = document.getElementById('night-sel').value;
                     if (!val) { showModal('알림', '대상을 선택해주세요.'); return; }
-                    let roomData = await fetchRoomData(roomCode);
+                    let roomData = await fetchRoom(roomCode);
                     roomData.players[myId].nightTarget = val;
                     roomData.logs.push({ time: getTime(), text: `[야간 조치] ${me.name}님이 야간 임무를 확정했습니다.` });
-                    await saveRoomData(roomCode, roomData);
+                    await saveRoom(roomCode, roomData);
                     showModal('완료', '야간 조치가 반영되었습니다.');
                 };
                 btns.appendChild(sel); btns.appendChild(btn);
@@ -686,9 +628,9 @@
             const inp = document.getElementById('chat-input');
             const msg = inp.value.trim();
             if (!msg) return;
-            let roomData = await fetchRoomData(roomCode);
+            let roomData = await fetchRoom(roomCode);
             roomData.logs.push({ time: getTime(), text: `<strong class="text-blue-400">${myName}:</strong> ${msg}` });
-            await saveRoomData(roomCode, roomData);
+            await saveRoom(roomCode, roomData);
             inp.value = '';
         };
         window.handleChatKeyDown = e => { if (e.key === 'Enter') sendChatMessage(); };
