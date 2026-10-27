@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TATA DAEWOO MOBILITY - Pricing & Audit Control v15.1</title>
+<title>TATA DAEWOO MOBILITY - Pricing & Audit Control v15.2</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script>
@@ -23,7 +23,7 @@ body { font-family:'Inter',sans-serif; background:#0b1329; color:#f8fafc; }
 <body class="h-full flex flex-col overflow-hidden">
 
 <header class="bg-tata-panel border-b border-tata-border px-4 py-2.5 flex items-center justify-between shrink-0 z-10">
-  <span class="font-mono text-xs text-blue-400 uppercase tracking-wider font-semibold">[TATA DAEWOO MOBILITY] PRICING & OVER-DISCOUNT AUDIT SYSTEM v15.1</span>
+  <span class="font-mono text-xs text-blue-400 uppercase tracking-wider font-semibold">[TATA DAEWOO MOBILITY] PRICING & OVER-DISCOUNT AUDIT SYSTEM v15.2</span>
   <div class="flex items-center space-x-4 text-xs font-mono">
     <span id="connection-status" class="flex items-center text-tata-warning">
       <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse mr-1.5"></span>서버 연결 중...
@@ -43,9 +43,10 @@ body { font-family:'Inter',sans-serif; background:#0b1329; color:#f8fafc; }
       <h1 class="text-xl font-bold">타타대우모빌리티 긴급 가격 질서 확립 작전</h1>
     </div>
     <div class="bg-slate-900/80 border border-tata-border rounded-lg p-4 text-xs leading-relaxed text-slate-300 font-mono space-y-2">
-      <p class="text-yellow-400 font-bold">[상황 보고서]</p>
-      <p>일부 영업소의 무분별한 <strong>과다 DC(후려치기)</strong>로 맥쎈, 쿠쎈, 더쎈, 노부스, 기쎈 전 차종의 가이드 가격이 붕괴되었습니다.</p>
-      <p>시장 질서를 교란하는 <strong>과다 DC 스파이</strong>를 색출해 타타대우모빌리티를 지켜야 합니다!</p>
+      <p class="text-yellow-400 font-bold">[상황 보고서] 월말 마감 D-3</p>
+      <p>전국 영업소 단톡방에 누군가 <strong>맥쎈·구쎈·더쎈·노부스·기쎈</strong> 견적서를 정지가이드보다 훨씬 낮게 뿌렸습니다. 고객들은 "옆 영업소는 더 깎아줬다"며 협상 테이블을 뒤엎고 있습니다.</p>
+      <p>범인은 우리 안에 있습니다. 낮에는 회의와 투표로, 밤에는 비밀 조치로 <strong>과다 DC 스파이</strong>를 색출하세요. 단, 억울한 동료를 정지시키면 시장은 더 무너집니다.</p>
+      <p class="text-slate-400 pt-1">🕵️ 스파이 · 🛡️ 법무팀 · 🔍 감사관 · 👔 성실한 영업사원 — 직무는 시작할 때 비밀리에 배정됩니다.</p>
     </div>
     <div class="space-y-4">
       <div>
@@ -103,6 +104,7 @@ body { font-family:'Inter',sans-serif; background:#0b1329; color:#f8fafc; }
     <div class="flex items-center space-x-4">
       <div id="phase-badge" class="px-3 py-1 rounded text-xs font-mono font-bold bg-blue-600/20 text-blue-400 border border-blue-500/30">-</div>
       <span class="text-xs font-mono text-tata-muted">잔여 시간: <strong id="timer-display" class="text-tata-text">-</strong>초</span>
+      <span id="event-banner" class="hidden text-[11px] font-mono px-2 py-0.5 rounded bg-yellow-500/10 text-yellow-300 border border-yellow-500/30"></span>
     </div>
     <div class="bg-tata-bg border border-tata-border px-3 py-1 rounded text-xs font-mono flex items-center space-x-2">
       <span class="text-tata-muted">내 직무:</span><span id="my-role-badge" class="font-bold text-blue-400">-</span>
@@ -126,7 +128,8 @@ body { font-family:'Inter',sans-serif; background:#0b1329; color:#f8fafc; }
         <span class="text-[11px] font-mono bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded">시장 방어 작전 진행 중</span>
       </div>
       <div id="terminal-logs" class="flex-1 p-4 overflow-auto font-mono text-xs leading-relaxed bg-[#070c1b]"></div>
-      <div class="p-3 bg-tata-panel border-t border-tata-border flex space-x-2">
+      <div id="quick-chat" class="px-3 pt-2 bg-tata-panel border-t border-tata-border flex flex-wrap gap-1.5"></div>
+      <div class="p-3 bg-tata-panel flex space-x-2">
         <input type="text" id="chat-input" maxlength="200" onkeydown="if(event.key==='Enter')sendChatMessage()"
           class="flex-1 bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2 text-xs focus:outline-none focus:border-blue-500 font-mono">
         <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-medium">전송</button>
@@ -148,7 +151,7 @@ body { font-family:'Inter',sans-serif; background:#0b1329; color:#f8fafc; }
       <thead><tr class="bg-gray-100"><th class="border p-1">차종 라인업</th><th class="border p-1">정지가이드 가격</th><th class="border p-1">실행 평균가</th><th class="border p-1">할인율</th></tr></thead>
       <tbody>
         <tr><td class="border p-1 font-bold">MAXEN (맥쎈) 대형트럭</td><td class="border p-1 text-right">₩185,000,000</td><td class="border p-1 text-right">₩182,000,000</td><td class="border p-1 text-right">1.6%</td></tr>
-        <tr><td class="border p-1 font-bold">KUXEN (쿠쎈) 중대형트럭</td><td class="border p-1 text-right">₩160,000,000</td><td class="border p-1 text-right">₩158,500,000</td><td class="border p-1 text-right">0.9%</td></tr>
+        <tr><td class="border p-1 font-bold">KUXEN (구쎈) 중대형트럭</td><td class="border p-1 text-right">₩160,000,000</td><td class="border p-1 text-right">₩158,500,000</td><td class="border p-1 text-right">0.9%</td></tr>
         <tr><td class="border p-1 font-bold">DEXEN (더쎈) 준중형트럭</td><td class="border p-1 text-right">₩85,000,000</td><td class="border p-1 text-right">₩83,000,000</td><td class="border p-1 text-right">2.3%</td></tr>
       </tbody>
     </table>
@@ -178,12 +181,99 @@ const db = getDatabase(app);
 
 const DAY_SEC = 90, NIGHT_SEC = 30;
 const AI_NAMES = ["군산공장_오반장", "인천지점_박부장", "부산영업소_최차장"];
-const AI_QUOTES = [
+const BOT_NEUTRAL = [
+  "잠깐 정리해봅시다. 어젯밤 상황부터 다시 짚어볼까요?",
   "이번 더쎈 윙바디 견적서는 투명하게 나갔습니다. 정지가이드 준수합니다.",
-  "맥쎈 덤프 가격을 무리하게 후려친 쪽이 누군지 감이 옵니다.",
-  "쿠쎈 믹서 할인율이 이상한 영업소가 포착됐다고 들었습니다.",
-  "저는 절대 과다 DC 하지 않았습니다! 억울합니다.",
-  "출고 데이터와 로그를 냉정하게 보면 범인이 명확합니다."
+  "맥쎈 덤프 가격을 후려친 쪽이 누군지 슬슬 감이 옵니다.",
+  "구쎈 믹서 할인율이 이상한 영업소가 포착됐다고 들었습니다.",
+  "커피 한 잔 하면서 생각해봅시다... 아, 오늘은 그럴 시간이 없네요."
+];
+const AI_QUOTES = BOT_NEUTRAL;
+const BOT_SUS = [
+  n => `${n}님, 어제 퇴근 직전에 견적서 뽑으시던데... 뭐 하셨어요?`,
+  n => `솔직히 ${n}님 담당 구역 계약 속도가 너무 빠릅니다. 이상해요.`,
+  n => `${n}님, 구쎈 카고 단가 얘기만 나오면 말을 돌리시던데요?`,
+  n => `제 촉으론 ${n}님입니다. 월말인데 너무 평온하세요.`,
+  n => `${n}님, 휴대폰 화면을 계속 뒤집어 놓으시는 거 저만 봤나요?`
+];
+const BOT_DEF = [
+  "저는 절대 과다 DC 하지 않았습니다! 억울합니다 정말!",
+  "제 견적서는 전부 정지가이드 그대로입니다. 출고 장부 까보세요.",
+  "저 의심하실 시간에 진짜 범인 찾으세요. 시간 없어요.",
+  "제가 스파이라면 이렇게 대놓고 떠들겠어요? 논리적으로 생각해봅시다."
+];
+const LAST_WORDS = [
+  "이럴 줄 알았으면 어제 야근을 하지 말걸...",
+  "범인은 반드시 이 안에 있습니다... 저 아닙니다...",
+  "내 구쎈 모형... 책상 서랍에 있어요... 잘 지켜주세요.",
+  "억울합니다! 감사 로그를 확인해 주세요!",
+  "제 노트북 비밀번호는... 아니, 이건 말 못 합니다."
+];
+const INTRO = [
+  "📖 [프롤로그] 월말 마감 D-3. 전국 영업소 사무실에는 계산기 소리와 한숨이 가득합니다.",
+  "📖 누군가 단톡방에 맥쎈·구쎈·더쎈·노부스·기쎈 견적서를 정지가이드보다 훨씬 낮게 뿌렸습니다. 고객들은 '옆 영업소는 더 깎아줬다'며 협상 테이블을 뒤엎고 있습니다.",
+  "📖 본부장님이 조용히 말했습니다. '범인은 이 안에 있습니다. 징계 투표로 색출하세요. 단, 억울한 동료를 정지시키면 시장은 더 무너집니다.'",
+  "📖 낮에는 회의와 투표, 밤에는 비밀 조치가 이어집니다. 건투를 빕니다."
+];
+const DAY_NEWS = [
+  "월요일 아침, 단톡방에 맥쎈 덤프 견적서 사진이 올라왔다. 정지가이드보다 무려 400만 원이 낮다. 읽음 표시 '1'은 순식간에 사라졌고, 본부장님은 말이 없다.",
+  "화요일, 경쟁사 영업사원이 '타타대우는 요즘 이만큼 깎아준다던데요?' 하며 구쎈 카고 견적서를 흔들었다. 우리 영업소 직인이 찍혀 있었다.",
+  "수요일, 더쎈 윙바디 고객이 계약 직전 '지난주엔 300 더 빼줬다던데요' 하고 서류를 접었다. 소문의 출처는 어디일까?",
+  "목요일, 출고 장부에서 이상한 줄이 발견됐다. 노부스 트랙터 한 대의 실행가가 원가를 위협한다. 입력자 칸은 지워져 있다.",
+  "금요일, 탕비실에서 '월말인데 어쩔 수 없잖아...'라는 혼잣말이 들렸다는 제보가 접수되었다.",
+  "토요일 특근, 기쎈 탑차 견적을 두고 대리점주들의 단체 항의가 들어왔다. '왜 저 동네만 싸냐'는 것이다.",
+  "일요일 밤 11시, 누군가 사내 시스템에 접속해 할인 승인 기록을 열람한 흔적이 남았다.",
+  "월요일, 본부장님이 회의실에 들어서며 한마디 했다. '오늘은 커피 말고 범인부터 찾읍시다.'"
+];
+const NIGHT_INTRO = [
+  "🌙 [야간] 불 꺼진 영업소. 어디선가 계산기 두드리는 소리와 카톡 알림음이 들립니다...",
+  "🌙 [야간] 퇴근 후에도 단톡방은 조용히 움직입니다. 누군가는 견적서를 열고, 누군가는 장부를 뒤집니다.",
+  "🌙 [야간] 주차장의 트럭들 사이로 그림자 하나가 지나갑니다. 월말의 밤은 길기만 합니다.",
+  "🌙 [야간] 복사기가 혼자 켜졌습니다. 오늘 밤, 누군가는 반드시 움직입니다."
+];
+const OUT_LINES = [
+  (n, r) => `⚖️ [징계 결과] 다수결로 ${n}님이 영업 정지되었습니다. 책상 위에는 구쎈 모형만 쓸쓸히 남았습니다. (정체: ${r})`,
+  (n, r) => `⚖️ [징계 결과] 회의실에 무거운 침묵... 투표함이 열리고 ${n}님의 영업이 정지되었습니다. (정체: ${r})`,
+  (n, r) => `⚖️ [징계 결과] 본부장님이 ${n}님의 사원증을 회수했습니다. 복도의 발소리가 멀어집니다. (정체: ${r})`
+];
+const TIE_LINES = [
+  "⚖️ [징계 결과] 의견이 팽팽히 갈려 아무도 정지되지 않았습니다. 회의실엔 어색한 침묵만 흘렀습니다.",
+  "⚖️ [징계 결과] 동률! 서로 눈치만 보다 오늘은 무사히 넘어갑니다."
+];
+const NOVOTE_LINES = [
+  "⚖️ [징계 결과] 아무도 투표하지 않았습니다. 다들 눈치만 보다가 시간이 끝났습니다.",
+  "⚖️ [징계 결과] 득표자 없음. 본부장님이 한숨을 쉬며 회의실을 나갑니다."
+];
+const KILL_LINES = [
+  (n, r) => `💥 [야간 속보] ${n} 영업소가 새벽 사이 과다 DC 견적 사건에 휘말려 영업 정지되었습니다! (정체: ${r})`,
+  (n, r) => `💥 [야간 속보] 아침에 출근해 보니 ${n}님의 모니터가 꺼져 있었습니다. 할인 승인 기록에는 이름이 박혀 있었다고 합니다. (정체: ${r})`,
+  (n, r) => `💥 [야간 속보] 간밤에 ${n}님의 견적 단가가 통째로 뒤집혔습니다. 결국 영업 정지! (정체: ${r})`
+];
+const BLOCK_LINES = [
+  "🛡️ [보안 보고] 법무팀이 새벽 3시에 계약서 조항을 뒤져 과다 DC 시도를 막아냈습니다! 누군가 '다 내 덕'이라며 커피를 샀다는 후문입니다.",
+  "🛡️ [보안 보고] 누군가 노린 영업소를 법무팀이 간발의 차로 방어했습니다. 오늘 아침은 모두 무사합니다!"
+];
+const QUIET_LINES = [
+  "😴 [야간 보고] 아무 일도 없었습니다. 단톡방 읽음 표시만 늘었을 뿐입니다.",
+  "😴 [야간 보고] 평온한 밤. 그래서 더 수상합니다."
+];
+const WIN_STORY = "스파이가 모두 색출되었습니다. 단톡방에는 다시 정지가이드 견적서가 올라오고, 본부장님이 모두에게 회식을 쏩니다. 이번 달 마감은 지켜냈습니다!";
+const LOSE_STORY = "스파이들이 영업소를 장악했습니다. 견적서는 바닥을 뚫고, 고객들은 '더 깎아주세요'를 외칩니다. 시장은 무너졌습니다...";
+const ROLE_BRIEF = {
+  mafia: "당신은 과다 DC 스파이입니다.\n월말 실적이 급해 견적을 마구 깎아주고 있습니다. 낮에는 시치미를 떼고, 밤에는 정지시킬 영업소를 고르세요. 동료 스파이는 명단에 표시됩니다.",
+  doctor: "당신은 가격 정책 법무팀입니다.\n밤마다 한 영업소를 방어할 수 있습니다. 스파이의 목표와 같은 곳을 고르면 공격이 막힙니다. 정체가 들키면 표적이 됩니다.",
+  police: "당신은 영업 감사관입니다.\n밤마다 한 명의 할인 장부를 열람해 스파이 여부를 알 수 있습니다. 결과는 당신만 볼 수 있으니 공개 시점을 신중히 고르세요.",
+  citizen: "당신은 정지가이드를 지키는 성실한 영업사원입니다.\n특별한 능력은 없지만 투표권이 있습니다. 대화와 눈치로 스파이를 찾아내세요."
+};
+const QUICK = [
+  "🙅 저는 가이드 준수했습니다!",
+  "🙏 제발 저 말고요 ㅠㅠ",
+  "📉 단가가 이상하게 낮게 나간 곳이 있어요",
+  "🔍 감사관입니다, 조사 결과 공유드릴게요",
+  "🛡️ 법무팀 믿고 가겠습니다",
+  "🤔 이번엔 신중하게 투표해요",
+  "⏰ 시간 없어요, 빨리 정하죠",
+  "😂 팀장님 지나가신다 Esc!"
 ];
 const ROLE_NAME = { mafia:'과다 DC 영업사원 (스파이)', doctor:'가격 정책 법무팀 (할인 방어)', police:'영업 감사관 (할인율 조사)', citizen:'정기가이드 준수 영업사원' };
 const ROLE_TAG = { mafia:['과다DC','text-red-400'], doctor:['법무팀','text-green-400'], police:['감사관','text-yellow-400'] };
@@ -192,7 +282,7 @@ let myId = sessionStorage.getItem('tata_v15_uid');
 if (!myId) { myId = 'u_' + Math.random().toString(36).slice(2, 9); sessionStorage.setItem('tata_v15_uid', myId); }
 let roomCode = '', myName = '', roomRef = null, room = null, view = 'lobby';
 let offset = 0, advancing = false, lastSig = '', lastLogCount = -1, endShown = false, startShown = false, dcSet = false;
-let logSeq = 0;
+let logSeq = 0, nextBot = 0, lastBotDay = 0;
 
 const $ = id => document.getElementById(id);
 const nowS = () => Date.now() + offset;
@@ -301,7 +391,7 @@ function onRoom(snap) {
   } else {
     if (dcSet) { onDisconnect(ref(db, `rooms/${roomCode}/players/${myId}`)).cancel(); dcSet = false; }
     showView('game');
-    if (room.status === 'playing' && !startShown) { startShown = true; showModal('작전 개시!', '가격 질서 확립 작전이 시작되었습니다!\n내 직무를 확인하세요.'); }
+    if (room.status === 'playing' && !startShown) { startShown = true; const mr = room.players[myId].role; showModal('작전 개시! — ' + ROLE_NAME[mr], ROLE_BRIEF[mr]); }
     renderGame();
     if (room.status === 'ended' && !endShown) {
       endShown = true;
@@ -351,10 +441,15 @@ window.startHostGame = () => safe(async () => {
   });
   const bot = ids.filter(i => String(i).startsWith('ai_bot_'));
   const t = nowS();
+  ids.forEach((id, i) => { players[id].role = sh[i]; players[id].alive = true; });
+  const r0 = { players, logs: {}, dayCount: 1 };
+  addLog(r0, t, '[🚨 작전 개시] 과다 DC 스파이를 찾아라!', 'event');
+  INTRO.forEach(line => addLog(r0, t, line, 'story'));
+  startDay(r0, t);
   upd.status = 'playing'; upd.phase = 'day'; upd.dayCount = 1; upd.winner = null;
-  upd.phaseEndsAt = t + DAY_SEC * 1000;
-  upd['logs/' + logKey(t)] = { t: clock(t), text: '[🚨 작전 개시] 과다 DC 스파이를 찾아라! 제 1일차 주간 회의 시작.', kind: 'sys' };
-  if (bot.length) upd['logs/' + logKey(t)+'q'] = { t: clock(t), name: players[pick(bot)].name, text: pick(AI_QUOTES), kind: 'chat' };
+  upd.phaseEndsAt = r0.phaseEndsAt; upd.event = r0.event;
+  Object.entries(r0.logs).forEach(([k, v]) => { upd['logs/' + k] = v; });
+  if (bot.length) upd['logs/' + logKey(t) + 'q'] = { t: clock(t), name: players[pick(bot)].name, text: pick(AI_QUOTES), kind: 'chat' };
   await update(roomRef, upd);
 });
 
@@ -371,6 +466,34 @@ window.leaveRoom = () => safe(async () => {
 });
 
 // ---------- 게임 진행 (서버 시간 기준, 누구나 트랜잭션으로 넘길 수 있음) ----------
+function addLog(r, now, text, kind = 'sys', name) {
+  r.logs = r.logs || {};
+  r.logs[logKey(now)] = Object.assign({ t: clock(now), text, kind }, name ? { name } : {});
+}
+
+function startDay(r, now) {
+  const P = r.players, ids = Object.keys(P).filter(i => P[i].alive);
+  const n = r.dayCount;
+  const mafias = ids.filter(i => P[i].role === 'mafia'), goods = ids.filter(i => P[i].role !== 'mafia');
+  addLog(r, now, `☀️ [제 ${n}일차 아침] ${DAY_NEWS[(n - 1) % DAY_NEWS.length]}`, 'story');
+  let dur = DAY_SEC, ev = pick(['tip', 'clue', 'short', 'long', 'silence', 'calm', 'calm']), text, label;
+  if (ev === 'tip' && goods.length >= 2) {
+    label = '익명 제보'; text = `📨 [익명 제보] 감사팀에 제보가 접수되었습니다. ${P[pick(goods)].name}님의 견적서는 모두 정지가이드 준수로 확인되었습니다.`;
+  } else if (ev === 'clue' && mafias.length) {
+    label = '영업일지 유출'; text = `🕵️ [영업일지 유출] 휴지통에서 찢어진 메모가 발견되었습니다. 스파이 중 한 명의 이름 표기는 총 ${P[pick(mafias)].name.length}자입니다.`;
+  } else if (ev === 'short') {
+    dur = 60; label = '긴급 단축 회의'; text = '⏱️ [본사 긴급 공지] 본부장님이 급히 호출했습니다! 오늘 회의는 60초로 단축됩니다.';
+  } else if (ev === 'long') {
+    dur = DAY_SEC + 30; label = '회의 연장'; text = '☕ [회의 연장] 본부장님이 "다들 커피 한잔하고 더 얘기하죠"라며 회의를 30초 연장했습니다.';
+  } else if (ev === 'silence') {
+    label = '본부장 순시 (채팅 금지)'; text = '🤫 [본부장 순시] 복도에 본부장님이 보입니다! 오늘은 채팅 금지, 투표로만 의견을 표시하세요.';
+  } else {
+    ev = 'calm'; label = '평온한 아침'; text = '🌤️ [평온한 아침] 별다른 소동 없이 회의가 시작됩니다. 다들 서로를 힐끔거립니다.';
+  }
+  addLog(r, now, text, 'event');
+  r.event = { type: ev, label }; r.phaseEndsAt = now + dur * 1000;
+}
+
 function allActed(r) {
   const alive = Object.values(r.players).filter(p => p.alive && !p.isAi && !p.left);
   if (!alive.length) return false;
@@ -386,12 +509,13 @@ function advance(r, now) {
   const P = r.players, ids = Object.keys(P);
   const alive = () => ids.filter(i => P[i].alive);
   r.logs = r.logs || {};
-  const sys = text => { r.logs[logKey(now)] = { t: clock(now), text, kind: 'sys' }; };
+  const sys = (text, kind = 'sys') => addLog(r, now, text, kind);
   const checkEnd = () => {
     const m = alive().filter(i => P[i].role === 'mafia').length;
     const c = alive().length - m;
-    if (m === 0) { r.status = 'ended'; r.winner = 'citizen'; sys('🎉 [작전 성공] 모든 과다 DC 스파이가 색출되었습니다!'); return true; }
-    if (m >= c) { r.status = 'ended'; r.winner = 'mafia'; sys('🚨 [작전 실패] 과다 DC 영업사원이 시장을 장악했습니다!'); return true; }
+    const reveal = () => sys('🎭 [정체 공개] ' + ids.map(i => `${P[i].name}(${ROLE_TAG[P[i].role] ? ROLE_TAG[P[i].role][0] : '준수'})`).join(', '), 'event');
+    if (m === 0) { r.status = 'ended'; r.winner = 'citizen'; delete r.event; sys('🎉 [작전 성공] ' + WIN_STORY, 'event'); reveal(); return true; }
+    if (m >= c) { r.status = 'ended'; r.winner = 'mafia'; delete r.event; sys('🚨 [작전 실패] ' + LOSE_STORY, 'event'); reveal(); return true; }
     return false;
   };
 
@@ -405,8 +529,9 @@ function advance(r, now) {
     const s = Object.entries(votes).sort((a, b) => b[1] - a[1]);
     if (s.length && (s.length === 1 || s[0][1] > s[1][1])) {
       const v = P[s[0][0]]; v.alive = false;
-      sys(`[징계 결과] 투표 결과 ${v.name}님이 영업 정지되었습니다. (정체: ${ROLE_NAME[v.role]})`);
-    } else sys(s.length ? '[징계 결과] 동률이라 징계 처분된 영업사원이 없습니다.' : '[징계 결과] 득표자가 없어 징계 처분이 없습니다.');
+      sys(pick(OUT_LINES)(v.name, ROLE_NAME[v.role]), 'death');
+      if (v.isAi) addLog(r, now, '(유언) ' + pick(LAST_WORDS), 'chat', v.name);
+    } else sys(s.length ? pick(TIE_LINES) : pick(NOVOTE_LINES));
     ids.forEach(i => { delete P[i].votedFor; delete P[i].nightTarget; });
     if (checkEnd()) return r;
     r.phase = 'night'; r.phaseEndsAt = now + NIGHT_SEC * 1000;
@@ -418,7 +543,8 @@ function advance(r, now) {
       else if (p.role === 'police') t = alive().filter(x => x !== i);
       if (t.length) p.nightTarget = pick(t);
     });
-    sys('[🌙 야간 페이즈] 업무 종료. 비밀 후려치기와 가격 감사가 시작됩니다.');
+    delete r.event;
+    sys(pick(NIGHT_INTRO), 'story');
   } else {
     let mT = null, dT = null;
     alive().forEach(i => {
@@ -429,13 +555,16 @@ function advance(r, now) {
       if (p.role === 'police') p.investigation = { target: t, name: P[t].name, isMafia: P[t].role === 'mafia', day: r.dayCount };
     });
     if (mT && P[mT].alive) {
-      if (mT === dT) sys('[보안 보고] 법무팀의 신속한 방어로 과다 DC 시도가 무력화되었습니다!');
-      else { P[mT].alive = false; sys(`[야간 속보] ${P[mT].name} 영업소가 과다 DC 공격으로 영업 정지되었습니다! (정체: ${ROLE_NAME[P[mT].role]})`); }
-    } else sys('[야간 보고] 평온한 밤이 지나갔습니다.');
+      if (mT === dT) sys(pick(BLOCK_LINES), 'event');
+      else {
+        P[mT].alive = false; sys(pick(KILL_LINES)(P[mT].name, ROLE_NAME[P[mT].role]), 'death');
+        if (P[mT].isAi) addLog(r, now, '(유언) ' + pick(LAST_WORDS), 'chat', P[mT].name);
+      }
+    } else sys(pick(QUIET_LINES));
     ids.forEach(i => { delete P[i].nightTarget; delete P[i].votedFor; });
     if (checkEnd()) return r;
-    r.dayCount++; r.phase = 'day'; r.phaseEndsAt = now + DAY_SEC * 1000;
-    sys(`[☀️ 아침] 제 ${r.dayCount}일차 주간 세션 시작.`);
+    r.dayCount++; r.phase = 'day';
+    startDay(r, now);
     const bots = alive().filter(i => P[i].isAi);
     if (bots.length) r.logs[logKey(now) + 'q'] = { t: clock(now), name: P[pick(bots)].name, text: pick(AI_QUOTES), kind: 'chat' };
   }
@@ -446,6 +575,21 @@ function tick() {
   if (!room) return;
   if (room.status === 'playing') {
     $('timer-display').innerText = Math.max(0, Math.ceil((room.phaseEndsAt - nowS()) / 1000));
+    if (room.phase === 'day' && hostId(room) === myId) {
+      if (lastBotDay !== room.dayCount) { lastBotDay = room.dayCount; nextBot = nowS() + 9000; }
+      const quiet = room.event && room.event.type === 'silence';
+      if (!quiet && nowS() >= nextBot && room.phaseEndsAt - nowS() > 6000) {
+        nextBot = nowS() + 12000 + Math.random() * 10000;
+        const al = Object.values(room.players).filter(p => p.alive), bots = al.filter(p => p.isAi);
+        if (bots.length) {
+          const b = pick(bots), others = al.filter(p => p.id !== b.id);
+          const pool = b.role === 'mafia' ? others.filter(o => o.role !== 'mafia') : others;
+          const tgt = pick(pool.length ? pool : others), x = Math.random();
+          const text = x < 0.45 ? pick(BOT_SUS)(tgt.name) : x < 0.75 ? pick(BOT_DEF) : pick(BOT_NEUTRAL);
+          update(roomRef, { ['logs/' + logKey(nowS())]: { t: clock(), name: b.name, text, kind: 'chat' } }).catch(() => {});
+        }
+      }
+    }
     if (!advancing && (nowS() >= room.phaseEndsAt || allActed(room))) {
       advancing = true;
       runTransaction(roomRef, r => advance(r, nowS()))
@@ -484,9 +628,13 @@ function renderGame() {
   const sig = [r.status, r.phase, r.dayCount, me.alive, me.votedFor, me.nightTarget, me.investigation && me.investigation.day, Object.values(P).map(p => +p.alive).join('')].join('|');
   if (sig !== lastSig) { lastSig = sig; renderPrompt(r, me); }
 
-  const canChat = r.status === 'playing' && r.phase === 'day' && me.alive;
+  const silent = r.status === 'playing' && r.phase === 'day' && r.event && r.event.type === 'silence';
+  const canChat = r.status === 'playing' && r.phase === 'day' && me.alive && !silent;
   $('chat-input').disabled = !canChat;
-  $('chat-input').placeholder = canChat ? '가격 질서 관련 의견 또는 해명 입력...' : (r.phase === 'night' && !ended ? '야간에는 대화할 수 없습니다.' : '대화할 수 없는 상태입니다.');
+  $('chat-input').placeholder = canChat ? '가격 질서 관련 의견 또는 해명 입력...' : (silent ? '🤫 본부장 순시 중! 오늘은 채팅 금지입니다.' : (r.phase === 'night' && !ended ? '야간에는 대화할 수 없습니다.' : '대화할 수 없는 상태입니다.'));
+  document.querySelectorAll('.qchip').forEach(b => { b.disabled = !canChat; });
+  const eb = $('event-banner');
+  if (r.status === 'playing' && r.phase === 'day' && r.event) { eb.textContent = '📌 ' + r.event.label; eb.classList.remove('hidden'); } else eb.classList.add('hidden');
 
   const keys = Object.keys(r.logs).sort();
   if (keys.length !== lastLogCount) {
@@ -498,7 +646,12 @@ function renderGame() {
       if (l.kind === 'chat') {
         const n = document.createElement('strong'); n.className = 'text-blue-400'; n.textContent = l.name + ': '; d.appendChild(n);
         const x = document.createElement('span'); x.textContent = l.text; d.appendChild(x);
-      } else { const x = document.createElement('span'); x.className = 'text-tata-text'; x.textContent = l.text; d.appendChild(x); }
+      } else {
+        const x = document.createElement('span');
+        x.className = { story: 'text-amber-200/90 italic', event: 'text-yellow-300 font-bold', death: 'text-red-300 font-bold' }[l.kind] || 'text-tata-text';
+        x.textContent = l.text; d.appendChild(x);
+        if (l.kind === 'story') d.className += ' border-l-2 border-amber-500/40 pl-2 my-1';
+      }
       term.appendChild(d);
     });
     term.scrollTop = term.scrollHeight;
@@ -583,7 +736,7 @@ function renderPromptWithResult(r, me) {
 renderPrompt = renderPromptWithResult;
 
 async function resetRoom() {
-  const upd = { status: 'waiting', winner: null, phase: 'day', dayCount: 1, phaseEndsAt: null };
+  const upd = { status: 'waiting', winner: null, phase: 'day', dayCount: 1, phaseEndsAt: null, event: null };
   Object.values(room.players).forEach(p => {
     if (p.isAi || p.left) upd['players/' + p.id] = null;
     else {
@@ -595,11 +748,21 @@ async function resetRoom() {
   await update(roomRef, upd);
 }
 
-window.sendChatMessage = () => safe(async () => {
-  const inp = $('chat-input'), msg = inp.value.trim();
-  if (!msg || !room || room.status !== 'playing' || room.phase !== 'day' || !room.players[myId].alive) return;
+async function postChat(msg) {
+  if (!msg || !room || room.status !== 'playing' || room.phase !== 'day' || !room.players[myId].alive) return false;
+  if (room.event && room.event.type === 'silence') return false;
   await update(roomRef, { ['logs/' + logKey(nowS())]: { t: clock(), name: myName, text: msg, kind: 'chat' } });
-  inp.value = '';
+  return true;
+}
+window.sendChatMessage = () => safe(async () => {
+  const inp = $('chat-input');
+  if (await postChat(inp.value.trim())) inp.value = '';
+});
+QUICK.forEach(q => {
+  const b = document.createElement('button');
+  b.className = 'qchip text-[11px] px-2 py-1 rounded border border-tata-border bg-tata-bg text-slate-300 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed';
+  b.textContent = q; b.disabled = true; b.onclick = () => safe(() => postChat(q));
+  $('quick-chat').appendChild(b);
 });
 </script>
 </body>
