@@ -1,629 +1,601 @@
 <!DOCTYPE html>
 <html lang="ko" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TATA DAEWOO MOBILITY - Commercial Vehicle Pricing & Audit Control v14.0</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <!-- Firebase SDK v11 -->
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js" type="module"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js" type="module"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js" type="module"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        mono: ['"JetBrains Mono"', 'monospace'],
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                    colors: {
-                        tata: {
-                            bg: '#0b1329',
-                            panel: '#131f3f',
-                            border: '#223460',
-                            accent: '#00539f',
-                            success: '#10b981',
-                            warning: '#f59e0b',
-                            danger: '#ef4444',
-                            text: '#f8fafc',
-                            muted: '#94a3b8'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #0b1329; color: #f8fafc; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #0b1329; }
-        ::-webkit-scrollbar-thumb { background: #223460; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #3b5288; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TATA DAEWOO MOBILITY - Pricing & Audit Control v15.0</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+tailwind.config = { theme: { extend: {
+  fontFamily: { mono: ['"JetBrains Mono"', 'monospace'], sans: ['Inter', 'sans-serif'] },
+  colors: { tata: { bg:'#0b1329', panel:'#131f3f', border:'#223460', accent:'#00539f', success:'#10b981', warning:'#f59e0b', danger:'#ef4444', text:'#f8fafc', muted:'#94a3b8' } }
+} } }
+</script>
+<style>
+body { font-family:'Inter',sans-serif; background:#0b1329; color:#f8fafc; }
+.font-mono { font-family:'JetBrains Mono',monospace; }
+::-webkit-scrollbar { width:6px; height:6px; }
+::-webkit-scrollbar-track { background:#0b1329; }
+::-webkit-scrollbar-thumb { background:#223460; border-radius:3px; }
+</style>
 </head>
-<body class="h-full flex flex-col overflow-hidden select-none">
+<body class="h-full flex flex-col overflow-hidden">
 
-    <!-- Top Navigation Bar -->
-    <header class="bg-tata-panel border-b border-tata-border px-4 py-2.5 flex items-center justify-between shrink-0 z-10">
-        <div class="flex items-center space-x-3">
-            <div class="flex space-x-1.5">
-                <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
-                <span class="w-3 h-3 rounded-full bg-yellow-500/80 inline-block"></span>
-                <span class="w-3 h-3 rounded-full bg-green-500/80 inline-block"></span>
-            </div>
-            <div class="h-4 w-[1px] bg-tata-border mx-1"></div>
-            <span class="font-mono text-xs text-blue-400 uppercase tracking-wider font-semibold">
-                [TATA DAEWOO MOBILITY] COMMERCIAL VEHICLE PRICING & OVER-DISCOUNT AUDIT SYSTEM v14.0
-            </span>
-        </div>
-        <div class="flex items-center space-x-4 text-xs font-mono">
-            <span id="connection-status" class="flex items-center text-tata-warning">
-                <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse mr-1.5"></span> 클라우드 데이터베이스 연결 중...
-            </span>
-            <span class="text-tata-muted">임직원: <strong id="header-username" class="text-tata-text">-</strong></span>
-            <button onclick="togglePanicMode()" class="bg-tata-border hover:bg-slate-700 text-tata-text px-2.5 py-1 rounded transition text-xs border border-slate-600 font-sans shadow">
-                🚨 Panic Key (Esc)
-            </button>
-        </div>
-    </header>
+<header class="bg-tata-panel border-b border-tata-border px-4 py-2.5 flex items-center justify-between shrink-0 z-10">
+  <span class="font-mono text-xs text-blue-400 uppercase tracking-wider font-semibold">[TATA DAEWOO MOBILITY] PRICING & OVER-DISCOUNT AUDIT SYSTEM v15.0</span>
+  <div class="flex items-center space-x-4 text-xs font-mono">
+    <span id="connection-status" class="flex items-center text-tata-warning">
+      <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse mr-1.5"></span>서버 연결 중...
+    </span>
+    <span class="text-tata-muted">임직원: <strong id="header-username" class="text-tata-text">-</strong></span>
+    <button onclick="togglePanicMode()" class="bg-tata-border hover:bg-slate-700 px-2.5 py-1 rounded text-xs border border-slate-600 font-sans">🚨 Panic Key (Esc)</button>
+  </div>
+</header>
 
-    <!-- Main Container -->
-    <main class="flex-1 flex overflow-hidden relative">
+<main class="flex-1 flex overflow-hidden relative">
 
-        <!-- VIEW 1: LOBBY -->
-        <div id="view-lobby" class="flex-1 flex flex-col items-center justify-center p-6 bg-tata-bg overflow-y-auto">
-            <div class="max-w-lg w-full bg-tata-panel border border-tata-border rounded-xl p-8 shadow-2xl space-y-6">
-                <div class="text-center">
-                    <div class="inline-flex px-3 py-1.5 bg-red-600/20 text-red-400 rounded-xl mb-3 font-mono text-xs font-bold border border-red-500/30">
-                        🚨 EMERGENCY BRIEFING: 시장 붕괴 위기
-                    </div>
-                    <h1 class="text-xl font-bold text-tata-text">타타대우모빌리티 긴급 가격 질서 확립 작전</h1>
-                </div>
-
-                <div class="bg-slate-900/80 border border-tata-border rounded-lg p-4 text-xs leading-relaxed text-slate-300 font-mono space-y-2">
-                    <p class="text-yellow-400 font-bold">[상황 보고서]</p>
-                    <p>일부 영업소의 무분별한 <strong>과다 DC(후려치기)</strong>로 맥쎈, 쿠쎈, 더쎈, 노부스, 기쎈 전 차종의 가이드 가격이 붕괴되었습니다.</p>
-                    <p>우리 손으로 시장 질서를 교란하는 <strong>과다 DC 스파이</strong>를 색출하고 타타대우모빌리티를 지켜야만 합니다!</p>
-                </div>
-
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-mono text-tata-muted mb-1">영업사원 성명 / 소속 영업소</label>
-                        <input type="text" id="input-username" placeholder="예: 김정환 / 두바이 영업소" maxlength="15"
-                            class="w-full bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2.5 text-sm text-tata-text focus:outline-none focus:border-blue-500 transition font-mono">
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-3 pt-2 border-t border-tata-border">
-                        <button onclick="window.uiCreateRoom()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg text-sm transition shadow-lg shadow-blue-600/20 cursor-pointer">
-                            🏢 방 만들기 (숫자 코드)
-                        </button>
-                        <div class="flex space-x-1">
-                            <input type="text" id="input-room-code" placeholder="4자리 숫자" maxlength="4" pattern="[0-9]*"
-                                class="w-24 bg-tata-bg border border-tata-border rounded-lg px-2 text-xs text-tata-text font-mono text-center tracking-widest font-bold">
-                            <button onclick="window.uiJoinRoom()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-tata-text py-2.5 rounded-lg text-xs font-medium transition cursor-pointer">
-                                참여
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-center pt-2">
-                    <p class="text-[11px] text-tata-muted">💡 상사가 지나갈 때는 언제든 <code class="text-blue-400">Esc</code>를 눌러 엑셀 보고서로 위장하세요.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- VIEW 2: WAITING ROOM -->
-        <div id="view-room" class="flex-1 flex flex-col p-6 bg-tata-bg overflow-hidden hidden">
-            <div class="max-w-3xl w-full mx-auto flex flex-col h-full bg-tata-panel border border-tata-border rounded-xl shadow-xl overflow-hidden">
-                <div class="p-4 border-b border-tata-border flex justify-between items-center bg-slate-900/50">
-                    <div>
-                        <span class="text-xs font-mono text-blue-400">세션 번호: <strong id="room-code-display" class="text-tata-text text-base">----</strong></span>
-                        <h2 class="text-sm font-bold text-tata-text mt-0.5">가격 질서 감사 대기실 (팀원 집결 중)</h2>
-                    </div>
-                    <button onclick="window.leaveRoom()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 rounded text-xs transition">
-                        나가기
-                    </button>
-                </div>
-
-                <div class="flex-1 p-6 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto">
-                    <div class="flex flex-col">
-                        <h3 class="text-xs font-mono text-tata-muted mb-3 uppercase">실시간 접속한 영업사원 명단 (<span id="waiting-count">0</span>명)</h3>
-                        <div id="waiting-player-list" class="flex-1 bg-tata-bg border border-tata-border rounded-lg p-3 space-y-2 overflow-y-auto font-mono text-xs"></div>
-                    </div>
-
-                    <div class="flex flex-col justify-between space-y-4">
-                        <div class="bg-tata-bg border border-tata-border rounded-lg p-4 space-y-2 text-xs text-tata-muted">
-                            <p class="text-blue-400 font-bold font-mono">📢 멀티플레이 안내</p>
-                            <p>• 동료들에게 <strong>4자리 숫자 번호</strong>를 알려주어 똑같이 입력하고 들어오게 하세요.</p>
-                            <p>• 인원이 모이면 방장이 <strong>[작전 시작]</strong>을 눌러 모든 동료의 화면을 동시에 게임으로 진입시킵니다!</p>
-                        </div>
-
-                        <div id="host-controls" class="hidden">
-                            <button onclick="window.startHostGame()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg shadow-blue-600/20 cursor-pointer">
-                                🚀 방장 작전 시작 (모든 팀원 게임 진입)
-                            </button>
-                        </div>
-                        <div id="guest-notice" class="text-center py-3 text-xs text-tata-muted font-mono bg-tata-bg border border-tata-border rounded-lg">
-                            방장이 작전을 시작할 때까지 대기 중...
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- VIEW 3: IN-GAME -->
-        <div id="view-game" class="flex-1 flex flex-col bg-tata-bg overflow-hidden hidden">
-            <!-- Game Status Bar -->
-            <div class="bg-tata-panel border-b border-tata-border px-6 py-3 flex items-center justify-between shrink-0">
-                <div class="flex items-center space-x-4">
-                    <div id="phase-badge" class="px-3 py-1 rounded text-xs font-mono font-bold bg-blue-600/20 text-blue-400 border border-blue-500/30">
-                        ☀️ 주간 세션 (영업 회의 및 과다 DC 색출 토론)
-                    </div>
-                    <span class="text-xs font-mono text-tata-muted">잔여 시간: <strong id="timer-display" class="text-tata-text font-mono">45</strong>초</span>
-                </div>
-                
-                <div class="flex items-center space-x-3">
-                    <div class="bg-tata-bg border border-tata-border px-3 py-1 rounded text-xs font-mono flex items-center space-x-2">
-                        <span class="text-tata-muted">내 직무:</span>
-                        <span id="my-role-badge" class="font-bold text-blue-400">조회 중...</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main Game Grid -->
-            <div class="flex-1 grid grid-cols-1 lg:grid-cols-4 overflow-hidden p-4 gap-4">
-                
-                <!-- Left Panel -->
-                <div class="lg:col-span-1 flex flex-col space-y-4 overflow-hidden">
-                    <div class="bg-tata-panel border border-tata-border rounded-xl p-4 flex flex-col flex-1 overflow-hidden shadow-lg">
-                        <h3 class="text-xs font-mono text-tata-muted mb-3 uppercase">생존 영업소 (<span id="in-game-count">0</span>)</h3>
-                        <div id="in-game-player-list" class="flex-1 space-y-2 overflow-y-auto pr-1"></div>
-                    </div>
-
-                    <div id="action-prompt-card" class="bg-tata-panel border border-tata-border rounded-xl p-4 shadow-lg shrink-0">
-                        <h4 id="action-title" class="text-xs font-mono text-blue-400 mb-2">상태 안내</h4>
-                        <p id="action-desc" class="text-xs text-tata-muted mb-3">페이즈 진행 중...</p>
-                        <div id="action-buttons"></div>
-                    </div>
-                </div>
-
-                <!-- Right Terminal Log -->
-                <div class="lg:col-span-3 flex flex-col bg-tata-panel border border-tata-border rounded-xl shadow-lg overflow-hidden">
-                    <div class="bg-slate-900/80 px-4 py-2.5 border-b border-tata-border flex items-center justify-between">
-                        <span class="font-mono text-xs text-tata-muted">🤖 AI_MODERATOR@tata-audit:~# live_feed.log</span>
-                        <span class="text-[11px] font-mono bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded">시장 방어 작전 진행 중</span>
-                    </div>
-
-                    <div id="terminal-logs" class="flex-1 p-4 overflow-auto space-y-2 font-mono text-xs leading-relaxed bg-[#070c1b]"></div>
-
-                    <div class="p-3 bg-tata-panel border-t border-tata-border flex space-x-2">
-                        <input type="text" id="chat-input" placeholder="가격 질서 관련 의견 또는 해명 입력..." onkeydown="window.handleChatKeyDown(event)"
-                            class="flex-1 bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2 text-xs text-tata-text focus:outline-none focus:border-blue-500 font-mono">
-                        <button onclick="window.sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-medium transition cursor-pointer">
-                            전송
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Fullscreen Panic Mode Overlay (Excel Disguise) -->
-    <div id="panic-overlay" class="fixed inset-0 bg-[#1e1e1e] z-50 hidden flex flex-col font-mono text-xs text-gray-300">
-        <div class="bg-[#2d2d2d] border-b border-gray-700 px-3 py-1.5 flex items-center justify-between text-gray-400">
-            <span class="font-bold text-gray-200">Microsoft Excel - TATA_DAEWOO_MOBILITY_Commercial_Vehicle_Q4_Performance.xlsx [읽기 전용]</span>
-            <button onclick="togglePanicMode()" class="bg-gray-700 hover:bg-gray-600 text-white px-2 py-0.5 rounded text-[11px]">업무 복귀</button>
-        </div>
-        <div class="bg-[#f3f3f3] text-black border-b border-gray-300 px-2 py-1 flex space-x-4 text-[11px]">
-            <span><b>파일(F)</b></span><span><b>홈(H)</b></span><span><b>삽입(I)</b></span><span><b>데이터(D)</b></span>
-        </div>
-        <div class="bg-[#ffffff] text-black flex-1 p-4 overflow-auto font-mono text-xs">
-            <table class="w-full border-collapse border border-gray-300">
-                <thead>
-                    <tr class="bg-gray-100"><th class="border p-1">차종 라인업</th><th class="border p-1">정지가이드 가격</th><th class="border p-1">실행 평균가</th><th class="border p-1">할인율</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td class="border p-1 font-bold">MAXEN (맥쎈) 대형트럭</td><td class="border p-1 text-right">₩185,000,000</td><td class="border p-1 text-right">₩182,000,000</td><td class="border p-1 text-right">1.6%</td></tr>
-                    <tr><td class="border p-1 font-bold">KUXEN (쿠쎈) 중대형트럭</td><td class="border p-1 text-right">₩160,000,000</td><td class="border p-1 text-right">₩158,500,000</td><td class="border p-1 text-right">0.9%</td></tr>
-                    <tr><td class="border p-1 font-bold">DEXEN (더쎈) 준중형트럭</td><td class="border p-1 text-right">₩85,000,000</td><td class="border p-1 text-right">₩83,000,000</td><td class="border p-1 text-right">2.3%</td></tr>
-                </tbody>
-            </table>
-        </div>
+<!-- LOBBY -->
+<div id="view-lobby" class="flex-1 flex flex-col items-center justify-center p-6 overflow-y-auto">
+  <div class="max-w-lg w-full bg-tata-panel border border-tata-border rounded-xl p-8 shadow-2xl space-y-6">
+    <div class="text-center">
+      <div class="inline-flex px-3 py-1.5 bg-red-600/20 text-red-400 rounded-xl mb-3 font-mono text-xs font-bold border border-red-500/30">🚨 EMERGENCY BRIEFING: 시장 붕괴 위기</div>
+      <h1 class="text-xl font-bold">타타대우모빌리티 긴급 가격 질서 확립 작전</h1>
     </div>
-
-    <!-- Modal -->
-    <div id="custom-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-tata-panel border border-tata-border rounded-xl p-6 max-w-sm w-full shadow-2xl text-center">
-            <h3 id="modal-title" class="text-sm font-bold text-tata-text mb-2">알림</h3>
-            <p id="modal-message" class="text-xs text-tata-muted mb-4">내용</p>
-            <button onclick="closeModal()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg text-xs font-medium transition cursor-pointer">확인</button>
-        </div>
+    <div class="bg-slate-900/80 border border-tata-border rounded-lg p-4 text-xs leading-relaxed text-slate-300 font-mono space-y-2">
+      <p class="text-yellow-400 font-bold">[상황 보고서]</p>
+      <p>일부 영업소의 무분별한 <strong>과다 DC(후려치기)</strong>로 맥쎈, 쿠쎈, 더쎈, 노부스, 기쎈 전 차종의 가이드 가격이 붕괴되었습니다.</p>
+      <p>시장 질서를 교란하는 <strong>과다 DC 스파이</strong>를 색출해 타타대우모빌리티를 지켜야 합니다!</p>
     </div>
+    <div class="space-y-4">
+      <div>
+        <label class="block text-xs font-mono text-tata-muted mb-1">영업사원 성명 / 소속 영업소</label>
+        <input type="text" id="input-username" placeholder="예: 김정환 / 두바이 영업소" maxlength="15"
+          class="w-full bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2.5 text-sm focus:outline-none focus:border-blue-500 font-mono">
+      </div>
+      <div class="grid grid-cols-2 gap-3 pt-2 border-t border-tata-border">
+        <button onclick="uiCreateRoom()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg text-sm transition">🏢 방 만들기</button>
+        <div class="flex space-x-1">
+          <input type="text" id="input-room-code" placeholder="4자리 숫자" maxlength="4" inputmode="numeric"
+            class="w-24 bg-tata-bg border border-tata-border rounded-lg px-2 text-xs font-mono text-center tracking-widest font-bold">
+          <button onclick="uiJoinRoom()" class="flex-1 bg-slate-700 hover:bg-slate-600 py-2.5 rounded-lg text-xs font-medium transition">참여</button>
+        </div>
+      </div>
+    </div>
+    <p class="text-center text-[11px] text-tata-muted">💡 상사가 지나갈 때는 <code class="text-blue-400">Esc</code>를 눌러 엑셀 보고서로 위장하세요.</p>
+  </div>
+</div>
 
-    <!-- v14.0 Firebase Realtime Database Sync Engine -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getDatabase, ref, set, get, update, onValue, remove, off } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+<!-- WAITING ROOM -->
+<div id="view-room" class="flex-1 flex flex-col p-6 overflow-hidden hidden">
+  <div class="max-w-3xl w-full mx-auto flex flex-col h-full bg-tata-panel border border-tata-border rounded-xl shadow-xl overflow-hidden">
+    <div class="p-4 border-b border-tata-border flex justify-between items-center bg-slate-900/50">
+      <div>
+        <span class="text-xs font-mono text-blue-400">세션 번호: <strong id="room-code-display" class="text-tata-text text-base">----</strong></span>
+        <h2 class="text-sm font-bold mt-0.5">가격 질서 감사 대기실</h2>
+      </div>
+      <button onclick="leaveRoom()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 rounded text-xs">나가기</button>
+    </div>
+    <div class="flex-1 p-6 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto">
+      <div class="flex flex-col">
+        <h3 class="text-xs font-mono text-tata-muted mb-3">접속한 영업사원 (<span id="waiting-count">0</span>명)</h3>
+        <div id="waiting-player-list" class="flex-1 bg-tata-bg border border-tata-border rounded-lg p-3 space-y-2 overflow-y-auto font-mono text-xs"></div>
+      </div>
+      <div class="flex flex-col justify-between space-y-4">
+        <div class="bg-tata-bg border border-tata-border rounded-lg p-4 space-y-2 text-xs text-tata-muted">
+          <p class="text-blue-400 font-bold font-mono">📢 멀티플레이 안내</p>
+          <p>• 동료에게 위의 <strong>4자리 번호</strong>를 알려주세요.</p>
+          <p>• 4명 미만이면 AI 영업소가 빈자리를 채웁니다.</p>
+          <p>• 방장이 [작전 시작]을 누르면 모두 동시에 시작됩니다.</p>
+        </div>
+        <div>
+          <button id="host-controls" onclick="startHostGame()" class="hidden w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg text-sm transition">🚀 작전 시작 (모든 팀원 진입)</button>
+          <div id="guest-notice" class="text-center py-3 text-xs text-tata-muted font-mono bg-tata-bg border border-tata-border rounded-lg">방장이 작전을 시작할 때까지 대기 중...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-        // Public Firebase Realtime Database Configuration for Tata Mobility Audit
-        const firebaseConfig = {
-            databaseURL: "https://tata-mobility-audit-default-rtdb.firebaseio.com/"
-        };
+<!-- GAME -->
+<div id="view-game" class="flex-1 flex flex-col overflow-hidden hidden">
+  <div class="bg-tata-panel border-b border-tata-border px-6 py-3 flex items-center justify-between shrink-0">
+    <div class="flex items-center space-x-4">
+      <div id="phase-badge" class="px-3 py-1 rounded text-xs font-mono font-bold bg-blue-600/20 text-blue-400 border border-blue-500/30">-</div>
+      <span class="text-xs font-mono text-tata-muted">잔여 시간: <strong id="timer-display" class="text-tata-text">-</strong>초</span>
+    </div>
+    <div class="bg-tata-bg border border-tata-border px-3 py-1 rounded text-xs font-mono flex items-center space-x-2">
+      <span class="text-tata-muted">내 직무:</span><span id="my-role-badge" class="font-bold text-blue-400">-</span>
+    </div>
+  </div>
+  <div class="flex-1 grid grid-cols-1 lg:grid-cols-4 overflow-hidden p-4 gap-4">
+    <div class="lg:col-span-1 flex flex-col space-y-4 overflow-hidden">
+      <div class="bg-tata-panel border border-tata-border rounded-xl p-4 flex flex-col flex-1 overflow-hidden shadow-lg">
+        <h3 class="text-xs font-mono text-tata-muted mb-3">생존 영업소 (<span id="in-game-count">0</span>)</h3>
+        <div id="in-game-player-list" class="flex-1 space-y-2 overflow-y-auto pr-1"></div>
+      </div>
+      <div class="bg-tata-panel border border-tata-border rounded-xl p-4 shadow-lg shrink-0">
+        <h4 id="action-title" class="text-xs font-mono text-blue-400 mb-2">-</h4>
+        <p id="action-desc" class="text-xs text-tata-muted mb-3">-</p>
+        <div id="action-buttons"></div>
+      </div>
+    </div>
+    <div class="lg:col-span-3 flex flex-col bg-tata-panel border border-tata-border rounded-xl shadow-lg overflow-hidden">
+      <div class="bg-slate-900/80 px-4 py-2.5 border-b border-tata-border flex items-center justify-between">
+        <span class="font-mono text-xs text-tata-muted">🤖 AI_MODERATOR@tata-audit:~# live_feed.log</span>
+        <span class="text-[11px] font-mono bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded">시장 방어 작전 진행 중</span>
+      </div>
+      <div id="terminal-logs" class="flex-1 p-4 overflow-auto font-mono text-xs leading-relaxed bg-[#070c1b]"></div>
+      <div class="p-3 bg-tata-panel border-t border-tata-border flex space-x-2">
+        <input type="text" id="chat-input" maxlength="200" onkeydown="if(event.key==='Enter')sendChatMessage()"
+          class="flex-1 bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2 text-xs focus:outline-none focus:border-blue-500 font-mono">
+        <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-medium">전송</button>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const auth = getAuth(app);
+<!-- PANIC -->
+<div id="panic-overlay" class="fixed inset-0 bg-[#1e1e1e] z-50 hidden flex flex-col font-mono text-xs text-gray-300">
+  <div class="bg-[#2d2d2d] border-b border-gray-700 px-3 py-1.5 flex items-center justify-between">
+    <span class="font-bold text-gray-200">Microsoft Excel - TATA_DAEWOO_MOBILITY_Commercial_Vehicle_Q4_Performance.xlsx [읽기 전용]</span>
+    <button onclick="togglePanicMode()" class="bg-gray-700 hover:bg-gray-600 text-white px-2 py-0.5 rounded text-[11px]">업무 복귀</button>
+  </div>
+  <div class="bg-[#f3f3f3] text-black border-b border-gray-300 px-2 py-1 flex space-x-4 text-[11px]"><b>파일(F)</b><b>홈(H)</b><b>삽입(I)</b><b>데이터(D)</b></div>
+  <div class="bg-white text-black flex-1 p-4 overflow-auto">
+    <table class="w-full border-collapse border border-gray-300">
+      <thead><tr class="bg-gray-100"><th class="border p-1">차종 라인업</th><th class="border p-1">정지가이드 가격</th><th class="border p-1">실행 평균가</th><th class="border p-1">할인율</th></tr></thead>
+      <tbody>
+        <tr><td class="border p-1 font-bold">MAXEN (맥쎈) 대형트럭</td><td class="border p-1 text-right">₩185,000,000</td><td class="border p-1 text-right">₩182,000,000</td><td class="border p-1 text-right">1.6%</td></tr>
+        <tr><td class="border p-1 font-bold">KUXEN (쿠쎈) 중대형트럭</td><td class="border p-1 text-right">₩160,000,000</td><td class="border p-1 text-right">₩158,500,000</td><td class="border p-1 text-right">0.9%</td></tr>
+        <tr><td class="border p-1 font-bold">DEXEN (더쎈) 준중형트럭</td><td class="border p-1 text-right">₩85,000,000</td><td class="border p-1 text-right">₩83,000,000</td><td class="border p-1 text-right">2.3%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
-        let roomCode = '', myName = '', myId = '', isHost = false;
-        let roomRef = null, roomListener = null;
-        let currentRoomData = null;
-        const AI_NAMES = ["군산공장_오반장", "인천지점_박부장", "부산영업소_최차장"];
-        const AI_QUOTES = [
-            "이번 더쎈 윙바디 견적서 투명하게 나갔습니다. 정지가이드 준수합니다.",
-            "밤사이에 맥쎈 덤프 가격 무리하게 후려친 범인이 누군지 감이 옵니다.",
-            "법무팀 제보에 따르면 쿠쎈 믹서 할인율 이상한 영업소가 포착되었습니다.",
-            "저는 절대 과다 DC 하지 않았습니다! 억울합니다 조사 똑바로 해주세요.",
-            "냉정하게 출고 데이터와 로그를 분석해보면 범인이 명확합니다."
-        ];
+<!-- MODAL -->
+<div id="custom-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-tata-panel border border-tata-border rounded-xl p-6 max-w-sm w-full shadow-2xl text-center">
+    <h3 id="modal-title" class="text-sm font-bold mb-2">알림</h3>
+    <p id="modal-message" class="text-xs text-tata-muted mb-4 whitespace-pre-line">내용</p>
+    <button onclick="closeModal()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg text-xs font-medium">확인</button>
+  </div>
+</div>
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            setupPanicKey();
-            const saved = localStorage.getItem('tata_mob_name');
-            if (saved) document.getElementById('input-username').value = saved;
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+import { getDatabase, ref, set, get, update, onValue, remove, off, runTransaction, onDisconnect }
+  from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
-            myId = localStorage.getItem('tata_v14_uid');
-            if (!myId) {
-                myId = 'user_' + Math.random().toString(36).substring(2, 8);
-                localStorage.setItem('tata_v14_uid', myId);
-            }
+// ★ 본인 Firebase 프로젝트 주소 (인증 없이 이 주소만 사용)
+const app = initializeApp({
+  projectId: "srsr-163c6",
+  databaseURL: "https://srsr-163c6-default-rtdb.firebaseio.com"
+});
+const db = getDatabase(app);
 
-            try {
-                await signInAnonymously(auth);
-                document.getElementById('connection-status').innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span> 클라우드 DB 연동 완료`;
-                document.getElementById('connection-status').className = "flex items-center text-tata-success";
-            } catch(e) {
-                console.warn("Auth fallback", e);
-            }
-        });
+const DAY_SEC = 90, NIGHT_SEC = 30;
+const AI_NAMES = ["군산공장_오반장", "인천지점_박부장", "부산영업소_최차장"];
+const AI_QUOTES = [
+  "이번 더쎈 윙바디 견적서는 투명하게 나갔습니다. 정지가이드 준수합니다.",
+  "맥쎈 덤프 가격을 무리하게 후려친 쪽이 누군지 감이 옵니다.",
+  "쿠쎈 믹서 할인율이 이상한 영업소가 포착됐다고 들었습니다.",
+  "저는 절대 과다 DC 하지 않았습니다! 억울합니다.",
+  "출고 데이터와 로그를 냉정하게 보면 범인이 명확합니다."
+];
+const ROLE_NAME = { mafia:'과다 DC 영업사원 (스파이)', doctor:'가격 정책 법무팀 (할인 방어)', police:'영업 감사관 (할인율 조사)', citizen:'정기가이드 준수 영업사원' };
+const ROLE_TAG = { mafia:['과다DC','text-red-400'], doctor:['법무팀','text-green-400'], police:['감사관','text-yellow-400'] };
 
-        window.togglePanicMode = () => document.getElementById('panic-overlay').classList.toggle('hidden');
-        function setupPanicKey() {
-            window.addEventListener('keydown', e => { if (e.key === 'Escape') togglePanicMode(); });
-        }
-        window.showModal = (title, msg) => {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerText = msg;
-            document.getElementById('custom-modal').classList.remove('hidden');
-        }
-        window.closeModal = () => document.getElementById('custom-modal').classList.add('hidden');
+let myId = sessionStorage.getItem('tata_v15_uid');
+if (!myId) { myId = 'u_' + Math.random().toString(36).slice(2, 9); sessionStorage.setItem('tata_v15_uid', myId); }
+let roomCode = '', myName = '', roomRef = null, room = null, view = 'lobby';
+let offset = 0, advancing = false, lastSig = '', lastLogCount = -1, endShown = false, startShown = false, dcSet = false;
+let logSeq = 0;
 
-        window.uiCreateRoom = async () => {
-            myName = document.getElementById('input-username').value.trim();
-            if (!myName) { showModal('입력 오류', '성명 또는 영업소를 입력해주세요.'); return; }
-            localStorage.setItem('tata_mob_name', myName);
-            document.getElementById('header-username').innerText = myName;
+const $ = id => document.getElementById(id);
+const nowS = () => Date.now() + offset;
+const clock = t => new Date(t ?? nowS()).toTimeString().slice(0, 8);
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const logKey = t => 'l' + String(t).padStart(14, '0') + String(logSeq++ % 100).padStart(2, '0') + Math.random().toString(36).slice(2, 4);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-            roomCode = Math.floor(1000 + Math.random() * 9000).toString();
-            isHost = true;
+window.togglePanicMode = () => $('panic-overlay').classList.toggle('hidden');
+window.addEventListener('keydown', e => { if (e.key === 'Escape') togglePanicMode(); });
+window.showModal = (t, m) => { $('modal-title').innerText = t; $('modal-message').innerText = m; $('custom-modal').classList.remove('hidden'); };
+window.closeModal = () => $('custom-modal').classList.add('hidden');
 
-            roomRef = ref(db, 'rooms/' + roomCode);
-            const initialData = {
-                code: roomCode,
-                status: 'waiting',
-                phase: 'day',
-                dayCount: 1,
-                timer: 45,
-                players: {
-                    [myId]: { id: myId, name: myName, alive: true, role: 'citizen', isHost: true }
-                },
-                logs: {
-                    0: { time: getTime(), text: `[🤖 AI 진행자] 숫자 코드 [${roomCode}] 대기실이 개설되었습니다.` }
-                }
-            };
+async function safe(fn) {
+  try { return await fn(); }
+  catch (e) {
+    console.error(e);
+    const msg = /PERMISSION_DENIED/i.test(e.message || '')
+      ? '데이터베이스 규칙이 읽기/쓰기를 막고 있습니다.\nFirebase 콘솔 > Realtime Database > 규칙 탭에서 규칙을 확인하세요.'
+      : (e.message || String(e));
+    showModal('오류', msg);
+  }
+}
 
-            await set(roomRef, initialData);
-            enterWaitingRoom();
-        };
+// 연결 상태 표시 + 서버 시간 보정
+onValue(ref(db, '.info/connected'), s => {
+  const el = $('connection-status');
+  if (s.val()) { el.className = 'flex items-center text-tata-success'; el.innerHTML = '<span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span>서버 연결됨'; }
+  else { el.className = 'flex items-center text-tata-warning'; el.innerHTML = '<span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse mr-1.5"></span>서버 연결 끊김 (재시도 중)'; }
+});
+onValue(ref(db, '.info/serverTimeOffset'), s => { offset = s.val() || 0; });
 
-        window.uiJoinRoom = async () => {
-            myName = document.getElementById('input-username').value.trim();
-            roomCode = document.getElementById('input-room-code').value.trim();
-            if (!myName) { showModal('입력 오류', '성명 또는 영업소를 입력해주세요.'); return; }
-            if (!roomCode || roomCode.length !== 4 || isNaN(roomCode)) {
-                showModal('입력 오류', '4자리 숫자 코드를 정확히 입력해주세요.');
-                return;
-            }
-            localStorage.setItem('tata_mob_name', myName);
-            document.getElementById('header-username').innerText = myName;
-            isHost = false;
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('tata_mob_name');
+  if (saved) $('input-username').value = saved;
+});
 
-            roomRef = ref(db, 'rooms/' + roomCode);
-            const snap = await get(roomRef);
-            
-            if (!snap.exists()) {
-                showModal('접속 불가', '해당 번호의 대기실이 없습니다. 방장이 먼저 방을 만들어야 합니다.');
-                return;
-            }
+function readName() {
+  myName = $('input-username').value.trim();
+  if (!myName) { showModal('입력 오류', '성명 또는 영업소를 입력해주세요.'); return false; }
+  localStorage.setItem('tata_mob_name', myName);
+  $('header-username').innerText = myName;
+  return true;
+}
 
-            let roomData = snap.val();
-            let players = roomData.players || {};
-            let isHostCheck = Object.keys(players).length === 0;
+window.uiCreateRoom = () => safe(async () => {
+  if (!readName()) return;
+  let code = null;
+  for (let i = 0; i < 12 && !code; i++) {
+    const c = String(Math.floor(1000 + Math.random() * 9000));
+    const s = await get(ref(db, 'rooms/' + c));
+    if (!s.exists() || nowS() - (s.val().createdAt || 0) > 6 * 3600e3) code = c;
+  }
+  if (!code) { showModal('오류', '빈 방 번호를 찾지 못했습니다. 다시 시도하세요.'); return; }
+  roomCode = code; roomRef = ref(db, 'rooms/' + code);
+  await set(roomRef, {
+    code, status: 'waiting', phase: 'day', dayCount: 1, createdAt: nowS(),
+    players: { [myId]: { id: myId, name: myName, alive: true, role: 'citizen', joinedAt: nowS() } },
+    logs: { [logKey(nowS())]: { t: clock(), text: `[AI 진행자] 대기실 [${code}]이(가) 개설되었습니다.`, kind: 'sys' } }
+  });
+  enterRoom();
+});
 
-            players[myId] = {
-                id: myId,
-                name: myName,
-                alive: true,
-                role: 'citizen',
-                isHost: isHostCheck
-            };
+window.uiJoinRoom = () => safe(async () => {
+  if (!readName()) return;
+  const code = $('input-room-code').value.trim();
+  if (code.length !== 4 || isNaN(code)) { showModal('입력 오류', '4자리 숫자 코드를 입력해주세요.'); return; }
+  const r = ref(db, 'rooms/' + code);
+  const s = await get(r);
+  if (!s.exists()) { showModal('접속 불가', '해당 번호의 방이 없습니다. 방장이 먼저 방을 만들어야 합니다.'); return; }
+  const d = s.val(), already = d.players && d.players[myId];
+  if (d.status !== 'waiting' && !already) { showModal('접속 불가', '이미 작전이 진행 중인 방입니다.'); return; }
+  roomCode = code; roomRef = r;
+  if (!already) {
+    await update(r, {
+      ['players/' + myId]: { id: myId, name: myName, alive: true, role: 'citizen', joinedAt: nowS() },
+      ['logs/' + logKey(nowS())]: { t: clock(), text: `[AI 진행자] ${myName}님이 입장했습니다.`, kind: 'sys' }
+    });
+  }
+  enterRoom();
+});
 
-            let logKeys = roomData.logs ? Object.keys(roomData.logs) : [];
-            let nextLogKey = logKeys.length > 0 ? Math.max(...logKeys.map(Number)) + 1 : 0;
+function enterRoom() {
+  $('room-code-display').innerText = roomCode;
+  onValue(roomRef, onRoom, e => showModal('오류', e.message));
+  setInterval(tick, 500);
+}
 
-            await update(roomRef, {
-                ['players/' + myId]: players[myId],
-                ['logs/' + nextLogKey]: { time: getTime(), text: `[🤖 AI 진행자] ${myName}님이 대기실에 입장했습니다.` }
-            });
+function humans(r) { return Object.values(r.players).filter(p => !p.isAi && !p.left).sort((a, b) => (a.joinedAt || 0) - (b.joinedAt || 0) || a.id.localeCompare(b.id)); }
+const hostId = r => (humans(r)[0] || {}).id;
 
-            enterWaitingRoom();
-        };
+function showView(v) {
+  if (view === v) return; view = v;
+  ['lobby', 'room', 'game'].forEach(n => $('view-' + n).classList.toggle('hidden', n !== v));
+}
 
-        function enterWaitingRoom() {
-            document.getElementById('view-lobby').classList.add('hidden');
-            document.getElementById('view-room').classList.remove('hidden');
-            document.getElementById('room-code-display').innerText = roomCode;
+function onRoom(snap) {
+  if (!snap.exists()) { if (view !== 'lobby') { showModal('방 종료', '방이 삭제되었습니다.'); setTimeout(() => location.reload(), 1500); } return; }
+  room = snap.val(); room.players = room.players || {}; room.logs = room.logs || {};
+  if (!room.players[myId]) { showModal('퇴장', '방에서 제외되었습니다.'); setTimeout(() => location.reload(), 1500); return; }
 
-            if (roomListener) off(roomRef);
+  if (room.status === 'waiting') {
+    showView('room'); endShown = false; startShown = false; lastSig = ''; lastLogCount = -1;
+    if (!dcSet) { onDisconnect(ref(db, `rooms/${roomCode}/players/${myId}`)).remove(); dcSet = true; }
+    renderWaiting();
+  } else {
+    if (dcSet) { onDisconnect(ref(db, `rooms/${roomCode}/players/${myId}`)).cancel(); dcSet = false; }
+    showView('game');
+    if (room.status === 'playing' && !startShown) { startShown = true; showModal('작전 개시!', '가격 질서 확립 작전이 시작되었습니다!\n내 직무를 확인하세요.'); }
+    renderGame();
+    if (room.status === 'ended' && !endShown) {
+      endShown = true;
+      showModal(room.winner === 'citizen' ? '작전 성공!' : '작전 실패', room.winner === 'citizen' ? '모든 스파이를 색출하고 시장을 지켜냈습니다!' : '과다 DC 영업사원이 시장 질서를 장악했습니다.');
+    }
+  }
+}
 
-            roomListener = onValue(roomRef, (snapshot) => {
-                if (!snapshot.exists()) return;
-                currentRoomData = snapshot.val();
+function renderWaiting() {
+  const list = $('waiting-player-list'); list.innerHTML = '';
+  const hs = humans(room);
+  hs.forEach(p => {
+    const d = document.createElement('div');
+    d.className = 'flex justify-between items-center p-2 bg-tata-bg border border-tata-border rounded font-mono text-xs';
+    d.innerHTML = `<span>👤 ${esc(p.name)} ${p.id === myId ? '(나)' : ''} ${p.id === hostId(room) ? '(방장)' : ''}</span><span class="text-green-400">접속 완료</span>`;
+    list.appendChild(d);
+  });
+  $('waiting-count').innerText = hs.length;
+  const isHost = hostId(room) === myId;
+  $('host-controls').classList.toggle('hidden', !isHost);
+  $('guest-notice').classList.toggle('hidden', isHost);
+}
 
-                if (currentRoomData.status === 'waiting') {
-                    renderWaiting(currentRoomData);
-                    let me = currentRoomData.players[myId];
-                    if (me && me.isHost) {
-                        document.getElementById('host-controls').classList.remove('hidden');
-                        document.getElementById('guest-notice').classList.add('hidden');
-                    } else {
-                        document.getElementById('host-controls').classList.add('hidden');
-                        document.getElementById('guest-notice').classList.remove('hidden');
-                    }
-                } else if (currentRoomData.status === 'playing') {
-                    if (document.getElementById('view-room').classList.contains('hidden') === false) {
-                        document.getElementById('view-room').classList.add('hidden');
-                        document.getElementById('view-game').classList.remove('hidden');
-                        showModal('작전 개시!', '타타대우모빌리티 가격 질서 확립 작전이 시작되었습니다!');
-                    }
-                    updateUI(currentRoomData);
-                }
-            });
-        }
+window.startHostGame = () => safe(async () => {
+  if (!room || hostId(room) !== myId) return;
+  const players = room.players, upd = {};
+  const ids = humans(room).map(p => p.id);
+  let b = 0;
+  while (ids.length < 4 && b < AI_NAMES.length) {
+    const bid = 'ai_bot_' + b;
+    players[bid] = { id: bid, name: AI_NAMES[b], alive: true, role: 'citizen', isAi: true, joinedAt: 0 };
+    upd['players/' + bid] = players[bid];
+    ids.push(bid); b++;
+  }
+  const mafiaCount = ids.length >= 8 ? 2 : 1;
+  const roles = [...Array(mafiaCount).fill('mafia'), 'doctor', 'police'];
+  while (roles.length < ids.length) roles.push('citizen');
+  const sh = roles.sort(() => Math.random() - 0.5);
+  ids.forEach((id, i) => {
+    upd[`players/${id}/role`] = sh[i]; upd[`players/${id}/alive`] = true;
+    upd[`players/${id}/votedFor`] = null; upd[`players/${id}/nightTarget`] = null; upd[`players/${id}/investigation`] = null;
+  });
+  const bot = ids.filter(i => String(i).startsWith('ai_bot_'));
+  const t = nowS();
+  upd.status = 'playing'; upd.phase = 'day'; upd.dayCount = 1; upd.winner = null;
+  upd.phaseEndsAt = t + DAY_SEC * 1000;
+  upd['logs/' + logKey(t)] = { t: clock(t), text: '[🚨 작전 개시] 과다 DC 스파이를 찾아라! 제 1일차 주간 회의 시작.', kind: 'sys' };
+  if (bot.length) upd['logs/' + logKey(t)+'q'] = { t: clock(t), name: players[pick(bot)].name, text: pick(AI_QUOTES), kind: 'chat' };
+  await update(roomRef, upd);
+});
 
-        function renderWaiting(roomData) {
-            const list = document.getElementById('waiting-player-list');
-            list.innerHTML = '';
-            let players = roomData.players || {};
-            let count = 0;
-            for (let id in players) {
-                count++;
-                let p = players[id];
-                let d = document.createElement('div');
-                d.className = "flex justify-between items-center p-2 bg-tata-bg border border-tata-border rounded font-mono text-xs";
-                d.innerHTML = `<span>👤 ${p.name} ${id === myId ? '(나)' : ''} ${p.isHost ? '(방장)' : ''}</span><span class="text-green-400">접속 완료</span>`;
-                list.appendChild(d);
-            }
-            document.getElementById('waiting-count').innerText = count;
-        }
+window.leaveRoom = () => safe(async () => {
+  if (room && roomRef) {
+    if (room.status === 'waiting') {
+      await remove(ref(db, `rooms/${roomCode}/players/${myId}`));
+      if (humans(room).length <= 1) await remove(roomRef);
+    } else {
+      await update(roomRef, { [`players/${myId}/alive`]: false, [`players/${myId}/left`]: true });
+    }
+  }
+  location.reload();
+});
 
-        window.startHostGame = async () => {
-            if (!currentRoomData) return;
-            let players = currentRoomData.players || {};
-            let uids = Object.keys(players);
+// ---------- 게임 진행 (서버 시간 기준, 누구나 트랜잭션으로 넘길 수 있음) ----------
+function allActed(r) {
+  const alive = Object.values(r.players).filter(p => p.alive && !p.isAi && !p.left);
+  if (!alive.length) return false;
+  if (r.phase === 'day') return alive.every(p => p.votedFor);
+  const actors = alive.filter(p => ['mafia', 'doctor', 'police'].includes(p.role));
+  return actors.length > 0 && actors.every(p => p.nightTarget);
+}
 
-            let botIdx = 0;
-            while (uids.length < 4 && botIdx < AI_NAMES.length) {
-                let botId = 'ai_bot_' + botIdx;
-                if (!players[botId]) {
-                    players[botId] = { id: botId, name: AI_NAMES[botIdx], alive: true, role: 'citizen', isHost: false, isAi: true };
-                }
-                uids.push(botId);
-                botIdx++;
-            }
+function advance(r, now) {
+  if (!r) return r;
+  if (r.status !== 'playing') return undefined;
+  if (!(now >= r.phaseEndsAt || allActed(r))) return undefined;
+  const P = r.players, ids = Object.keys(P);
+  const alive = () => ids.filter(i => P[i].alive);
+  r.logs = r.logs || {};
+  const sys = text => { r.logs[logKey(now)] = { t: clock(now), text, kind: 'sys' }; };
+  const checkEnd = () => {
+    const m = alive().filter(i => P[i].role === 'mafia').length;
+    const c = alive().length - m;
+    if (m === 0) { r.status = 'ended'; r.winner = 'citizen'; sys('🎉 [작전 성공] 모든 과다 DC 스파이가 색출되었습니다!'); return true; }
+    if (m >= c) { r.status = 'ended'; r.winner = 'mafia'; sys('🚨 [작전 실패] 과다 DC 영업사원이 시장을 장악했습니다!'); return true; }
+    return false;
+  };
 
-            const shuffled = [...uids].sort(() => Math.random() - 0.5);
-            shuffled.forEach((uid, idx) => {
-                if (!players[uid]) return;
-                if (idx === 0) players[uid].role = 'mafia';
-                else if (idx === 1) players[uid].role = 'doctor';
-                else if (idx === 2) players[uid].role = 'police';
-                else players[uid].role = 'citizen';
-            });
+  if (r.phase === 'day') {
+    const votes = {};
+    alive().forEach(i => {
+      const p = P[i];
+      if (p.isAi && !p.votedFor) { const t = alive().filter(x => x !== i); if (t.length) p.votedFor = pick(t); }
+      if (p.votedFor && P[p.votedFor] && P[p.votedFor].alive) votes[p.votedFor] = (votes[p.votedFor] || 0) + 1;
+    });
+    const s = Object.entries(votes).sort((a, b) => b[1] - a[1]);
+    if (s.length && (s.length === 1 || s[0][1] > s[1][1])) {
+      const v = P[s[0][0]]; v.alive = false;
+      sys(`[징계 결과] 투표 결과 ${v.name}님이 영업 정지되었습니다. (정체: ${ROLE_NAME[v.role]})`);
+    } else sys(s.length ? '[징계 결과] 동률이라 징계 처분된 영업사원이 없습니다.' : '[징계 결과] 득표자가 없어 징계 처분이 없습니다.');
+    ids.forEach(i => { delete P[i].votedFor; delete P[i].nightTarget; });
+    if (checkEnd()) return r;
+    r.phase = 'night'; r.phaseEndsAt = now + NIGHT_SEC * 1000;
+    alive().forEach(i => {
+      const p = P[i]; if (!p.isAi) return;
+      let t = [];
+      if (p.role === 'mafia') t = alive().filter(x => P[x].role !== 'mafia');
+      else if (p.role === 'doctor') t = alive();
+      else if (p.role === 'police') t = alive().filter(x => x !== i);
+      if (t.length) p.nightTarget = pick(t);
+    });
+    sys('[🌙 야간 페이즈] 업무 종료. 비밀 후려치기와 가격 감사가 시작됩니다.');
+  } else {
+    let mT = null, dT = null;
+    alive().forEach(i => {
+      const p = P[i], t = p.nightTarget;
+      if (!t || !P[t]) return;
+      if (p.role === 'mafia') mT = t;
+      if (p.role === 'doctor') dT = t;
+      if (p.role === 'police') p.investigation = { target: t, name: P[t].name, isMafia: P[t].role === 'mafia', day: r.dayCount };
+    });
+    if (mT && P[mT].alive) {
+      if (mT === dT) sys('[보안 보고] 법무팀의 신속한 방어로 과다 DC 시도가 무력화되었습니다!');
+      else { P[mT].alive = false; sys(`[야간 속보] ${P[mT].name} 영업소가 과다 DC 공격으로 영업 정지되었습니다! (정체: ${ROLE_NAME[P[mT].role]})`); }
+    } else sys('[야간 보고] 평온한 밤이 지나갔습니다.');
+    ids.forEach(i => { delete P[i].nightTarget; delete P[i].votedFor; });
+    if (checkEnd()) return r;
+    r.dayCount++; r.phase = 'day'; r.phaseEndsAt = now + DAY_SEC * 1000;
+    sys(`[☀️ 아침] 제 ${r.dayCount}일차 주간 세션 시작.`);
+    const bots = alive().filter(i => P[i].isAi);
+    if (bots.length) r.logs[logKey(now) + 'q'] = { t: clock(now), name: P[pick(bots)].name, text: pick(AI_QUOTES), kind: 'chat' };
+  }
+  return r;
+}
 
-            let logKeys = currentRoomData.logs ? Object.keys(currentRoomData.logs).map(Number) : [];
-            let nextKey = logKeys.length > 0 ? Math.max(...logKeys) + 1 : 0;
+function tick() {
+  if (!room) return;
+  if (room.status === 'playing') {
+    $('timer-display').innerText = Math.max(0, Math.ceil((room.phaseEndsAt - nowS()) / 1000));
+    if (!advancing && (nowS() >= room.phaseEndsAt || allActed(room))) {
+      advancing = true;
+      runTransaction(roomRef, r => advance(r, nowS()))
+        .catch(e => console.warn('advance', e))
+        .finally(() => setTimeout(() => { advancing = false; }, 1200));
+    }
+  }
+}
 
-            let updates = {
-                status: 'playing',
-                phase: 'day',
-                dayCount: 1,
-                timer: 45,
-                players: players
-            };
-            updates['logs/' + nextKey] = { time: getTime(), text: `[🚨 작전 개시] 과다 DC 스파이를 찾아라! 제 1일차 주간 회의 시작.` };
+// ---------- 화면 ----------
+function renderGame() {
+  const r = room, P = r.players, me = P[myId];
+  const ended = r.status === 'ended';
+  const pb = $('phase-badge');
+  if (ended) { pb.className = 'px-3 py-1 rounded text-xs font-mono font-bold bg-slate-600/30 text-slate-300 border border-slate-500/30'; pb.innerText = '🏁 작전 종료'; $('timer-display').innerText = '-'; }
+  else if (r.phase === 'day') { pb.className = 'px-3 py-1 rounded text-xs font-mono font-bold bg-blue-600/20 text-blue-400 border border-blue-500/30'; pb.innerText = `☀️ 제 ${r.dayCount}일차 주간 (토론 및 투표)`; }
+  else { pb.className = 'px-3 py-1 rounded text-xs font-mono font-bold bg-purple-600/20 text-purple-400 border border-purple-500/30'; pb.innerText = `🌙 제 ${r.dayCount}일차 야간 (비밀 조치)`; }
 
-            await update(roomRef, updates);
-        };
+  const colMap = { mafia: 'text-red-400', doctor: 'text-green-400', police: 'text-yellow-400', citizen: 'text-blue-400' };
+  $('my-role-badge').innerText = ROLE_NAME[me.role]; $('my-role-badge').className = 'font-bold ' + colMap[me.role];
 
-        window.leaveRoom = async () => {
-            if (roomRef && myId) {
-                await remove(ref(db, 'rooms/' + roomCode + '/players/' + myId));
-            }
-            location.reload();
-        };
+  const pl = $('in-game-player-list'); pl.innerHTML = '';
+  let aliveCount = 0;
+  Object.values(P).forEach(p => {
+    if (p.alive) aliveCount++;
+    const show = !p.alive || ended || p.id === myId || (me.role === 'mafia' && p.role === 'mafia');
+    const tag = show && ROLE_TAG[p.role] ? `<span class="${ROLE_TAG[p.role][1]} text-[10px]">[${ROLE_TAG[p.role][0]}]</span>` : '';
+    const d = document.createElement('div');
+    d.className = `p-2.5 bg-tata-bg border rounded font-mono text-xs flex justify-between items-center ${p.alive ? 'border-tata-border' : 'border-red-500/30 opacity-50'}`;
+    d.innerHTML = `<span>👤 ${esc(p.name)} ${tag}</span><span class="${p.alive ? 'text-green-400' : 'text-red-400'}">${p.alive ? '정상영업' : '영업정지'}</span>`;
+    pl.appendChild(d);
+  });
+  $('in-game-count').innerText = aliveCount;
 
-        function updateUI(roomData) {
-            let players = roomData.players || {};
-            let me = players[myId] || Object.values(players)[0];
+  // 선택창은 상태가 바뀔 때만 다시 그림 (채팅 때문에 선택이 초기화되는 것 방지)
+  const sig = [r.status, r.phase, r.dayCount, me.alive, me.votedFor, me.nightTarget, me.investigation && me.investigation.day, Object.values(P).map(p => +p.alive).join('')].join('|');
+  if (sig !== lastSig) { lastSig = sig; renderPrompt(r, me); }
 
-            const pb = document.getElementById('phase-badge');
-            if (roomData.phase === 'day') {
-                pb.className = "px-3 py-1 rounded text-xs font-mono font-bold bg-blue-600/20 text-blue-400 border border-blue-500/30";
-                pb.innerText = `☀️ 제 ${roomData.dayCount}일차 주간 세션 (토론 및 투표)`;
-            } else {
-                pb.className = "px-3 py-1 rounded text-xs font-mono font-bold bg-purple-600/20 text-purple-400 border border-purple-500/30";
-                pb.innerText = `🌙 제 ${roomData.dayCount}일차 야간 세션 (비밀 조치)`;
-            }
-            document.getElementById('timer-display').innerText = roomData.timer;
+  const canChat = r.status === 'playing' && r.phase === 'day' && me.alive;
+  $('chat-input').disabled = !canChat;
+  $('chat-input').placeholder = canChat ? '가격 질서 관련 의견 또는 해명 입력...' : (r.phase === 'night' && !ended ? '야간에는 대화할 수 없습니다.' : '대화할 수 없는 상태입니다.');
 
-            const rb = document.getElementById('my-role-badge');
-            let rText = '정기가이드 준수 영업사원', rCol = 'text-blue-400';
-            if (me.role === 'mafia') { rText = '과다 DC 영업사원 (스파이)'; rCol = 'text-red-400'; }
-            else if (me.role === 'doctor') { rText = '가격 정책 법무팀 (할인 방어)'; rCol = 'text-green-400'; }
-            else if (me.role === 'police') { rText = '영업 감사관 (할인율 조사)'; rCol = 'text-yellow-400'; }
-            rb.innerText = rText; rb.className = `font-bold ${rCol}`;
+  const keys = Object.keys(r.logs).sort();
+  if (keys.length !== lastLogCount) {
+    lastLogCount = keys.length;
+    const term = $('terminal-logs'); term.innerHTML = '';
+    keys.forEach(k => {
+      const l = r.logs[k], d = document.createElement('div'); d.className = 'py-0.5';
+      const t = document.createElement('span'); t.className = 'text-slate-500'; t.textContent = `[${l.t}] `; d.appendChild(t);
+      if (l.kind === 'chat') {
+        const n = document.createElement('strong'); n.className = 'text-blue-400'; n.textContent = l.name + ': '; d.appendChild(n);
+        const x = document.createElement('span'); x.textContent = l.text; d.appendChild(x);
+      } else { const x = document.createElement('span'); x.className = 'text-tata-text'; x.textContent = l.text; d.appendChild(x); }
+      term.appendChild(d);
+    });
+    term.scrollTop = term.scrollHeight;
+  }
+}
 
-            const pl = document.getElementById('in-game-player-list');
-            pl.innerHTML = '';
-            let aliveCount = 0;
-            for (let id in players) {
-                let p = players[id];
-                if (p.alive) aliveCount++;
-                let d = document.createElement('div');
-                d.className = `p-2.5 bg-tata-bg border rounded font-mono text-xs flex justify-between items-center ${p.alive ? 'border-tata-border' : 'border-red-500/30 opacity-50'}`;
-                
-                let reveal = '';
-                if (!p.alive || me.role === 'mafia' && p.role === 'mafia' || id === myId) {
-                    if (p.role === 'mafia') reveal = '<span class="text-red-400 text-[10px]">[과다DC]</span>';
-                    else if (p.role === 'doctor') reveal = '<span class="text-green-400 text-[10px]">[법무팀]</span>';
-                    else if (p.role === 'police') reveal = '<span class="text-yellow-400 text-[10px]">[감사관]</span>';
-                }
-                d.innerHTML = `<span>👤 ${p.name} ${reveal}</span><span class="${p.alive ? 'text-green-400' : 'text-red-400'}">${p.alive ? '정상영업' : '영업정지'}</span>`;
-                pl.appendChild(d);
-            }
-            document.getElementById('in-game-count').innerText = aliveCount;
+function makeSelect(r, filter, current) {
+  const sel = document.createElement('select');
+  sel.className = 'w-full bg-tata-bg border border-tata-border rounded p-2 text-xs text-tata-text mb-2 font-mono';
+  sel.innerHTML = '<option value="">-- 대상 영업소 선택 --</option>';
+  Object.values(r.players).filter(p => p.alive && filter(p)).forEach(p => {
+    const o = document.createElement('option'); o.value = p.id; o.textContent = p.name; if (p.id === current) o.selected = true; sel.appendChild(o);
+  });
+  return sel;
+}
 
-            updatePrompt(roomData, me, players);
+function renderPrompt(r, me) {
+  const title = $('action-title'), desc = $('action-desc'), btns = $('action-buttons');
+  btns.innerHTML = '';
+  if (r.status === 'ended') {
+    title.innerText = '🏁 작전 종료';
+    desc.innerText = r.winner === 'citizen' ? '준수 영업사원 승리!' : '과다 DC 영업사원 승리!';
+    if (hostId(r) === myId) {
+      const b = document.createElement('button');
+      b.className = 'w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded text-xs'; b.textContent = '대기실로 돌아가기 (다시 하기)';
+      b.onclick = () => safe(resetRoom); btns.appendChild(b);
+    } else desc.innerText += ' 방장이 대기실로 돌리면 다시 시작할 수 있습니다.';
+    return;
+  }
+  if (!me.alive) { title.innerText = '영업 정지 (관전 모드)'; desc.innerText = '징계 처분되어 관전하고 있습니다.'; return; }
 
-            const term = document.getElementById('terminal-logs');
-            term.innerHTML = '';
-            let logsObj = roomData.logs || {};
-            Object.values(logsObj).forEach(l => {
-                let div = document.createElement('div');
-                div.className = "text-tata-muted font-mono py-0.5";
-                div.innerHTML = `<span class="text-slate-500">[${l.time}]</span> <span class="text-tata-text">${l.text}</span>`;
-                term.appendChild(div);
-            });
-            term.scrollTop = term.scrollHeight;
-        }
+  if (r.phase === 'day') {
+    title.innerText = '📋 주간: 과다 DC 징계 투표';
+    const cur = me.votedFor && r.players[me.votedFor];
+    desc.innerText = cur ? `현재 지목: ${cur.name} (시간 내 변경 가능)` : '시장을 교란하는 용의자를 지목하세요.';
+    const sel = makeSelect(r, p => p.id !== myId, me.votedFor);
+    const b = document.createElement('button');
+    b.className = 'w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded text-xs'; b.textContent = '징계 건의 투표 제출';
+    b.onclick = () => safe(async () => {
+      if (!sel.value) { showModal('알림', '대상을 선택해주세요.'); return; }
+      const first = !me.votedFor;
+      const u = { [`players/${myId}/votedFor`]: sel.value };
+      if (first) u['logs/' + logKey(nowS())] = { t: clock(), text: `[투표 완료] ${me.name}님이 징계 건의를 제출했습니다.`, kind: 'sys' };
+      await update(roomRef, u);
+    });
+    btns.appendChild(sel); btns.appendChild(b);
+    return;
+  }
 
-        function updatePrompt(roomData, me, players) {
-            const title = document.getElementById('action-title');
-            const desc = document.getElementById('action-desc');
-            const btns = document.getElementById('action-buttons');
-            btns.innerHTML = '';
+  const cfg = {
+    mafia: ['🌙 야간: 과다 DC 후려치기', '견제할 영업소를 고르세요.', p => p.role !== 'mafia'],
+    doctor: ['🛡️ 야간: 가격 방어 (법무팀)', '방어할 영업소를 지정하세요.', () => true],
+    police: ['🔍 야간: 할인율 조사 (감사관)', '조사할 영업사원을 선택하세요.', p => p.id !== myId]
+  }[me.role];
+  if (!cfg) { title.innerText = '🌙 야간: 시장 모니터링 중'; desc.innerText = '아침이 오기를 기다리는 중입니다...'; }
+  else {
+    title.innerText = cfg[0];
+    const cur = me.nightTarget && r.players[me.nightTarget];
+    desc.innerText = cur ? `현재 선택: ${cur.name}` : cfg[1];
+    const sel = makeSelect(r, cfg[2], me.nightTarget);
+    const b = document.createElement('button');
+    b.className = 'w-full bg-purple-600 hover:bg-purple-500 text-white py-2 rounded text-xs'; b.textContent = '야간 조치 확정';
+    b.onclick = () => safe(async () => {
+      if (!sel.value) { showModal('알림', '대상을 선택해주세요.'); return; }
+      await update(roomRef, { [`players/${myId}/nightTarget`]: sel.value });
+    });
+    btns.appendChild(sel); btns.appendChild(b);
+  }
+}
 
-            if (!me.alive) {
-                title.innerText = "영업 정지 (관전 모드)";
-                desc.innerText = "징계 처분되어 토론을 관전하고 있습니다.";
-                return;
-            }
+// 감사관은 어젯밤 조사 결과를 항상 볼 수 있도록 표시
+const _renderPrompt = renderPrompt;
+function renderPromptWithResult(r, me) {
+  _renderPrompt(r, me);
+  if (me.role === 'police' && me.investigation && r.status !== 'ended') {
+    const i = me.investigation, d = document.createElement('div');
+    d.className = 'mt-3 p-2 rounded border border-yellow-500/30 bg-yellow-500/10 text-[11px] text-yellow-300 font-mono';
+    d.textContent = `🔍 최근 조사 결과 (${i.day}일차 밤): ${i.name} → ${i.isMafia ? '과다 DC 스파이 맞음!' : '스파이 아님'}`;
+    $('action-buttons').appendChild(d);
+  }
+}
+renderPrompt = renderPromptWithResult;
 
-            if (roomData.phase === 'day') {
-                title.innerText = "📋 주간 세션: 과다 DC 징계 투표";
-                desc.innerText = "시장을 교란하는 용의자를 지목하여 영업 정지를 건의하세요.";
+async function resetRoom() {
+  const upd = { status: 'waiting', winner: null, phase: 'day', dayCount: 1, phaseEndsAt: null };
+  Object.values(room.players).forEach(p => {
+    if (p.isAi || p.left) upd['players/' + p.id] = null;
+    else {
+      upd[`players/${p.id}/alive`] = true; upd[`players/${p.id}/role`] = 'citizen';
+      upd[`players/${p.id}/votedFor`] = null; upd[`players/${p.id}/nightTarget`] = null; upd[`players/${p.id}/investigation`] = null;
+    }
+  });
+  upd['logs/' + logKey(nowS())] = { t: clock(), text: '[AI 진행자] 새 작전을 위해 대기실로 복귀했습니다.', kind: 'sys' };
+  await update(roomRef, upd);
+}
 
-                let sel = document.createElement('select');
-                sel.id = 'vote-sel';
-                sel.className = "w-full bg-tata-bg border border-tata-border rounded p-2 text-xs text-tata-text mb-2 font-mono";
-                sel.innerHTML = `<option value="">-- 대상 영업소 선택 --</option>`;
-                for (let id in players) {
-                    if (id !== myId && players[id].alive) {
-                        sel.innerHTML += `<option value="${id}">${players[id].name}</option>`;
-                    }
-                }
-                let btn = document.createElement('button');
-                btn.className = "w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded text-xs transition cursor-pointer";
-                btn.innerText = "징계 건의 투표 제출";
-                btn.onclick = async () => {
-                    let val = document.getElementById('vote-sel').value;
-                    if (!val) { showModal('알림', '대상을 선택해주세요.'); return; }
-                    let logKeys = roomData.logs ? Object.keys(roomData.logs).map(Number) : [];
-                    let nextKey = logKeys.length > 0 ? Math.max(...logKeys) + 1 : 0;
-
-                    let updates = {};
-                    updates['players/' + myId + '/votedFor'] = val;
-                    updates['logs/' + nextKey] = { time: getTime(), text: `[투표 완료] ${me.name}님이 징계 건의를 제출했습니다.` };
-                    await update(roomRef, updates);
-                    showModal('완료', '투표가 반영되었습니다.');
-                };
-                btns.appendChild(sel); btns.appendChild(btn);
-
-            } else {
-                if (me.role === 'mafia') {
-                    title.innerText = "🌙 야간 세션: 과다 DC 후려치기";
-                    desc.innerText = "밤사이 무리한 할인으로 견제할 영업소를 고르세요.";
-                } else if (me.role === 'doctor') {
-                    title.innerText = "🛡️ 야간 세션: 가격 방어 (법무팀)";
-                    desc.innerText = "방어할 영업소를 지정하세요.";
-                } else if (me.role === 'police') {
-                    title.innerText = "🔍 야간 세션: 할인율 조사 (감사관)";
-                    desc.innerText = "조사할 영업사원을 선택하세요.";
-                } else {
-                    title.innerText = "🌙 야간 세션: 시장 모니터링 중";
-                    desc.innerText = "군산 공장 상용차 모니터링 중입니다...";
-                    return;
-                }
-
-                let sel = document.createElement('select');
-                sel.id = 'night-sel';
-                sel.className = "w-full bg-tata-bg border border-tata-border rounded p-2 text-xs text-tata-text mb-2 font-mono";
-                sel.innerHTML = `<option value="">-- 대상 영업소 선택 --</option>`;
-                for (let id in players) {
-                    if (players[id].alive) {
-                        sel.innerHTML += `<option value="${id}">${players[id].name}</option>`;
-                    }
-                }
-                let btn = document.createElement('button');
-                btn.className = "w-full bg-purple-600 hover:bg-purple-500 text-white py-2 rounded text-xs transition cursor-pointer";
-                btn.innerText = "야간 조치 확정";
-                btn.onclick = async () => {
-                    let val = document.getElementById('night-sel').value;
-                    if (!val) { showModal('알림', '대상을 선택해주세요.'); return; }
-                    let logKeys = roomData.logs ? Object.keys(roomData.logs).map(Number) : [];
-                    let nextKey = logKeys.length > 0 ? Math.max(...logKeys) + 1 : 0;
-
-                    let updates = {};
-                    updates['players/' + myId + '/nightTarget'] = val;
-                    updates['logs/' + nextKey] = { time: getTime(), text: `[야간 조치] ${me.name}님이 야간 임무를 확정했습니다.` };
-                    await update(roomRef, updates);
-                    showModal('완료', '야간 조치가 반영되었습니다.');
-                };
-                btns.appendChild(sel); btns.appendChild(btn);
-            }
-        }
-
-        window.sendChatMessage = async () => {
-            const inp = document.getElementById('chat-input');
-            const msg = inp.value.trim();
-            if (!msg || !currentRoomData) return;
-            let logKeys = currentRoomData.logs ? Object.keys(currentRoomData.logs).map(Number) : [];
-            let nextKey = logKeys.length > 0 ? Math.max(...logKeys) + 1 : 0;
-
-            let updates = {};
-            updates['logs/' + nextKey] = { time: getTime(), text: `<strong class="text-blue-400">${myName}:</strong> ${msg}` };
-            await update(roomRef, updates);
-            inp.value = '';
-        };
-        window.handleChatKeyDown = e => { if (e.key === 'Enter') window.sendChatMessage(); };
-
-        function getTime() { return new Date().toTimeString().split(' ')[0]; }
-    </script>
+window.sendChatMessage = () => safe(async () => {
+  const inp = $('chat-input'), msg = inp.value.trim();
+  if (!msg || !room || room.status !== 'playing' || room.phase !== 'day' || !room.players[myId].alive) return;
+  await update(roomRef, { ['logs/' + logKey(nowS())]: { t: clock(), name: myName, text: msg, kind: 'chat' } });
+  inp.value = '';
+});
+</script>
 </body>
 </html>
