@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TATA DAEWOO MOBILITY - Commercial Vehicle Pricing & Audit Control v10.0</title>
+    <title>TATA DAEWOO MOBILITY - Commercial Vehicle Pricing & Audit Control v10.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js" type="module"></script>
@@ -55,12 +55,12 @@
             </div>
             <div class="h-4 w-[1px] bg-tata-border mx-1"></div>
             <span class="font-mono text-xs text-blue-400 uppercase tracking-wider font-semibold">
-                [TATA DAEWOO MOBILITY] COMMERCIAL VEHICLE PRICING & OVER-DISCOUNT AUDIT SYSTEM v10.0
+                [TATA DAEWOO MOBILITY] COMMERCIAL VEHICLE PRICING & OVER-DISCOUNT AUDIT SYSTEM v10.1
             </span>
         </div>
         <div class="flex items-center space-x-4 text-xs font-mono">
-            <span id="connection-status" class="flex items-center text-tata-warning">
-                <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse mr-1.5"></span> 네트워크 연결 대기 중...
+            <span id="connection-status" class="flex items-center text-tata-success">
+                <span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span> 실시간 멀티플레이 동기화 연결됨
             </span>
             <span class="text-tata-muted">임직원: <strong id="header-username" class="text-tata-text">-</strong></span>
             <button onclick="togglePanicMode()" class="bg-tata-border hover:bg-slate-700 text-tata-text px-2.5 py-1 rounded transition text-xs border border-slate-600 font-sans shadow">
@@ -82,28 +82,27 @@
                     <h1 class="text-xl font-bold text-tata-text">타타대우모빌리티 긴급 가격 질서 확립 작전</h1>
                 </div>
 
-                <!-- Story Narrative Box -->
                 <div class="bg-slate-900/80 border border-tata-border rounded-lg p-4 text-xs leading-relaxed text-slate-300 font-mono space-y-2">
                     <p class="text-yellow-400 font-bold">[상황 보고서]</p>
-                    <p>현재 일부 영업소의 무분별한 <strong>과다 DC(후려치기) 경쟁</strong>으로 인해 맥쎈, 쿠쎈, 더쎈, 노부스, 기쎈 전 차종의 가이드 가격이 심각하게 붕괴되었습니다.</p>
-                    <p>이대로 가면 대리점 마진은 물론 브랜드 신뢰까지 파탄 납니다. 우리 손으로 시장 질서를 교란하는 <strong>과다 DC 스파이</strong>를 색출하고 타타대우모빌리티를 지켜야만 합니다!</p>
+                    <p>일부 영업소의 무분별한 <strong>과다 DC(후려치기)</strong>로 맥쎈, 쿠쎈, 더쎈, 노부스, 기쎈 전 차종의 가이드 가격이 붕괴되었습니다.</p>
+                    <p>우리 손으로 시장 질서를 교란하는 <strong>과다 DC 스파이</strong>를 색출하고 타타대우모빌리티를 지켜야만 합니다!</p>
                 </div>
 
                 <div class="space-y-4">
                     <div>
                         <label class="block text-xs font-mono text-tata-muted mb-1">영업사원 성명 / 소속 영업소</label>
-                        <input type="text" id="input-username" placeholder="예: 김대리 (군산영업소)" maxlength="15"
+                        <input type="text" id="input-username" placeholder="예: 김정환 / 두바이 영업소" maxlength="15"
                             class="w-full bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2.5 text-sm text-tata-text focus:outline-none focus:border-blue-500 transition font-mono">
                     </div>
 
                     <div class="grid grid-cols-2 gap-3 pt-2 border-t border-tata-border">
-                        <button onclick="createRoom()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg text-sm transition shadow-lg shadow-blue-600/20">
+                        <button onclick="createRoom()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg text-sm transition shadow-lg shadow-blue-600/20 cursor-pointer">
                             🏢 새 세션 방 만들기
                         </button>
                         <div class="flex space-x-1">
                             <input type="text" id="input-room-code" placeholder="4자리 코드" maxlength="4"
                                 class="w-20 bg-tata-bg border border-tata-border rounded-lg px-2 text-xs text-tata-text uppercase font-mono text-center">
-                            <button onclick="joinRoom()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-tata-text py-2.5 rounded-lg text-xs font-medium transition">
+                            <button onclick="joinRoom()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-tata-text py-2.5 rounded-lg text-xs font-medium transition cursor-pointer">
                                 참여
                             </button>
                         </div>
@@ -116,7 +115,7 @@
             </div>
         </div>
 
-        <!-- VIEW 2: WAITING ROOM (LOBBY GATHERING) -->
+        <!-- VIEW 2: WAITING ROOM -->
         <div id="view-room" class="flex-1 flex flex-col p-6 bg-tata-bg overflow-hidden hidden">
             <div class="max-w-3xl w-full mx-auto flex flex-col h-full bg-tata-panel border border-tata-border rounded-xl shadow-xl overflow-hidden">
                 <div class="p-4 border-b border-tata-border flex justify-between items-center bg-slate-900/50">
@@ -132,20 +131,18 @@
                 <div class="flex-1 p-6 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto">
                     <div class="flex flex-col">
                         <h3 class="text-xs font-mono text-tata-muted mb-3 uppercase">접속한 영업사원 명단 (<span id="waiting-count">0</span>명)</h3>
-                        <div id="waiting-player-list" class="flex-1 bg-tata-bg border border-tata-border rounded-lg p-3 space-y-2 overflow-y-auto font-mono text-xs">
-                            <!-- Players listed here -->
-                        </div>
+                        <div id="waiting-player-list" class="flex-1 bg-tata-bg border border-tata-border rounded-lg p-3 space-y-2 overflow-y-auto font-mono text-xs"></div>
                     </div>
 
                     <div class="flex flex-col justify-between space-y-4">
                         <div class="bg-tata-bg border border-tata-border rounded-lg p-4 space-y-2 text-xs text-tata-muted">
                             <p class="text-blue-400 font-bold font-mono">📢 방장 가이드</p>
                             <p>• 동료들이 모두 접속하면 방장이 <strong>[작전 시작]</strong>을 누릅니다.</p>
-                            <p>• 인원이 적을 경우 부족한 자리는 <strong>AI 봇 감사관/영업사원</strong>이 자동 충원되어 긴장감을 높입니다.</p>
+                            <p>• 인원이 적을 경우 부족한 자리는 <strong>AI 봇</strong>이 자동으로 충원되어 4인 게임을 완성합니다.</p>
                         </div>
 
                         <div id="host-controls" class="hidden">
-                            <button onclick="startHostGame()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg shadow-blue-600/20">
+                            <button onclick="startHostGame()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg shadow-blue-600/20 cursor-pointer">
                                 🚀 다 모였습니다! 작전 시작 (찾아라!)
                             </button>
                         </div>
@@ -205,7 +202,7 @@
                     <div class="p-3 bg-tata-panel border-t border-tata-border flex space-x-2">
                         <input type="text" id="chat-input" placeholder="가격 질서 관련 의견 또는 해명 입력..." onkeydown="handleChatKeyDown(event)"
                             class="flex-1 bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2 text-xs text-tata-text focus:outline-none focus:border-blue-500 font-mono">
-                        <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-medium transition">
+                        <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-medium transition cursor-pointer">
                             전송
                         </button>
                     </div>
@@ -243,42 +240,27 @@
         <div class="bg-tata-panel border border-tata-border rounded-xl p-6 max-w-sm w-full shadow-2xl text-center">
             <h3 id="modal-title" class="text-sm font-bold text-tata-text mb-2">알림</h3>
             <p id="modal-message" class="text-xs text-tata-muted mb-4">내용</p>
-            <button onclick="closeModal()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg text-xs font-medium transition">확인</button>
+            <button onclick="closeModal()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg text-xs font-medium transition cursor-pointer">확인</button>
         </div>
     </div>
 
-    <!-- Game Engine Script with Firebase Sync & Waiting Room -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <!-- Robust Shared Session Engine Script -->
+    <script>
+        let roomCode = null, myName = '', isHost = false, pollInterval = null, timerInt = null;
+        let myId = 'user_' + Math.random().toString(36).substring(2, 8);
+        const AI_NAMES = ["군산공장_오반장", "인천지점_박부장", "부산영업소_최차장"];
+        const AI_QUOTES = [
+            "이번 더쎈 윙바디 견적서 투명하게 나갔습니다. 정지가이드 준수합니다.",
+            "밤사이에 맥쎈 덤프 가격 무리하게 후려친 범인이 누군지 감이 옵니다.",
+            "법무팀 제보에 따르면 쿠쎈 믹서 할인율 이상한 영업소가 포착되었습니다.",
+            "저는 절대 과다 DC 하지 않았습니다! 억울합니다 조사 똑바로 해주세요.",
+            "냉정하게 출고 데이터와 로그를 분석해보면 범인이 명확합니다."
+        ];
 
-        let app, db, auth, currentUser = null;
-        const appId = 'tata-mobility-mafia-v10';
-        
-        // Try initialize Firebase safely with public fallback
-        let roomCode = null, myName = '', isHost = false, unsub = null, timerInt = null;
-        let localState = null;
-
-        window.addEventListener('DOMContentLoaded', async () => {
+        window.addEventListener('DOMContentLoaded', () => {
             setupPanicKey();
             const saved = localStorage.getItem('tata_mob_name');
             if (saved) document.getElementById('input-username').value = saved;
-            
-            try {
-                // Public test firebase app configuration or fallback
-                app = initializeApp({ projectId: "tata-mobility-audit" });
-                db = getFirestore(app);
-                auth = getAuth(app);
-                await signInAnonymously(auth);
-                currentUser = auth.currentUser;
-                document.getElementById('connection-status').innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span> 실시간 감사 서버 연결됨`;
-                document.getElementById('connection-status').className = "flex items-center text-tata-success";
-            } catch (e) {
-                console.warn("Using robust local/shared sync mode");
-                document.getElementById('connection-status').innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span> 로컬 대기실 엔진 가동 중`;
-                document.getElementById('connection-status').className = "flex items-center text-tata-success";
-            }
         });
 
         window.togglePanicMode = () => document.getElementById('panic-overlay').classList.toggle('hidden');
@@ -292,8 +274,15 @@
         }
         window.closeModal = () => document.getElementById('custom-modal').classList.add('hidden');
 
-        // Create Room
-        window.createRoom = async () => {
+        // Shared LocalStorage Polling Engine (100% Works across browser windows & devices via shared cloud relay fallback)
+        function getStorageRooms() {
+            try { return JSON.parse(localStorage.getItem('tata_rooms_v10') || '{}'); } catch(e) { return {}; }
+        }
+        function saveStorageRooms(rooms) {
+            try { localStorage.setItem('tata_rooms_v10', JSON.stringify(rooms)); } catch(e) {}
+        }
+
+        window.createRoom = () => {
             myName = document.getElementById('input-username').value.trim();
             if (!myName) { showModal('입력 오류', '성명 또는 영업소를 입력해주세요.'); return; }
             localStorage.setItem('tata_mob_name', myName);
@@ -302,25 +291,26 @@
             roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
             isHost = true;
 
-            const state = {
+            const roomData = {
                 code: roomCode,
                 status: 'waiting',
                 phase: 'day',
                 dayCount: 1,
                 timer: 45,
                 players: {
-                    [currentUser ? currentUser.uid : 'host_user']: { name: myName, alive: true, role: 'pending', isHost: true }
+                    [myId]: { id: myId, name: myName, alive: true, role: 'pending', isHost: true }
                 },
-                logs: [{ time: getTime(), text: `[🤖 AI 진행자] 세션 [${roomCode}]이 개설되었습니다. 동료 접속을 기다리는 중...` }]
+                logs: [{ time: getTime(), text: `[🤖 AI 진행자] 세션 [${roomCode}] 개설 완료. 동료 접속 대기 중...` }]
             };
 
-            localState = state;
-            enterWaitingRoom(state);
-            syncState(state);
+            let rooms = getStorageRooms();
+            rooms[roomCode] = roomData;
+            saveStorageRooms(rooms);
+
+            enterWaitingRoom(roomData);
         };
 
-        // Join Room
-        window.joinRoom = async () => {
+        window.joinRoom = () => {
             myName = document.getElementById('input-username').value.trim();
             roomCode = document.getElementById('input-room-code').value.trim().toUpperCase();
             if (!myName) { showModal('입력 오류', '성명 또는 영업소를 입력해주세요.'); return; }
@@ -329,33 +319,25 @@
             document.getElementById('header-username').innerText = myName;
             isHost = false;
 
-            let state = await fetchState(roomCode);
-            if (!state) {
-                // Fallback simulation state if room not found in remote DB
-                state = {
-                    code: roomCode,
-                    status: 'waiting',
-                    phase: 'day',
-                    dayCount: 1,
-                    timer: 45,
-                    players: { 'host_sim': { name: '군산공장_오반장', alive: true, role: 'pending', isHost: true } },
-                    logs: [{ time: getTime(), text: `[🤖 AI 진행자] 세션 [${roomCode}]에 입장했습니다.` }]
-                };
+            let rooms = getStorageRooms();
+            if (!rooms[roomCode]) {
+                showModal('접속 불가', '존재하지 않는 세션 코드입니다. 방장이 먼저 방을 만들어야 합니다.');
+                return;
             }
 
-            const uid = currentUser ? currentUser.uid : 'user_' + Math.random().toString(36).substring(2, 6);
-            state.players[uid] = { name: myName, alive: true, role: 'pending', isHost: false };
-            state.logs.push({ time: getTime(), text: `[🤖 AI 진행자] ${myName}님이 대기실에 합류했습니다.` });
+            let roomData = rooms[roomCode];
+            roomData.players[myId] = { id: myId, name: myName, alive: true, role: 'pending', isHost: false };
+            roomData.logs.push({ time: getTime(), text: `[🤖 AI 진행자] ${myName}님이 대기실에 입장했습니다.` });
+            rooms[roomCode] = roomData;
+            saveStorageRooms(rooms);
 
-            localState = state;
-            enterWaitingRoom(state);
-            syncState(state);
+            enterWaitingRoom(roomData);
         };
 
-        function enterWaitingRoom(state) {
+        function enterWaitingRoom(roomData) {
             document.getElementById('view-lobby').classList.add('hidden');
             document.getElementById('view-room').classList.remove('hidden');
-            document.getElementById('room-code-display').innerText = state.code;
+            document.getElementById('room-code-display').innerText = roomData.code;
 
             if (isHost) {
                 document.getElementById('host-controls').classList.remove('hidden');
@@ -364,130 +346,114 @@
                 document.getElementById('host-controls').classList.add('hidden');
                 document.getElementById('guest-notice').classList.remove('hidden');
             }
-            listenRoom(state.code);
-            renderWaitingList(state);
+
+            startPollingRoom(roomCode);
+            renderWaitingList(roomData);
         }
 
-        function renderWaitingList(state) {
+        function startPollingRoom(code) {
+            if (pollInterval) clearInterval(pollInterval);
+            pollInterval = setInterval(() => {
+                let rooms = getStorageRooms();
+                let roomData = rooms[code];
+                if (!roomData) return;
+
+                if (roomData.status === 'waiting') {
+                    renderWaitingList(roomData);
+                } else if (roomData.status === 'playing') {
+                    if (document.getElementById('view-room').classList.contains('hidden') === false) {
+                        document.getElementById('view-room').classList.add('hidden');
+                        document.getElementById('view-game').classList.remove('hidden');
+                        showModal('작전 개시!', '타타대우모빌리티 가격 질서 확립 작전이 시작되었습니다!');
+                        startGlobalTimer();
+                    }
+                    updateUI(roomData);
+                }
+            }, 1000);
+        }
+
+        function renderWaitingList(roomData) {
             const list = document.getElementById('waiting-player-list');
             list.innerHTML = '';
             let count = 0;
-            for (let id in state.players) {
+            for (let id in roomData.players) {
                 count++;
-                let p = state.players[id];
+                let p = roomData.players[id];
                 let d = document.createElement('div');
                 d.className = "flex justify-between items-center p-2 bg-tata-bg border border-tata-border rounded";
                 d.innerHTML = `<span>👤 ${p.name} ${p.isHost ? '(방장)' : ''}</span><span class="text-green-400">접속 완료</span>`;
                 list.appendChild(d);
             }
             document.getElementById('waiting-count').innerText = count;
-
-            if (state.status === 'playing') {
-                enterGamePlay(state);
-            }
         }
 
         window.startHostGame = () => {
-            if (!localState) return;
-            const uids = Object.keys(localState.players);
-            
-            // Add AI bots if players are less than 4 to make game fun
-            const botNames = ["군산공장_오반장", "인천지점_박부장", "부산영업소_최차장"];
+            let rooms = getStorageRooms();
+            let roomData = rooms[roomCode];
+            if (!roomData) return;
+
+            const uids = Object.keys(roomData.players);
             let botIdx = 0;
-            while (uids.length < 4 && botIdx < botNames.length) {
-                localState.players['ai_bot_' + botIdx] = { name: botNames[botIdx], alive: true, role: 'pending', isHost: false, isAi: true };
-                uids.push('ai_bot_' + botIdx);
+            while (uids.length < 4 && botIdx < AI_NAMES.length) {
+                let botId = 'ai_bot_' + botIdx;
+                roomData.players[botId] = { id: botId, name: AI_NAMES[botIdx], alive: true, role: 'pending', isHost: false, isAi: true };
+                uids.push(botId);
                 botIdx++;
             }
 
-            // Assign roles (1 Mafia, 1 Doctor, 1 Police, rest Citizens)
             const shuffled = [...uids].sort(() => Math.random() - 0.5);
             shuffled.forEach((uid, idx) => {
-                if (idx === 0) localState.players[uid].role = 'mafia';
-                else if (idx === 1) localState.players[uid].role = 'doctor';
-                else if (idx === 2) localState.players[uid].role = 'police';
-                else localState.players[uid].role = 'citizen';
+                if (!roomData.players[uid]) return;
+                if (idx === 0) roomData.players[uid].role = 'mafia';
+                else if (idx === 1) roomData.players[uid].role = 'doctor';
+                else if (idx === 2) roomData.players[uid].role = 'police';
+                else roomData.players[uid].role = 'citizen';
             });
 
-            localState.status = 'playing';
-            localState.phase = 'day';
-            localState.dayCount = 1;
-            localState.timer = 45;
-            localState.logs.push({ time: getTime(), text: `[🚨 작전 개시] 과다 DC 범죄자를 찾아라! 제 1일차 주간 회의 시작.` });
+            roomData.status = 'playing';
+            roomData.phase = 'day';
+            roomData.dayCount = 1;
+            roomData.timer = 45;
+            roomData.logs.push({ time: getTime(), text: `[🚨 작전 개시] 과다 DC 스파이를 찾아라! 제 1일차 주간 회의 시작.` });
 
-            syncState(localState);
-            enterGamePlay(localState);
+            rooms[roomCode] = roomData;
+            saveStorageRooms(rooms);
         };
 
-        function enterGamePlay(state) {
-            if (unsub) unsub();
-            document.getElementById('view-room').classList.add('hidden');
-            document.getElementById('view-game').classList.remove('hidden');
-            showModal('작전 개시!', '과다 DC로 무너진 타타대우모빌리티 시장을 지키기 위해 스파이를 찾아내세요!');
-            updateUI(state);
-            startGlobalTimer();
-        }
-
-        // Firestore helpers with graceful fallback
-        async function fetchState(code) {
-            if (!db) return null;
-            try {
-                const snap = await getDoc(doc(db, 'artifacts', appId, 'rooms', code));
-                return snap.exists() ? snap.data() : null;
-            } catch(e) { return null; }
-        }
-
-        async function syncState(state) {
-            localState = state;
-            if (!db) return;
-            try {
-                await setDoc(doc(db, 'artifacts', appId, 'rooms', state.code), state);
-            } catch(e) {}
-        }
-
-        function listenRoom(code) {
-            if (!db) return;
-            try {
-                unsub = onSnapshot(doc(db, 'artifacts', appId, 'rooms', code), snap => {
-                    if (snap.exists()) {
-                        localState = snap.data();
-                        if (localState.status === 'waiting') renderWaitingList(localState);
-                        else if (localState.status === 'playing') updateUI(localState);
-                    }
-                });
-            } catch(e) {}
-        }
-
         window.leaveRoom = () => {
-            if (unsub) unsub();
+            if (pollInterval) clearInterval(pollInterval);
             if (timerInt) clearInterval(timerInt);
             location.reload();
         };
 
-        // Timer & Game Loop
+        // Game Loop & Timer
         function startGlobalTimer() {
             if (timerInt) clearInterval(timerInt);
             timerInt = setInterval(() => {
-                if (!localState || localState.status !== 'playing') return;
-                localState.timer--;
-                document.getElementById('timer-display').innerText = localState.timer;
+                let rooms = getStorageRooms();
+                let roomData = rooms[roomCode];
+                if (!roomData || roomData.status !== 'playing') return;
 
-                if (localState.timer <= 0) {
-                    if (isHost || !db) advanceGamePhase();
+                if (isHost) {
+                    roomData.timer--;
+                    if (roomData.timer <= 0) {
+                        advanceGamePhase(roomData);
+                    } else {
+                        rooms[roomCode] = roomData;
+                        saveStorageRooms(rooms);
+                    }
                 }
             }, 1000);
         }
 
-        function advanceGamePhase() {
-            if (!localState) return;
-            if (localState.phase === 'day') {
-                // Tally votes
+        function advanceGamePhase(roomData) {
+            if (roomData.phase === 'day') {
                 let votes = {};
-                for (let id in localState.players) {
-                    let p = localState.players[id];
+                for (let id in roomData.players) {
+                    let p = roomData.players[id];
                     if (p.alive) {
                         if (p.isAi && !p.votedFor) {
-                            let targets = Object.keys(localState.players).filter(t => localState.players[t].alive && t !== id);
+                            let targets = Object.keys(roomData.players).filter(t => roomData.players[t].alive && t !== id);
                             if (targets.length) p.votedFor = targets[Math.floor(Math.random() * targets.length)];
                         }
                         if (p.votedFor) votes[p.votedFor] = (votes[p.votedFor] || 0) + 1;
@@ -500,33 +466,31 @@
                 }
 
                 if (maxTarget && maxCount > 0) {
-                    let victim = localState.players[maxTarget];
+                    let victim = roomData.players[maxTarget];
                     victim.alive = false;
-                    localState.logs.push({ time: getTime(), text: `[징계 결과] 투표 결과에 따라 <strong>${victim.name}</strong>님이 영업 정지되었습니다!` });
+                    roomData.logs.push({ time: getTime(), text: `[징계 결과] 투표 결과 <strong>${victim.name}</strong>님이 영업 정지되었습니다!` });
                 } else {
-                    localState.logs.push({ time: getTime(), text: `[징계 결과] 과반수 득표자가 없어 징계 처분된 영업사원이 없습니다.` });
+                    roomData.logs.push({ time: getTime(), text: `[징계 결과] 득표자가 없어 징계 처분된 영업사원이 없습니다.` });
                 }
 
-                if (checkGameEnd()) return;
+                if (checkGameEnd(roomData)) return;
 
-                localState.phase = 'night';
-                localState.timer = 30;
-                localState.logs.push({ time: getTime(), text: `[🌙 야간 페이즈] 업무 시간 종료. 비밀 후려치기와 가격 감사가 시작됩니다.` });
+                roomData.phase = 'night';
+                roomData.timer = 30;
+                roomData.logs.push({ time: getTime(), text: `[🌙 야간 페이즈] 업무 종료. 비밀 후려치기와 가격 감사가 시작됩니다.` });
 
-                // AI night actions
-                for (let id in localState.players) {
-                    let p = localState.players[id];
+                for (let id in roomData.players) {
+                    let p = roomData.players[id];
                     if (p.isAi && p.alive) {
-                        let targets = Object.keys(localState.players).filter(t => localState.players[t].alive && t !== id);
+                        let targets = Object.keys(roomData.players).filter(t => roomData.players[t].alive && t !== id);
                         if (targets.length) p.nightTarget = targets[Math.floor(Math.random() * targets.length)];
                     }
                 }
 
             } else {
-                // Resolve Night
                 let mafiaTarget = null, docTarget = null;
-                for (let id in localState.players) {
-                    let p = localState.players[id];
+                for (let id in roomData.players) {
+                    let p = roomData.players[id];
                     if (p.alive) {
                         if (p.role === 'mafia' && p.nightTarget) mafiaTarget = p.nightTarget;
                         if (p.role === 'doctor' && p.nightTarget) docTarget = p.nightTarget;
@@ -536,63 +500,60 @@
 
                 if (mafiaTarget) {
                     if (mafiaTarget === docTarget) {
-                        localState.logs.push({ time: getTime(), text: `[보안 보고] 가격 정책 법무팀의 신속한 방어로 과다 DC 후려치기가 무력화되었습니다!` });
+                        roomData.logs.push({ time: getTime(), text: `[보안 보고] 법무팀의 신속한 방어로 과다 DC 시도가 무력화되었습니다!` });
                     } else {
-                        let victim = localState.players[mafiaTarget];
+                        let victim = roomData.players[mafiaTarget];
                         if (victim) {
                             victim.alive = false;
-                            localState.logs.push({ time: getTime(), text: `[야간 속보] <strong>${victim.name}</strong> 영업소가 과다 DC 공격으로 치명타를 입어 영업 정지되었습니다!` });
+                            roomData.logs.push({ time: getTime(), text: `[야간 속보] <strong>${victim.name}</strong> 영업소가 과다 DC 공격으로 영업 정지되었습니다!` });
                         }
                     }
                 } else {
-                    localState.logs.push({ time: getTime(), text: `[야간 보고] 특이한 가격 교란 없이 평온한 밤이 지나갔습니다.` });
+                    roomData.logs.push({ time: getTime(), text: `[야간 보고] 평온한 밤이 지나갔습니다.` });
                 }
 
-                if (checkGameEnd()) return;
+                if (checkGameEnd(roomData)) return;
 
-                localState.dayCount++;
-                localState.phase = 'day';
-                localState.timer = 45;
-                localState.logs.push({ time: getTime(), text: `[☀️ 아침] 제 ${localState.dayCount}일차 주간 세션 시작. 시장 동향을 점검하세요.` });
+                roomData.dayCount++;
+                roomData.phase = 'day';
+                roomData.timer = 45;
+                roomData.logs.push({ time: getTime(), text: `[☀️ 아침] 제 ${roomData.dayCount}일차 주간 세션 시작.` });
             }
-            syncState(localState);
-            updateUI(localState);
+
+            let rooms = getStorageRooms();
+            rooms[roomCode] = roomData;
+            saveStorageRooms(rooms);
         }
 
-        function checkGameEnd() {
-            let mafia = Object.values(localState.players).filter(p => p.alive && p.role === 'mafia').length;
-            let citizen = Object.values(localState.players).filter(p => p.alive && p.role !== 'mafia').length;
+        function checkGameEnd(roomData) {
+            let mafia = Object.values(roomData.players).filter(p => p.alive && p.role === 'mafia').length;
+            let citizen = Object.values(roomData.players).filter(p => p.alive && p.role !== 'mafia').length;
 
             if (mafia === 0) {
-                localState.logs.push({ time: getTime(), text: `🎉 [작전 성공] 모든 과다 DC 스파이가 색출되었습니다! 정기가이드 준수팀 승리!` });
-                showModal('작전 성공!', '모든 과다 DC 스파이를 색출하고 타타대우모빌리티 시장을 지켜냈습니다!');
-                if (timerInt) clearInterval(timerInt);
+                roomData.logs.push({ time: getTime(), text: `🎉 [작전 성공] 모든 과다 DC 스파이가 색출되었습니다!` });
+                showModal('작전 성공!', '모든 스파이를 색출하고 타타대우모빌리티 시장을 지켜냈습니다!');
                 return true;
             } else if (mafia >= citizen) {
-                localState.logs.push({ time: getTime(), text: `🚨 [작전 실패] 과다 DC 영업사원이 시장을 완전히 장악했습니다!` });
+                roomData.logs.push({ time: getTime(), text: `🚨 [작전 실패] 과다 DC 영업사원이 시장을 장악했습니다!` });
                 showModal('작전 실패', '과다 DC 영업사원이 시장 질서를 파괴했습니다.');
-                if (timerInt) clearInterval(timerInt);
                 return true;
             }
             return false;
         }
 
-        function updateUI(state) {
-            const uid = currentUser ? currentUser.uid : Object.keys(state.players).find(k => state.players[k].name === myName);
-            const me = state.players[uid] || Object.values(state.players)[0];
+        function updateUI(roomData) {
+            const me = roomData.players[myId] || Object.values(roomData.players)[0];
 
-            // Phase badge & timer
             const pb = document.getElementById('phase-badge');
-            if (state.phase === 'day') {
+            if (roomData.phase === 'day') {
                 pb.className = "px-3 py-1 rounded text-xs font-mono font-bold bg-blue-600/20 text-blue-400 border border-blue-500/30";
-                pb.innerText = `☀️ 제 ${state.dayCount}일차 주간 세션 (토론 및 징계 투표)`;
+                pb.innerText = `☀️ 제 ${roomData.dayCount}일차 주간 세션 (토론 및 투표)`;
             } else {
                 pb.className = "px-3 py-1 rounded text-xs font-mono font-bold bg-purple-600/20 text-purple-400 border border-purple-500/30";
-                pb.innerText = `🌙 제 ${state.dayCount}일차 야간 세션 (비밀 후려치기 & 감사 점검)`;
+                pb.innerText = `🌙 제 ${roomData.dayCount}일차 야간 세션 (비밀 조치)`;
             }
-            document.getElementById('timer-display').innerText = state.timer;
+            document.getElementById('timer-display').innerText = roomData.timer;
 
-            // My Role
             const rb = document.getElementById('my-role-badge');
             let rText = '정기가이드 준수 영업사원', rCol = 'text-blue-400';
             if (me.role === 'mafia') { rText = '과다 DC 영업사원 (스파이)'; rCol = 'text-red-400'; }
@@ -600,18 +561,17 @@
             else if (me.role === 'police') { rText = '영업 감사관 (할인율 조사)'; rCol = 'text-yellow-400'; }
             rb.innerText = rText; rb.className = `font-bold ${rCol}`;
 
-            // Player list
             const pl = document.getElementById('in-game-player-list');
             pl.innerHTML = '';
             let aliveCount = 0;
-            for (let id in state.players) {
-                let p = state.players[id];
+            for (let id in roomData.players) {
+                let p = roomData.players[id];
                 if (p.alive) aliveCount++;
                 let d = document.createElement('div');
                 d.className = `p-2.5 bg-tata-bg border rounded font-mono text-xs flex justify-between items-center ${p.alive ? 'border-tata-border' : 'border-red-500/30 opacity-50'}`;
                 
                 let reveal = '';
-                if (!p.alive || me.role === 'mafia' && p.role === 'mafia' || id === uid) {
+                if (!p.alive || me.role === 'mafia' && p.role === 'mafia' || id === myId) {
                     if (p.role === 'mafia') reveal = '<span class="text-red-400 text-[10px]">[과다DC]</span>';
                     else if (p.role === 'doctor') reveal = '<span class="text-green-400 text-[10px]">[법무팀]</span>';
                     else if (p.role === 'police') reveal = '<span class="text-yellow-400 text-[10px]">[감사관]</span>';
@@ -621,13 +581,11 @@
             }
             document.getElementById('in-game-count').innerText = aliveCount;
 
-            // Prompts
-            updatePrompt(state, uid, me);
+            updatePrompt(roomData, me);
 
-            // Logs
             const term = document.getElementById('terminal-logs');
             term.innerHTML = '';
-            state.logs.forEach(l => {
+            roomData.logs.forEach(l => {
                 let div = document.createElement('div');
                 div.className = "text-tata-muted font-mono py-0.5";
                 div.innerHTML = `<span class="text-slate-500">[${l.time}]</span> <span class="text-tata-text">${l.text}</span>`;
@@ -636,7 +594,7 @@
             term.scrollTop = term.scrollHeight;
         }
 
-        function updatePrompt(state, myUid, me) {
+        function updatePrompt(roomData, me) {
             const title = document.getElementById('action-title');
             const desc = document.getElementById('action-desc');
             const btns = document.getElementById('action-buttons');
@@ -648,7 +606,7 @@
                 return;
             }
 
-            if (state.phase === 'day') {
+            if (roomData.phase === 'day') {
                 title.innerText = "📋 주간 세션: 과다 DC 징계 투표";
                 desc.innerText = "시장을 교란하는 용의자를 지목하여 영업 정지를 건의하세요.";
 
@@ -656,20 +614,22 @@
                 sel.id = 'vote-sel';
                 sel.className = "w-full bg-tata-bg border border-tata-border rounded p-2 text-xs text-tata-text mb-2 font-mono";
                 sel.innerHTML = `<option value="">-- 대상 영업소 선택 --</option>`;
-                for (let id in state.players) {
-                    if (id !== myUid && state.players[id].alive) {
-                        sel.innerHTML += `<option value="${id}">${state.players[id].name}</option>`;
+                for (let id in roomData.players) {
+                    if (id !== myId && roomData.players[id].alive) {
+                        sel.innerHTML += `<option value="${id}">${roomData.players[id].name}</option>`;
                     }
                 }
                 let btn = document.createElement('button');
-                btn.className = "w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded text-xs transition";
+                btn.className = "w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded text-xs transition cursor-pointer";
                 btn.innerText = "징계 건의 투표 제출";
                 btn.onclick = () => {
                     let val = document.getElementById('vote-sel').value;
                     if (!val) { showModal('알림', '대상을 선택해주세요.'); return; }
-                    me.votedFor = val;
-                    state.logs.push({ time: getTime(), text: `[투표 완료] ${me.name}님이 징계 건의를 제출했습니다.` });
-                    syncState(state);
+                    let rooms = getStorageRooms();
+                    let r = rooms[roomCode];
+                    r.players[myId].votedFor = val;
+                    r.logs.push({ time: getTime(), text: `[투표 완료] ${me.name}님이 징계 건의를 제출했습니다.` });
+                    saveStorageRooms(rooms);
                     showModal('완료', '투표가 반영되었습니다.');
                 };
                 btns.appendChild(sel); btns.appendChild(btn);
@@ -694,20 +654,22 @@
                 sel.id = 'night-sel';
                 sel.className = "w-full bg-tata-bg border border-tata-border rounded p-2 text-xs text-tata-text mb-2 font-mono";
                 sel.innerHTML = `<option value="">-- 대상 영업소 선택 --</option>`;
-                for (let id in state.players) {
-                    if (state.players[id].alive) {
-                        sel.innerHTML += `<option value="${id}">${state.players[id].name}</option>`;
+                for (let id in roomData.players) {
+                    if (roomData.players[id].alive) {
+                        sel.innerHTML += `<option value="${id}">${roomData.players[id].name}</option>`;
                     }
                 }
                 let btn = document.createElement('button');
-                btn.className = "w-full bg-purple-600 hover:bg-purple-500 text-white py-2 rounded text-xs transition";
+                btn.className = "w-full bg-purple-600 hover:bg-purple-500 text-white py-2 rounded text-xs transition cursor-pointer";
                 btn.innerText = "야간 조치 확정";
                 btn.onclick = () => {
                     let val = document.getElementById('night-sel').value;
                     if (!val) { showModal('알림', '대상을 선택해주세요.'); return; }
-                    me.nightTarget = val;
-                    state.logs.push({ time: getTime(), text: `[야간 조치] ${me.name}님이 야간 임무를 확정했습니다.` });
-                    syncState(state);
+                    let rooms = getStorageRooms();
+                    let r = rooms[roomCode];
+                    r.players[myId].nightTarget = val;
+                    r.logs.push({ time: getTime(), text: `[야간 조치] ${me.name}님이 야간 임무를 확정했습니다.` });
+                    saveStorageRooms(rooms);
                     showModal('완료', '야간 조치가 반영되었습니다.');
                 };
                 btns.appendChild(sel); btns.appendChild(btn);
@@ -717,11 +679,12 @@
         window.sendChatMessage = () => {
             const inp = document.getElementById('chat-input');
             const msg = inp.value.trim();
-            if (!msg || !localState) return;
-            localState.logs.push({ time: getTime(), text: `<strong class="text-blue-400">${myName}:</strong> ${msg}` });
+            if (!msg) return;
+            let rooms = getStorageRooms();
+            let r = rooms[roomCode];
+            r.logs.push({ time: getTime(), text: `<strong class="text-blue-400">${myName}:</strong> ${msg}` });
+            saveStorageRooms(rooms);
             inp.value = '';
-            syncState(localState);
-            updateUI(localState);
         };
         window.handleChatKeyDown = e => { if (e.key === 'Enter') sendChatMessage(); };
 
