@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="ko" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TATA DAEWOO MOBILITY - Commercial Vehicle Pricing & Audit Control v8.2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        tata: {
+                            bg: '#0b1329',
+                            panel: '#131f3f',
+                            border: '#223460',
+                            accent: '#00539f',
+                            success: '#10b981',
+                            warning: '#f59e0b',
+                            danger: '#ef4444',
+                            text: '#f8fafc',
+                            muted: '#94a3b8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0b1329; color: #f8fafc; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0b1329; }
+        ::-webkit-scrollbar-thumb { background: #223460; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3b5288; }
+    </style>
+</head>
+<body class="h-full flex flex-col overflow-hidden select-none">
+
+    <!-- Top Navigation Bar: Tata Daewoo Mobility Enterprise Telematics Disguise -->
+    <header class="bg-tata-panel border-b border-tata-border px-4 py-2.5 flex items-center justify-between shrink-0 z-10">
+        <div class="flex items-center space-x-3">
+            <div class="flex space-x-1.5">
+                <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-yellow-500/80 inline-block"></span>
+                <span class="w-3 h-3 rounded-full bg-green-500/80 inline-block"></span>
+            </div>
+            <div class="h-4 w-[1px] bg-tata-border mx-1"></div>
+            <span class="font-mono text-xs text-blue-400 uppercase tracking-wider font-semibold">
+                [TATA DAEWOO MOBILITY] COMMERCIAL VEHICLE PRICING & OVER-DISCOUNT AUDIT SYSTEM v8.2
+            </span>
+        </div>
+        <div class="flex items-center space-x-4 text-xs font-mono">
+            <span id="connection-status" class="flex items-center text-tata-warning">
+                <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse mr-1.5"></span> 실시간 가격 모니터링 동기화 중...
+            </span>
+            <span class="text-tata-muted">임직원: <strong id="header-username" class="text-tata-text">-</strong></span>
+            <button onclick="togglePanicMode()" class="bg-tata-border hover:bg-slate-700 text-tata-text px-2.5 py-1 rounded transition text-xs border border-slate-600 font-sans shadow">
+                🚨 Panic Key (Esc)
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 flex overflow-hidden relative">
+
+        <!-- VIEW 1: LOBBY & SESSION SELECTION -->
+        <div id="view-lobby" class="flex-1 flex flex-col items-center justify-center p-6 bg-tata-bg overflow-y-auto">
+            <div class="max-w-md w-full bg-tata-panel border border-tata-border rounded-xl p-8 shadow-2xl">
+                <div class="text-center mb-6">
+                    <div class="inline-flex px-3 py-1.5 bg-blue-600/20 text-blue-400 rounded-xl mb-3 font-mono text-xs font-bold border border-blue-500/30">
+                        MAXEN · KUXEN · DEXEN · NOVUS · GIXEN
+                    </div>
+                    <h1 class="text-xl font-bold text-tata-text">타타대우모빌리티 과다 DC 색출 시스템</h1>
+                    <p class="text-xs text-tata-muted mt-1">AI 마스터가 진행하는 상용차 가격 질서 확립 대시보드</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-mono text-tata-muted mb-1">영업사원 성명 / 영업소</label>
+                        <input type="text" id="input-username" placeholder="예: 김대리 (군산영업소)" maxlength="15"
+                            class="w-full bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2.5 text-sm text-tata-text focus:outline-none focus:border-blue-500 transition font-mono">
+                    </div>
+
+                    <div class="pt-2 border-t border-tata-border space-y-3">
+                        <button onclick="createRoom()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg text-sm transition shadow-lg shadow-blue-600/20 flex items-center justify-center space-x-2">
+                            <span>🚛 AI 마스터 포함 세션 생성 (방 만들기)</span>
+                        </button>
+                        
+                        <div class="flex space-x-2">
+                            <input type="text" id="input-room-code" placeholder="세션 코드 (예: TATA)" maxlength="6"
+                                class="flex-1 bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2 text-sm text-tata-text focus:outline-none focus:border-blue-500 uppercase font-mono tracking-widest text-center">
+                            <button onclick="joinRoom()" class="bg-slate-700 hover:bg-slate-600 text-tata-text px-4 py-2 rounded-lg text-sm font-medium transition">
+                                접속
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-tata-border text-center">
+                    <p class="text-[11px] text-tata-muted">
+                        💡 팁: 상사가 지나갈 때 <code class="text-blue-400">Esc</code> 키나 우측 상단 버튼을 누르면 즉시 엑셀 재무 보고서로 위장됩니다.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: WAITING ROOM -->
+        <div id="view-room" class="flex-1 flex flex-col p-6 bg-tata-bg overflow-hidden hidden">
+            <div class="max-w-4xl w-full mx-auto flex flex-col h-full bg-tata-panel border border-tata-border rounded-xl shadow-xl overflow-hidden">
+                <!-- Room Header -->
+                <div class="p-4 border-b border-tata-border flex justify-between items-center bg-slate-900/50">
+                    <div>
+                        <span class="text-xs font-mono text-blue-400">SESSION_CODE: <strong id="room-code-display" class="text-tata-text text-sm">----</strong></span>
+                        <h2 class="text-base font-bold text-tata-text mt-0.5">타타대우모빌리티 가격 질서 감사 대기실</h2>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button onclick="copyRoomCode()" class="bg-tata-border hover:bg-slate-700 text-tata-text px-3 py-1.5 rounded text-xs transition">
+                            📋 세션 코드 복사
+                        </button>
+                        <button onclick="leaveRoom()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded text-xs transition">
+                            세션 나가기
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Room Content -->
+                <div class="flex-1 grid grid-cols-1 md:grid-cols-3 p-6 gap-6 overflow-y-auto">
+                    <!-- Participant List -->
+                    <div class="md:col-span-2 flex flex-col">
+                        <h3 class="text-xs font-mono text-tata-muted mb-3 uppercase tracking-wider">
+                            대기 중인 영업사원 (<span id="player-count">0</span>명 / AI 봇 포함)
+                        </h3>
+                        <div id="waiting-player-list" class="flex-1 bg-tata-bg border border-tata-border rounded-lg p-4 space-y-2.5 overflow-y-auto">
+                            <!-- Players injected here -->
+                        </div>
+                    </div>
+
+                    <!-- Role Guide -->
+                    <div class="flex flex-col justify-between space-y-4">
+                        <div class="bg-tata-bg border border-tata-border rounded-lg p-4 space-y-3">
+                            <h4 class="text-xs font-mono text-blue-400 uppercase">타타대우모빌리티 직무 배정 가이드</h4>
+                            <ul class="text-xs text-tata-muted space-y-2.5">
+                                <li class="flex items-start">
+                                    <span class="text-blue-400 font-bold mr-1.5">•</span>
+                                    <span><strong>정기가이드 준수 영업사원:</strong> 맥쎈·쿠쎈·더쎈·노부스·기쎈 정가 고수</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-red-400 font-bold mr-1.5">•</span>
+                                    <span><strong>과다 DC 영업사원 (마피아):</strong> 밤마다 무리한 후려치기로 시장 교란</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-green-400 font-bold mr-1.5">•</span>
+                                    <span><strong>가격 정책 법무팀 (의사):</strong> 과다 DC 공격으로부터 특정 영업소 방어</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="text-yellow-400 font-bold mr-1.5">•</span>
+                                    <span><strong>영업 감사관 (경찰):</strong> 할인율 조사를 통해 스파이 색출</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div id="host-controls" class="hidden">
+                            <button onclick="startGame()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-lg text-sm transition shadow-lg shadow-blue-600/20">
+                                🚀 AI 마스터 진행 세션 시작
+                            </button>
+                        </div>
+                        <div id="guest-waiting-notice" class="text-center py-3 text-xs text-tata-muted font-mono bg-tata-bg border border-tata-border rounded-lg">
+                            방장이 세션을 시작할 때까지 대기 중...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: IN-GAME (DAY / NIGHT PHASES) -->
+        <div id="view-game" class="flex-1 flex flex-col bg-tata-bg overflow-hidden hidden">
+            <!-- Game Status Bar -->
+            <div class="bg-tata-panel border-b border-tata-border px-6 py-3 flex items-center justify-between shrink-0">
+                <div class="flex items-center space-x-4">
+                    <div id="phase-badge" class="px-3 py-1 rounded text-xs font-mono font-bold bg-blue-600/20 text-blue-400 border border-blue-500/30">
+                        ☀️ 주간 세션 (영업 회의 및 과다 DC 색출 토론)
+                    </div>
+                    <span class="text-xs font-mono text-tata-muted">잔여 시간: <strong id="timer-display" class="text-tata-text font-mono">45</strong>초</span>
+                </div>
+                
+                <div class="flex items-center space-x-3">
+                    <div class="bg-tata-bg border border-tata-border px-3 py-1 rounded text-xs font-mono flex items-center space-x-2">
+                        <span class="text-tata-muted">내 역할:</span>
+                        <span id="my-role-badge" class="font-bold text-blue-400">조회 중...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Game Grid -->
+            <div class="flex-1 grid grid-cols-1 lg:grid-cols-4 overflow-hidden p-4 gap-4">
+                
+                <!-- Left: Players Status & Action Panel -->
+                <div class="lg:col-span-1 flex flex-col space-y-4 overflow-hidden">
+                    <div class="bg-tata-panel border border-tata-border rounded-xl p-4 flex flex-col flex-1 overflow-hidden shadow-lg">
+                        <h3 class="text-xs font-mono text-tata-muted mb-3 uppercase tracking-wider">
+                            참여 영업소 인원 (<span id="in-game-player-count">0</span>)
+                        </h3>
+                        <div id="in-game-player-list" class="flex-1 space-y-2 overflow-y-auto pr-1">
+                            <!-- Player cards injected here -->
+                        </div>
+                    </div>
+
+                    <!-- Night Action / Day Vote Prompt -->
+                    <div id="action-prompt-card" class="bg-tata-panel border border-tata-border rounded-xl p-4 shadow-lg shrink-0">
+                        <h4 id="action-title" class="text-xs font-mono text-blue-400 mb-2">상태 안내</h4>
+                        <p id="action-desc" class="text-xs text-tata-muted mb-3">현재 페이즈 진행 중...</p>
+                        <div id="action-buttons"></div>
+                    </div>
+                </div>
+
+                <!-- Right: Pricing Audit Log & Chat Console -->
+                <div class="lg:col-span-3 flex flex-col bg-tata-panel border border-tata-border rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-slate-900/80 px-4 py-2.5 border-b border-tata-border flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-mono text-xs text-tata-muted">🤖 AI_MODERATOR@tata-mobility-audit:~# live_broadcast.log</span>
+                        </div>
+                        <span class="text-[11px] font-mono bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded">AI 진행자 활성화됨</span>
+                    </div>
+
+                    <div id="terminal-logs" class="flex-1 p-4 overflow-y-auto space-y-2 font-mono text-xs leading-relaxed bg-[#070c1b]">
+                        <!-- Log messages injected here -->
+                    </div>
+
+                    <div class="p-3 bg-tata-panel border-t border-tata-border flex space-x-2">
+                        <input type="text" id="chat-input" placeholder="가격 질서 관련 의견 또는 해명 입력..." onkeydown="handleChatKeyDown(event)"
+                            class="flex-1 bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2 text-xs text-tata-text focus:outline-none focus:border-blue-500 font-mono">
+                        <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-medium transition">
+                            전송
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Fullscreen Panic Mode Overlay (Disguised as Excel Financial & Sales Report) -->
+    <div id="panic-overlay" class="fixed inset-0 bg-[#1e1e1e] z-50 hidden flex flex-col font-mono text-xs text-gray-300">
+        <div class="bg-[#2d2d2d] border-b border-gray-700 px-3 py-1.5 flex items-center justify-between text-gray-400">
+            <div class="flex items-center space-x-4">
+                <span class="font-bold text-gray-200">Microsoft Excel - TATA_DAEWOO_MOBILITY_Commercial_Vehicle_Q4_Performance.xlsx [읽기 전용]</span>
+            </div>
+            <div class="flex items-center space-x-3 text-[11px]">
+                <span>자동 저장됨</span>
+                <button onclick="togglePanicMode()" class="bg-gray-700 hover:bg-gray-600 text-white px-2 py-0.5 rounded">업무 복귀</button>
+            </div>
+        </div>
+        <div class="bg-[#f3f3f3] text-black border-b border-gray-300 px-2 py-1 flex space-x-4 text-[11px]">
+            <span><b>파일(F)</b></span>
+            <span><b>홈(H)</b></span>
+            <span><b>삽입(I)</b></span>
+            <span><b>페이지 레이아웃(P)</b></span>
+            <span><b>수식(M)</b></span>
+            <span><b>데이터(D)</b></span>
+            <span><b>검토(R)</b></span>
+            <span><b>보기(V)</b></span>
+        </div>
+        <div class="bg-[#ffffff] text-black flex-1 p-4 overflow-auto font-mono text-xs select-text">
+            <table class="w-full border-collapse border border-gray-300">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="border border-gray-300 p-1 w-12 text-center text-gray-500">#</th>
+                        <th class="border border-gray-300 p-1 text-left">A (차종 라인업)</th>
+                        <th class="border border-gray-300 p-1 text-left">B (특장 유형)</th>
+                        <th class="border border-gray-300 p-1 text-right">C (정지가이드 가격)</th>
+                        <th class="border border-gray-300 p-1 text-right">D (실행 평균가)</th>
+                        <th class="border border-gray-300 p-1 text-right">E (평균 할인율)</th>
+                        <th class="border border-gray-300 p-1 text-center">F (가격 준수율)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="border border-gray-300 p-1 text-center bg-gray-50 text-gray-500">1</td>
+                        <td class="border border-gray-300 p-1 font-bold text-blue-700">MAXEN (맥쎈) 대형 트럭</td>
+                        <td class="border border-gray-300 p-1">25.5톤 덤프 / 카고</td>
+                        <td class="border border-gray-300 p-1 text-right">₩185,000,000</td>
+                        <td class="border border-gray-300 p-1 text-right">₩182,000,000</td>
+                        <td class="border border-gray-300 p-1 text-right">1.6%</td>
+                        <td class="border border-gray-300 p-1 text-center">98.2%</td>
+                    </tr>
+                    <tr class="bg-gray-50/50">
+                        <td class="border border-gray-300 p-1 text-center bg-gray-50 text-gray-500">2</td>
+                        <td class="border border-gray-300 p-1 font-bold text-blue-700">KUXEN (쿠쎈) 중대형 트럭</td>
+                        <td class="border border-gray-300 p-1">콘크리트 믹서 / 특장</td>
+                        <td class="border border-gray-300 p-1 text-right">₩160,000,000</td>
+                        <td class="border border-gray-300 p-1 text-right">₩158,500,000</td>
+                        <td class="border border-gray-300 p-1 text-right">0.9%</td>
+                        <td class="border border-gray-300 p-1 text-center">99.1%</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 p-1 text-center bg-gray-50 text-gray-500">3</td>
+                        <td class="border border-gray-300 p-1 font-bold text-blue-700">DEXEN (더쎈) 준중형 트럭</td>
+                        <td class="border border-gray-300 p-1">카고 / 윙바디 / 냉동탑차</td>
+                        <td class="border border-gray-300 p-1 text-right">₩85,000,000</td>
+                        <td class="border border-gray-300 p-1 text-right">₩83,000,000</td>
+                        <td class="border border-gray-300 p-1 text-right">2.3%</td>
+                        <td class="border border-gray-300 p-1 text-center">96.8%</td>
+                    </tr>
+                    <tr class="bg-gray-50/50">
+                        <td class="border border-gray-300 p-1 text-center bg-gray-50 text-gray-500">4</td>
+                        <td class="border border-gray-300 p-1 font-bold text-blue-700">NOVUS (노부스) 스테디셀러</td>
+                        <td class="border border-gray-300 p-1">카고 / 덤프 / 특장 겸용</td>
+                        <td class="border border-gray-300 p-1 text-right">₩130,000,000</td>
+                        <td class="border border-gray-300 p-1 text-right">₩127,000,000</td>
+                        <td class="border border-gray-300 p-1 text-right">2.3%</td>
+                        <td class="border border-gray-300 p-1 text-center">97.5%</td>
+                    </tr>
+                    <tr>
+                        <td class="border border-gray-300 p-1 text-center bg-gray-50 text-gray-500">5</td>
+                        <td class="border border-gray-300 p-1 font-bold text-blue-700">GIXEN (기쎈) 전기 상용 트럭</td>
+                        <td class="border border-gray-300 p-1">친환경 전기 화물 / 특장</td>
+                        <td class="border border-gray-300 p-1 text-right">₩95,000,000</td>
+                        <td class="border border-gray-300 p-1 text-right">₩93,000,000</td>
+                        <td class="border border-gray-300 p-1 text-right">2.1%</td>
+                        <td class="border border-gray-300 p-1 text-center">97.9%</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="mt-4 text-gray-500 text-[11px]">
+                <p>※ 타타대우모빌리티 군산 공장 상용차(맥쎈, 쿠쎈, 더쎈, 노부스, 기쎈) 가격 가이드 및 대리점별 할인율 모니터링 보고서</p>
+                <p>※ 과다 DC 적발 건수: 0건 (정상 운영 중)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Modal -->
+    <div id="custom-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-tata-panel border border-tata-border rounded-xl p-6 max-w-sm w-full shadow-2xl text-center">
+            <h3 id="modal-title" class="text-sm font-bold text-tata-text mb-2">알림</h3>
+            <p id="modal-message" class="text-xs text-tata-muted mb-4">메시지 내용</p>
+            <button onclick="closeModal()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg text-xs font-medium transition">
+                확인
+            </button>
+        </div>
+    </div>
+
+    <!-- Firebase & Game Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let app, db, auth, currentUser = null;
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'tata-mobility-pricing-mafia-prod';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+
+        let currentRoomCode = null;
+        let myUsername = '';
+        let isHost = false;
+        let unsubscribeRoom = null;
+        let localRoomData = null;
+        let timerInterval = null;
+
+        const AI_BOT_NAMES = ["군산공장_오반장", "인천지점_박부장", "부산영업소_최차장"];
+        const AI_CHAT_QUOTES = [
+            "이번 더쎈 윙바디 견적서 투명하게 나갔습니다. 맥쎈·쿠쎈·더쎈·노부스·기쎈 모두 정지가이드 준수합니다.",
+            "밤사이에 맥쎈 덤프 가격 무리하게 후려친 범인이 누군지 감이 옵니다.",
+            "법무팀 제보에 따르면 쿠쎈 믹서 할인율 이상한 영업소가 포착되었습니다.",
+            "저는 절대 과다 DC 하지 않았습니다! 억울합니다 조사 똑바로 해주세요.",
+            "냉정하게 출고 데이터와 로그를 분석해보면 범인이 명확합니다."
+        ];
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            await initFirebase();
+            setupPanicKey();
+            const savedName = localStorage.getItem('tata_mobility_username');
+            if (savedName) document.getElementById('input-username').value = savedName;
+        });
+
+        async function initFirebase() {
+            try {
+                if (firebaseConfig) {
+                    app = initializeApp(firebaseConfig);
+                    db = getFirestore(app);
+                    auth = getAuth(app);
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                    currentUser = auth.currentUser;
+                    document.getElementById('connection-status').innerHTML = `
+                        <span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span> 가격 감사 서버 연결됨
+                    `;
+                    document.getElementById('connection-status').className = "flex items-center text-tata-success";
+                } else {
+                    throw new Error("No Firebase config.");
+                }
+            } catch (e) {
+                console.warn("Firebase fallback mode:", e);
+                document.getElementById('connection-status').innerHTML = `
+                    <span class="w-2 h-2 rounded-full bg-yellow-500 mr-1.5"></span> 로컬 AI 마스터 시뮬레이션 모드
+                `;
+                document.getElementById('connection-status').className = "flex items-center text-tata-warning";
+            }
+        }
+
+        function switchView(viewName) {
+            document.getElementById('view-lobby').classList.add('hidden');
+            document.getElementById('view-room').classList.add('hidden');
+            document.getElementById('view-game').classList.add('hidden');
+
+            if (viewName === 'lobby') document.getElementById('view-lobby').classList.remove('hidden');
+            if (viewName === 'room') document.getElementById('view-room').classList.remove('hidden');
+            if (viewName === 'game') document.getElementById('view-game').classList.remove('hidden');
+        }
+
+        window.togglePanicMode = function() {
+            document.getElementById('panic-overlay').classList.toggle('hidden');
+        }
+
+        function setupPanicKey() {
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') window.togglePanicMode();
+            });
+        }
+
+        window.showModal = function(title, message) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        window.closeModal = function() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        window.createRoom = async function() {
+            const usernameInput = document.getElementById('input-username').value.trim();
+            if (!usernameInput) {
+                showModal('입력 오류', '영업사원 성명 또는 영업소를 입력해주세요.');
+                return;
+            }
+            myUsername = usernameInput;
+            localStorage.setItem('tata_mobility_username', myUsername);
+            document.getElementById('header-username').innerText = myUsername;
+
+            const roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+            currentRoomCode = roomCode;
+            isHost = true;
+
+            const initialPlayers = {
+                [currentUser ? currentUser.uid : 'anon_' + Math.random().toString(36).substring(2, 7)]: {
+                    name: myUsername,
+                    alive: true,
+                    role: 'pending',
+                    isHost: true,
+                    isAi: false,
+                    votedFor: null,
+                    nightActionTarget: null
+                }
+            };
+
+            for (let i = 0; i < 3; i++) {
+                const botUid = 'ai_bot_' + i;
+                initialPlayers[botUid] = {
+                    name: AI_BOT_NAMES[i],
+                    alive: true,
+                    role: 'pending',
+                    isHost: false,
+                    isAi: true,
+                    votedFor: null,
+                    nightActionTarget: null
+                };
+            }
+
+            const initialRoomState = {
+                code: roomCode,
+                host: currentUser ? currentUser.uid : 'anonymous',
+                status: 'waiting',
+                phase: 'day',
+                dayCount: 1,
+                timer: 45,
+                players: initialPlayers,
+                logs: [
+                    { time: getTimestamp(), text: `[🤖 AI 진행자] 타타대우모빌리티 가격 감사 세션 [${roomCode}]이 개설되었습니다.` },
+                    { time: getTimestamp(), text: `[🤖 AI 진행자] ${myUsername}님 및 AI 영업사원들이 대기실에 집결했습니다.` }
+                ]
+            };
+
+            try {
+                if (db) {
+                    const roomRef = doc(db, 'artifacts', appId, 'public_rooms', roomCode);
+                    await setDoc(roomRef, initialRoomState);
+                }
+                enterRoomState(initialRoomState);
+            } catch (e) {
+                localRoomData = initialRoomState;
+                enterRoomState(initialRoomState);
+            }
+        };
+
+        window.joinRoom = async function() {
+            const usernameInput = document.getElementById('input-username').value.trim();
+            const roomCodeInput = document.getElementById('input-room-code').value.trim().toUpperCase();
+
+            if (!usernameInput) {
+                showModal('입력 오류', '영업사원 성명 또는 영업소를 입력해주세요.');
+                return;
+            }
+            if (!roomCodeInput || roomCodeInput.length < 4) {
+                showModal('입력 오류', '올바른 4자리 세션 코드를 입력해주세요.');
+                return;
+            }
+
+            myUsername = usernameInput;
+            localStorage.setItem('tata_mobility_username', myUsername);
+            document.getElementById('header-username').innerText = myUsername;
+            currentRoomCode = roomCodeInput;
+            isHost = false;
+
+            try {
+                if (db) {
+                    const roomRef = doc(db, 'artifacts', appId, 'public_rooms', roomCodeInput);
+                    const roomSnap = await getDoc(roomRef);
+                    if (!roomSnap.exists()) {
+                        showModal('접속 불가', '존재하지 않거나 만료된 세션 코드입니다.');
+                        return;
+                    }
+                    const roomData = roomSnap.data();
+                    const uid = currentUser ? currentUser.uid : 'anon_' + Math.random().toString(36).substring(2, 7);
+                    roomData.players[uid] = {
+                        name: myUsername,
+                        alive: true,
+                        role: 'pending',
+                        isHost: false,
+                        isAi: false,
+                        votedFor: null,
+                        nightActionTarget: null
+                    };
+                    roomData.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 영업사원 ${myUsername}님이 세션에 참가했습니다.` });
+                    await setDoc(roomRef, roomData);
+                    enterRoomState(roomData);
+                } else {
+                    throw new Error("No DB");
+                }
+            } catch (e) {
+                if (!localRoomData) {
+                    localRoomData = {
+                        code: roomCodeInput,
+                        host: 'sim_host',
+                        status: 'waiting',
+                        phase: 'day',
+                        dayCount: 1,
+                        timer: 45,
+                        players: {
+                            'ai_bot_0': { name: AI_BOT_NAMES[0], alive: true, role: 'pending', isHost: true, isAi: true, votedFor: null, nightActionTarget: null },
+                            [currentUser ? currentUser.uid : 'anon_' + Math.random().toString(36).substring(2, 7)]: {
+                                name: myUsername, alive: true, role: 'pending', isHost: false, isAi: false, votedFor: null, nightActionTarget: null
+                            }
+                        },
+                        logs: [
+                            { time: getTimestamp(), text: `[🤖 AI 진행자] 세션 [${roomCodeInput}] 로컬 연결 완료.` },
+                            { time: getTimestamp(), text: `[🤖 AI 진행자] ${myUsername}님이 참가했습니다.` }
+                        ]
+                    };
+                }
+                enterRoomState(localRoomData);
+            }
+        };
+
+        function enterRoomState(roomData) {
+            switchView('room');
+            document.getElementById('room-code-display').innerText = roomData.code;
+            const myUid = currentUser ? currentUser.uid : Object.keys(roomData.players).find(k => roomData.players[k].name === myUsername);
+            isHost = roomData.players[myUid]?.isHost || false;
+
+            if (isHost) {
+                document.getElementById('host-controls').classList.remove('hidden');
+                document.getElementById('guest-waiting-notice').classList.add('hidden');
+            } else {
+                document.getElementById('host-controls').classList.add('hidden');
+                document.getElementById('guest-waiting-notice').classList.remove('hidden');
+            }
+            listenToRoom(roomData.code);
+        }
+
+        function listenToRoom(roomCode) {
+            if (!db) return;
+            const roomRef = doc(db, 'artifacts', appId, 'public_rooms', roomCode);
+            if (unsubscribeRoom) unsubscribeRoom();
+
+            unsubscribeRoom = onSnapshot(roomRef, (docSnap) => {
+                if (!docSnap.exists()) return;
+                const data = docSnap.data();
+                localRoomData = data;
+                updateUIState(data);
+            }, (error) => {
+                console.warn("Snapshot notice:", error);
+            });
+        }
+
+        window.copyRoomCode = function() {
+            if (!currentRoomCode) return;
+            const dummy = document.createElement('textarea');
+            document.body.appendChild(dummy);
+            dummy.value = currentRoomCode;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+            showModal('복사 완료', '세션 코드가 클립보드에 복사되었습니다.');
+        };
+
+        window.leaveRoom = async function() {
+            if (unsubscribeRoom) unsubscribeRoom();
+            if (timerInterval) clearInterval(timerInterval);
+            currentRoomCode = null;
+            switchView('lobby');
+        };
+
+        window.startGame = async function() {
+            if (!localRoomData) return;
+            const players = localRoomData.players;
+            const playerUids = Object.keys(players);
+
+            const shuffledUids = [...playerUids].sort(() => Math.random() - 0.5);
+            let mafiaCount = 1;
+
+            shuffledUids.forEach((uid, index) => {
+                if (index < mafiaCount) {
+                    players[uid].role = 'mafia';
+                } else if (index === mafiaCount) {
+                    players[uid].role = 'doctor';
+                } else if (index === mafiaCount + 1) {
+                    players[uid].role = 'police';
+                } else {
+                    players[uid].role = 'citizen';
+                }
+                players[uid].alive = true;
+                players[uid].votedFor = null;
+                players[uid].nightActionTarget = null;
+            });
+
+            localRoomData.status = 'playing';
+            localRoomData.phase = 'day';
+            localRoomData.dayCount = 1;
+            localRoomData.timer = 45;
+            localRoomData.logs.push({ 
+                time: getTimestamp(), 
+                text: `[🤖 AI 진행자] 직무 배정 완료! 맥쎈·쿠쎈·더쎈·노부스·기쎈 가격 질서 감사 제 1일차 주간 토론을 시작합니다.` 
+            });
+
+            saveAndSync(localRoomData);
+            startGlobalTimer();
+        };
+
+        function startGlobalTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (!localRoomData || localRoomData.status !== 'playing') return;
+                localRoomData.timer--;
+
+                if (localRoomData.timer <= 0) {
+                    advancePhase();
+                } else {
+                    saveAndSync(localRoomData);
+                }
+            }, 1000);
+        }
+
+        function advancePhase() {
+            if (!localRoomData) return;
+            if (localRoomData.phase === 'day') {
+                const votes = {};
+                for (const uid in localRoomData.players) {
+                    const p = localRoomData.players[uid];
+                    if (p.alive) {
+                        if (p.isAi && !p.votedFor) {
+                            const targets = Object.keys(localRoomData.players).filter(id => localRoomData.players[id].alive && id !== uid);
+                            if (targets.length > 0) p.votedFor = targets[Math.floor(Math.random() * targets.length)];
+                        }
+                        if (p.votedFor) {
+                            votes[p.votedFor] = (votes[p.votedFor] || 0) + 1;
+                        }
+                    }
+                }
+
+                let maxVotedUid = null;
+                let maxVotes = 0;
+                for (const uid in votes) {
+                    if (votes[uid] > maxVotes) {
+                        maxVotes = votes[uid];
+                        maxVotedUid = uid;
+                    }
+                }
+
+                localRoomData.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 주간 투표 집계 완료. 총 ${Object.keys(votes).length}건의 징계 건의 접수.` });
+
+                if (maxVotedUid && maxVotes > 0) {
+                    const victim = localRoomData.players[maxVotedUid];
+                    victim.alive = false;
+                    localRoomData.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 투표 결과, <strong>${victim.name}</strong>님이 다수결로 징계(영업 정지) 처분되었습니다!` });
+                } else {
+                    localRoomData.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 과반수 득표자가 없어 이번 주간에는 징계 처분된 영업사원이 없습니다.` });
+                }
+
+                if (checkWinCondition()) return;
+
+                localRoomData.phase = 'night';
+                localRoomData.timer = 30;
+                localRoomData.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 군산 공장 업무 시간 종료. 야간 페이즈로 전환되어 비밀 가격 감사가 시작됩니다.` });
+
+                runAiNightActions();
+
+            } else {
+                resolveNightActions();
+
+                if (checkWinCondition()) return;
+
+                localRoomData.dayCount++;
+                localRoomData.phase = 'day';
+                localRoomData.timer = 45;
+                localRoomData.logs.push({ 
+                    time: getTimestamp(), 
+                    text: `[🤖 AI 진행자] 아침이 밝았습니다! 제 ${localRoomData.dayCount}일차 주간 세션 시작.` 
+                });
+
+                runAiDayChat();
+            }
+            saveAndSync(localRoomData);
+        }
+
+        function runAiNightActions() {
+            for (const uid in localRoomData.players) {
+                const p = localRoomData.players[uid];
+                if (p.isAi && p.alive) {
+                    const aliveTargets = Object.keys(localRoomData.players).filter(id => localRoomData.players[id].alive && id !== uid);
+                    if (aliveTargets.length > 0) {
+                        p.nightActionTarget = aliveTargets[Math.floor(Math.random() * aliveTargets.length)];
+                    }
+                }
+            }
+        }
+
+        function resolveNightActions() {
+            let mafiaTarget = null;
+            let doctorTarget = null;
+
+            for (const uid in localRoomData.players) {
+                const p = localRoomData.players[uid];
+                if (p.alive) {
+                    if (p.role === 'mafia' && p.nightActionTarget) mafiaTarget = p.nightActionTarget;
+                    if (p.role === 'doctor' && p.nightActionTarget) doctorTarget = p.nightActionTarget;
+                }
+                p.votedFor = null;
+                p.nightActionTarget = null;
+            }
+
+            if (mafiaTarget) {
+                if (mafiaTarget === doctorTarget) {
+                    localRoomData.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 야간 보안 보고: 가격 정책 법무팀의 신속한 방어 조치로 과다 DC 후려치기 시도가 무력화되었습니다!` });
+                } else {
+                    const victim = localRoomData.players[mafiaTarget];
+                    if (victim) {
+                        victim.alive = false;
+                        localRoomData.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 야간 긴급 속보: <strong>${victim.name}</strong> 영업소가 밤사이 무리한 과다 DC 공격으로 영업 정지되었습니다!` });
+                    }
+                }
+            } else {
+                localRoomData.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 야간 점검 결과, 특이한 가격 교란 없이 평온한 밤이 지나갔습니다.` });
+            }
+        }
+
+        function runAiDayChat() {
+            const aiBots = Object.values(localRoomData.players).filter(p => p.isAi && p.alive);
+            if (aiBots.length > 0) {
+                const bot = aiBots[Math.floor(Math.random() * aiBots.length)];
+                const quote = AI_CHAT_QUOTES[Math.floor(Math.random() * AI_CHAT_QUOTES.length)];
+                localRoomData.logs.push({ time: getTimestamp(), text: `<strong class="text-yellow-400">[현장 코멘트] ${bot.name}:</strong> ${quote}` });
+            }
+        }
+
+        function checkWinCondition() {
+            let aliveMafia = 0;
+            let aliveCitizens = 0;
+
+            for (const uid in localRoomData.players) {
+                const p = localRoomData.players[uid];
+                if (p.alive) {
+                    if (p.role === 'mafia') aliveMafia++;
+                    else aliveCitizens++;
+                }
+            }
+
+            if (aliveMafia === 0) {
+                localRoomData.status = 'ended';
+                localRoomData.logs.push({ time: getTimestamp(), text: `🎉 [🤖 AI 진행자] 게임 종료! 모든 과다 DC 영업사원이 색출되었습니다. 정기가이드 준수팀(시민) 승리!` });
+                if (timerInterval) clearInterval(timerInterval);
+                saveAndSync(localRoomData);
+                showModal('게임 종료', '정기가이드 준수팀 승리! 모든 과다 DC 영업사원을 색출했습니다.');
+                return true;
+            } else if (aliveMafia >= aliveCitizens) {
+                localRoomData.status = 'ended';
+                localRoomData.logs.push({ time: getTimestamp(), text: `🚨 [🤖 AI 진행자] 게임 종료! 과다 DC 영업사원이 시장 질서를 완전히 장악했습니다. 마피아팀 승리!` });
+                if (timerInterval) clearInterval(timerInterval);
+                saveAndSync(localRoomData);
+                showModal('게임 종료', '마피아팀 승리! 과다 DC 영업사원이 시장을 장악했습니다.');
+                return true;
+            }
+            return false;
+        }
+
+        function saveAndSync(data) {
+            localRoomData = data;
+            updateUIState(data);
+            if (db && currentRoomCode) {
+                const roomRef = doc(db, 'artifacts', appId, 'public_rooms', currentRoomCode);
+                setDoc(roomRef, data).catch(e => console.warn(e));
+            }
+        }
+
+        function updateUIState(data) {
+            const myUid = currentUser ? currentUser.uid : Object.keys(data.players).find(k => data.players[k].name === myUsername);
+            const me = data.players[myUid];
+
+            if (data.status === 'waiting') {
+                switchView('room');
+                const listEl = document.getElementById('waiting-player-list');
+                listEl.innerHTML = '';
+                let count = 0;
+                for (const uid in data.players) {
+                    count++;
+                    const p = data.players[uid];
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between p-3 bg-tata-bg border border-tata-border rounded-lg font-mono text-xs";
+                    div.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <span class="w-2.5 h-2.5 rounded-full ${p.isHost ? 'bg-blue-500' : 'bg-slate-500'}"></span>
+                            <span class="text-tata-text font-bold">${p.name}</span>
+                            ${p.isAi ? '<span class="text-[10px] bg-purple-600/20 text-purple-400 px-2 py-0.5 rounded border border-purple-500/30">AI 봇</span>' : ''}
+                            ${p.isHost ? '<span class="text-[10px] bg-blue-600/20 text-blue-400 px-2 py-0.5 rounded border border-blue-500/30">방장</span>' : ''}
+                        </div>
+                        <span class="text-tata-muted">대기 중</span>
+                    `;
+                    listEl.appendChild(div);
+                }
+                document.getElementById('player-count').innerText = count;
+            } else if (data.status === 'playing' || data.status === 'ended') {
+                if (document.getElementById('view-game').classList.contains('hidden')) {
+                    switchView('game');
+                }
+
+                if (me) {
+                    const roleBadge = document.getElementById('my-role-badge');
+                    let roleText = '정기가이드 준수 영업사원';
+                    let roleColor = 'text-blue-400';
+                    if (me.role === 'mafia') { roleText = '과다 DC 영업사원 (시장 교란범)'; roleColor = 'text-red-400'; }
+                    else if (me.role === 'doctor') { roleText = '가격 정책 법무팀 (할인 방어)'; roleColor = 'text-green-400'; }
+                    else if (me.role === 'police') { roleText = '영업 감사관 (할인율 조사)'; roleColor = 'text-yellow-400'; }
+                    roleBadge.innerText = roleText;
+                    roleBadge.className = `font-bold ${roleColor}`;
+                }
+
+                const phaseBadge = document.getElementById('phase-badge');
+                if (data.phase === 'day') {
+                    phaseBadge.className = "px-3 py-1 rounded text-xs font-mono font-bold bg-blue-600/20 text-blue-400 border border-blue-500/30";
+                    phaseBadge.innerText = `☀️ 제 ${data.dayCount}일차 주간 세션 (영업 회의 및 과다 DC 색출 토론)`;
+                } else if (data.phase === 'night') {
+                    phaseBadge.className = "px-3 py-1 rounded text-xs font-mono font-bold bg-purple-600/20 text-purple-400 border border-purple-500/30";
+                    phaseBadge.innerText = `🌙 제 ${data.dayCount}일차 야간 세션 (비밀 후려치기 및 가격 감사 점검)`;
+                }
+
+                document.getElementById('timer-display').innerText = data.timer;
+
+                const gamePlayerList = document.getElementById('in-game-player-list');
+                gamePlayerList.innerHTML = '';
+                let aliveCount = 0;
+                for (const uid in data.players) {
+                    const p = data.players[uid];
+                    if (p.alive) aliveCount++;
+                    const div = document.createElement('div');
+                    div.className = `p-3 bg-tata-bg border rounded-lg font-mono text-xs flex items-center justify-between ${p.alive ? 'border-tata-border' : 'border-red-500/30 opacity-60'}`;
+                    
+                    let roleReveal = '';
+                    if (!p.alive || (me && me.role === 'mafia' && p.role === 'mafia')) {
+                        if (p.role === 'mafia') roleReveal = '<span class="text-red-400 text-[10px]"> [과다DC]</span>';
+                        else if (p.role === 'doctor') roleReveal = '<span class="text-green-400 text-[10px]"> [법무팀]</span>';
+                        else if (p.role === 'police') roleReveal = '<span class="text-yellow-400 text-[10px]"> [감사관]</span>';
+                    }
+
+                    div.innerHTML = `
+                        <div class="flex items-center space-x-2">
+                            <span class="w-2 h-2 rounded-full ${p.alive ? 'bg-green-500' : 'bg-red-500'}"></span>
+                            <span class="text-tata-text font-bold">${p.name}</span>
+                            ${p.isAi ? '<span class="text-[9px] text-purple-400">[AI]</span>' : ''}
+                            ${roleReveal}
+                        </div>
+                        <span class="${p.alive ? 'text-green-400' : 'text-red-400'} font-bold">${p.alive ? '정상 영업' : '영업 정지'}</span>
+                    `;
+                    gamePlayerList.appendChild(div);
+                }
+                document.getElementById('in-game-player-count').innerText = aliveCount;
+
+                updateActionPrompt(data, myUid, me);
+
+                const terminalLogs = document.getElementById('terminal-logs');
+                terminalLogs.innerHTML = '';
+                data.logs.forEach(log => {
+                    const logDiv = document.createElement('div');
+                    logDiv.className = "text-tata-muted font-mono py-0.5";
+                    logDiv.innerHTML = `<span class="text-slate-500">[${log.time}]</span> <span class="text-tata-text">${log.text}</span>`;
+                    terminalLogs.appendChild(logDiv);
+                });
+                terminalLogs.scrollTop = terminalLogs.scrollHeight;
+            }
+        }
+
+        function updateActionPrompt(data, myUid, me) {
+            const titleEl = document.getElementById('action-title');
+            const descEl = document.getElementById('action-desc');
+            const buttonsEl = document.getElementById('action-buttons');
+            buttonsEl.innerHTML = '';
+
+            if (!me || !me.alive) {
+                titleEl.innerText = "상태: 영업 정지 (관전 모드)";
+                descEl.innerText = "귀하는 과다 DC 혐의로 영업 정지되었습니다.";
+                return;
+            }
+
+            if (data.phase === 'day') {
+                titleEl.innerText = "📋 주간 세션: 과다 DC 영업사원 색출 투표";
+                descEl.innerText = "정지가이드를 무시하고 시장을 교란하는 용의자를 지목하세요.";
+
+                const select = document.createElement('select');
+                select.id = 'vote-target-select';
+                select.className = "w-full bg-tata-bg border border-tata-border rounded-lg p-2 text-xs text-tata-text mb-2 font-mono";
+                
+                let defaultOpt = document.createElement('option');
+                defaultOpt.value = "";
+                defaultOpt.innerText = "-- 징계할 영업사원 선택 --";
+                select.appendChild(defaultOpt);
+
+                for (const uid in data.players) {
+                    if (uid !== myUid && data.players[uid].alive) {
+                        const opt = document.createElement('option');
+                        opt.value = uid;
+                        opt.innerText = data.players[uid].name;
+                        if (me.votedFor === uid) opt.selected = true;
+                        select.appendChild(opt);
+                    }
+                }
+
+                const voteBtn = document.createElement('button');
+                voteBtn.className = "w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg text-xs font-medium transition mt-1";
+                voteBtn.innerText = "영업 정지 징계 건의 제출";
+                voteBtn.onclick = submitVote;
+
+                buttonsEl.appendChild(select);
+                buttonsEl.appendChild(voteBtn);
+
+            } else if (data.phase === 'night') {
+                if (me.role === 'mafia') {
+                    titleEl.innerText = "🌙 야간 세션: 과다 DC 후려치기";
+                    descEl.innerText = "밤사이 무리한 할인으로 견제할 영업소를 고르세요.";
+                } else if (me.role === 'doctor') {
+                    titleEl.innerText = "🛡️ 야간 세션: 가격 방어 (법무팀)";
+                    descEl.innerText = "방어할 영업소를 지정하세요.";
+                } else if (me.role === 'police') {
+                    titleEl.innerText = "🔍 야간 세션: 할인율 조사 (감사관)";
+                    descEl.innerText = "조사할 영업사원을 선택하세요.";
+                } else {
+                    titleEl.innerText = "🌙 야간 세션: 가격 모니터링 대기";
+                    descEl.innerText = "군산 공장 상용차 모니터링 중...";
+                    return;
+                }
+
+                const select = document.createElement('select');
+                select.id = 'night-target-select';
+                select.className = "w-full bg-tata-bg border border-tata-border rounded-lg p-2 text-xs text-tata-text mb-2 font-mono";
+                
+                let defaultOpt = document.createElement('option');
+                defaultOpt.value = "";
+                defaultOpt.innerText = "-- 대상 영업사원 선택 --";
+                select.appendChild(defaultOpt);
+
+                for (const uid in data.players) {
+                    if (data.players[uid].alive) {
+                        const opt = document.createElement('option');
+                        opt.value = uid;
+                        opt.innerText = data.players[uid].name;
+                        if (me.nightActionTarget === uid) opt.selected = true;
+                        select.appendChild(opt);
+                    }
+                }
+
+                const actionBtn = document.createElement('button');
+                actionBtn.className = "w-full bg-purple-600 hover:bg-purple-500 text-white py-2 rounded-lg text-xs font-medium transition mt-1";
+                actionBtn.innerText = "야간 조치 확정";
+                actionBtn.onclick = submitNightAction;
+
+                buttonsEl.appendChild(select);
+                buttonsEl.appendChild(actionBtn);
+            }
+        }
+
+        window.submitVote = function() {
+            const select = document.getElementById('vote-target-select');
+            if (!select || !select.value) {
+                showModal('알림', '징계할 대상을 선택해주세요.');
+                return;
+            }
+            const myUid = currentUser ? currentUser.uid : Object.keys(localRoomData.players).find(k => localRoomData.players[k].name === myUsername);
+            localRoomData.players[myUid].votedFor = select.value;
+            localRoomData.logs.push({ time: getTimestamp(), text: `[VOTE] ${myUsername}님이 징계 투표를 완료했습니다.` });
+            saveAndSync(localRoomData);
+            showModal('제출 완료', '투표가 반영되었습니다.');
+        };
+
+        window.submitNightAction = function() {
+            const select = document.getElementById('night-target-select');
+            if (!select || !select.value) {
+                showModal('알림', '대상을 선택해주세요.');
+                return;
+            }
+            const myUid = currentUser ? currentUser.uid : Object.keys(localRoomData.players).find(k => localRoomData.players[k].name === myUsername);
+            localRoomData.players[myUid].nightActionTarget = select.value;
+            localRoomData.logs.push({ time: getTimestamp(), text: `[AUDIT-OPS] ${myUsername}님이 야간 조치를 지정했습니다.` });
+            saveAndSync(localRoomData);
+            showModal('제출 완료', '야간 조치가 반영되었습니다.');
+        };
+
+        window.handleChatKeyDown = function(e) {
+            if (e.key === 'Enter') sendChatMessage();
+        };
+
+        window.sendChatMessage = function() {
+            const input = document.getElementById('chat-input');
+            const msg = input.value.trim();
+            if (!msg || !localRoomData) return;
+
+            localRoomData.logs.push({
+                time: getTimestamp(),
+                text: `<strong class="text-blue-400">${myUsername}:</strong> ${escapeHtml(msg)}`
+            });
+            input.value = '';
+            saveAndSync(localRoomData);
+        };
+
+        function getTimestamp() {
+            return new Date().toTimeString().split(' ')[0];
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    </script>
+</body>
+</html>
+```eof
