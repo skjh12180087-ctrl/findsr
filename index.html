@@ -3,49 +3,52 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TATA DAEWOO MOBILITY - Pricing & Audit Control v15.2</title>
+<title>TATA DAEWOO MOBILITY - Pricing & Audit Control v15.3</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <script>
 tailwind.config = { theme: { extend: {
-  fontFamily: { mono: ['"JetBrains Mono"', 'monospace'], sans: ['Inter', 'sans-serif'] },
-  colors: { tata: { bg:'#0b1329', panel:'#131f3f', border:'#223460', accent:'#00539f', success:'#10b981', warning:'#f59e0b', danger:'#ef4444', text:'#f8fafc', muted:'#94a3b8' } }
+  fontFamily: { sans: ['"Pretendard Variable"','Pretendard','"Malgun Gothic"','sans-serif'], mono: ['"Pretendard Variable"','Pretendard','"Malgun Gothic"','sans-serif'] },
+  colors: { tata: { bg:'#eef1f5', panel:'#ffffff', border:'#e1e6ee', accent:'#1f5ea8', success:'#15803d', warning:'#b45309', danger:'#dc2626', text:'#1f2937', muted:'#6b7280' } }
 } } }
 </script>
 <style>
-body { font-family:'Inter',sans-serif; background:#0b1329; color:#f8fafc; }
-.font-mono { font-family:'JetBrains Mono',monospace; }
+body { font-family:'Pretendard Variable',Pretendard,'Malgun Gothic',sans-serif; background:#eef1f5; color:#1f2937; }
+.font-mono { font-family:'Pretendard Variable',Pretendard,'Malgun Gothic',sans-serif !important; }
 ::-webkit-scrollbar { width:6px; height:6px; }
-::-webkit-scrollbar-track { background:#0b1329; }
-::-webkit-scrollbar-thumb { background:#223460; border-radius:3px; }
+::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:3px; }
 </style>
 </head>
 <body class="h-full flex flex-col overflow-hidden">
 
-<header class="bg-tata-panel border-b border-tata-border px-4 py-2.5 flex items-center justify-between shrink-0 z-10">
-  <span class="font-mono text-xs text-blue-400 uppercase tracking-wider font-semibold">[TATA DAEWOO MOBILITY] PRICING & OVER-DISCOUNT AUDIT SYSTEM v15.2</span>
-  <div class="flex items-center space-x-4 text-xs font-mono">
-    <span id="connection-status" class="flex items-center text-tata-warning">
-      <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse mr-1.5"></span>서버 연결 중...
-    </span>
-    <span class="text-tata-muted">임직원: <strong id="header-username" class="text-tata-text">-</strong></span>
-    <button onclick="togglePanicMode()" class="bg-tata-border hover:bg-slate-700 px-2.5 py-1 rounded text-xs border border-slate-600 font-sans">🚨 Panic Key (Esc)</button>
+<header class="bg-white border-b border-tata-border px-4 h-14 flex items-center justify-between shrink-0 z-10 shadow-sm">
+  <div class="flex items-center space-x-4">
+    <span class="text-2xl text-slate-500 leading-none">☰</span>
+    <span class="font-extrabold text-xl tracking-tight"><span class="text-[#0a4da2]">TATA</span> <span class="text-[#1b3a6b]">DAEWOO MOBILITY</span></span>
+    <span class="hidden md:inline text-[11px] px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">가격질서 감사 시스템 v15.3</span>
+  </div>
+  <div class="flex items-center space-x-4 text-xs">
+    <span id="connection-status" class="flex items-center text-tata-warning"><span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse mr-1.5"></span>서버 연결 중...</span>
+    <span class="text-slate-500">👤 <strong id="header-username" class="text-tata-text">-</strong></span>
+    <button onclick="togglePanicMode()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded text-xs border border-slate-300">🚨 Panic Key (Esc)</button>
   </div>
 </header>
 
 <main class="flex-1 flex overflow-hidden relative">
+<aside class="hidden md:flex flex-col items-center w-[88px] bg-white border-r border-tata-border py-4 space-y-4 shrink-0"><button onclick="sideClick('결재')" class="flex flex-col items-center text-[11px] text-slate-600 hover:text-blue-700"><span class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center text-xl mb-1">📝</span>결재</button><button onclick="sideClick('메일')" class="flex flex-col items-center text-[11px] text-slate-600 hover:text-blue-700"><span class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center text-xl mb-1">✉️</span>메일</button><button onclick="sideClick('게시판')" class="flex flex-col items-center text-[11px] text-slate-600 hover:text-blue-700"><span class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center text-xl mb-1">📄</span>게시판</button><button onclick="sideClick('문서관리')" class="flex flex-col items-center text-[11px] text-slate-600 hover:text-blue-700"><span class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center text-xl mb-1">📑</span>문서관리</button><button onclick="sideClick('업무지원')" class="flex flex-col items-center text-[11px] text-slate-600 hover:text-blue-700"><span class="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center text-xl mb-1">🖥️</span>업무지원</button></aside>
 
 <!-- LOBBY -->
 <div id="view-lobby" class="flex-1 flex flex-col items-center justify-center p-6 overflow-y-auto">
   <div class="max-w-lg w-full bg-tata-panel border border-tata-border rounded-xl p-8 shadow-2xl space-y-6">
     <div class="text-center">
-      <div class="inline-flex px-3 py-1.5 bg-red-600/20 text-red-400 rounded-xl mb-3 font-mono text-xs font-bold border border-red-500/30">🚨 EMERGENCY BRIEFING: 시장 붕괴 위기</div>
+      <div class="inline-flex px-3 py-1.5 bg-red-600/20 text-red-600 rounded-xl mb-3 font-mono text-xs font-bold border border-red-500/30">🚨 EMERGENCY BRIEFING: 시장 붕괴 위기</div>
       <h1 class="text-xl font-bold">타타대우모빌리티 긴급 가격 질서 확립 작전</h1>
     </div>
-    <div class="bg-slate-900/80 border border-tata-border rounded-lg p-4 text-xs leading-relaxed text-slate-300 font-mono space-y-2">
-      <p class="text-yellow-400 font-bold">[상황 보고서] 월말 마감 D-3</p>
+    <div class="bg-slate-50 border border-tata-border rounded-lg p-4 text-xs leading-relaxed text-slate-600 font-mono space-y-2">
+      <p class="text-yellow-700 font-bold">[상황 보고서] 월말 마감 D-3</p>
       <p>전국 영업소 단톡방에 누군가 <strong>맥쎈·구쎈·더쎈·노부스·기쎈</strong> 견적서를 정지가이드보다 훨씬 낮게 뿌렸습니다. 고객들은 "옆 영업소는 더 깎아줬다"며 협상 테이블을 뒤엎고 있습니다.</p>
       <p>범인은 우리 안에 있습니다. 낮에는 회의와 투표로, 밤에는 비밀 조치로 <strong>과다 DC 스파이</strong>를 색출하세요. 단, 억울한 동료를 정지시키면 시장은 더 무너집니다.</p>
+      <p class="text-slate-400 pt-1">※ 본 게임은 픽션입니다. 실제 과다 DC는 감사팀이 진짜로 봅니다 😇</p>
       <p class="text-slate-400 pt-1">🕵️ 스파이 · 🛡️ 법무팀 · 🔍 감사관 · 👔 성실한 영업사원 — 직무는 시작할 때 비밀리에 배정됩니다.</p>
     </div>
     <div class="space-y-4">
@@ -59,23 +62,23 @@ body { font-family:'Inter',sans-serif; background:#0b1329; color:#f8fafc; }
         <div class="flex space-x-1">
           <input type="text" id="input-room-code" placeholder="4자리 숫자" maxlength="4" inputmode="numeric"
             class="w-24 bg-tata-bg border border-tata-border rounded-lg px-2 text-xs font-mono text-center tracking-widest font-bold">
-          <button onclick="uiJoinRoom()" class="flex-1 bg-slate-700 hover:bg-slate-600 py-2.5 rounded-lg text-xs font-medium transition">참여</button>
+          <button onclick="uiJoinRoom()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 py-2.5 rounded-lg text-xs font-medium transition">참여</button>
         </div>
       </div>
     </div>
-    <p class="text-center text-[11px] text-tata-muted">💡 상사가 지나갈 때는 <code class="text-blue-400">Esc</code>를 눌러 엑셀 보고서로 위장하세요.</p>
+    <p class="text-center text-[11px] text-tata-muted">💡 상사가 지나갈 때는 <code class="text-blue-700">Esc</code>를 눌러 엑셀 보고서로 위장하세요.</p>
   </div>
 </div>
 
 <!-- WAITING ROOM -->
 <div id="view-room" class="flex-1 flex flex-col p-6 overflow-hidden hidden">
-  <div class="max-w-3xl w-full mx-auto flex flex-col h-full bg-tata-panel border border-tata-border rounded-xl shadow-xl overflow-hidden">
-    <div class="p-4 border-b border-tata-border flex justify-between items-center bg-slate-900/50">
+  <div class="max-w-3xl w-full mx-auto flex flex-col h-full bg-tata-panel border border-tata-border rounded-xl shadow-sm overflow-hidden">
+    <div class="p-4 border-b border-tata-border flex justify-between items-center bg-slate-50">
       <div>
-        <span class="text-xs font-mono text-blue-400">세션 번호: <strong id="room-code-display" class="text-tata-text text-base">----</strong></span>
+        <span class="text-xs font-mono text-blue-700">세션 번호: <strong id="room-code-display" class="text-tata-text text-base">----</strong></span>
         <h2 class="text-sm font-bold mt-0.5">가격 질서 감사 대기실</h2>
       </div>
-      <button onclick="leaveRoom()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 rounded text-xs">나가기</button>
+      <button onclick="leaveRoom()" class="bg-red-500/10 hover:bg-red-500/20 text-red-600 border border-red-500/30 px-3 py-1 rounded text-xs">나가기</button>
     </div>
     <div class="flex-1 p-6 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto">
       <div class="flex flex-col">
@@ -84,14 +87,14 @@ body { font-family:'Inter',sans-serif; background:#0b1329; color:#f8fafc; }
       </div>
       <div class="flex flex-col justify-between space-y-4">
         <div class="bg-tata-bg border border-tata-border rounded-lg p-4 space-y-2 text-xs text-tata-muted">
-          <p class="text-blue-400 font-bold font-mono">📢 멀티플레이 안내</p>
+          <p class="text-blue-700 font-bold font-mono">📢 멀티플레이 안내</p>
           <p>• 동료에게 위의 <strong>4자리 번호</strong>를 알려주세요.</p>
           <p>• 4명 미만이면 AI 영업소가 빈자리를 채웁니다.</p>
           <p>• 방장이 [작전 시작]을 누르면 모두 동시에 시작됩니다.</p>
         </div>
         <div>
           <button id="host-controls" onclick="startHostGame()" class="hidden w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg text-sm transition">🚀 작전 시작 (모든 팀원 진입)</button>
-          <div id="guest-notice" class="text-center py-3 text-xs text-tata-muted font-mono bg-tata-bg border border-tata-border rounded-lg">방장이 작전을 시작할 때까지 대기 중...</div>
+          <div id="guest-notice" class="text-center py-3 text-xs text-tata-muted font-mono bg-tata-bg border border-tata-border rounded-lg">방장이 시작할 때까지 대기 중... 그동안 결재 문서나 확인하세요 (없음 📭)</div>
         </div>
       </div>
     </div>
@@ -102,32 +105,33 @@ body { font-family:'Inter',sans-serif; background:#0b1329; color:#f8fafc; }
 <div id="view-game" class="flex-1 flex flex-col overflow-hidden hidden">
   <div class="bg-tata-panel border-b border-tata-border px-6 py-3 flex items-center justify-between shrink-0">
     <div class="flex items-center space-x-4">
-      <div id="phase-badge" class="px-3 py-1 rounded text-xs font-mono font-bold bg-blue-600/20 text-blue-400 border border-blue-500/30">-</div>
+      <div id="phase-badge" class="px-3 py-1 rounded text-xs font-mono font-bold bg-blue-600/20 text-blue-700 border border-blue-500/30">-</div>
       <span class="text-xs font-mono text-tata-muted">잔여 시간: <strong id="timer-display" class="text-tata-text">-</strong>초</span>
-      <span id="event-banner" class="hidden text-[11px] font-mono px-2 py-0.5 rounded bg-yellow-500/10 text-yellow-300 border border-yellow-500/30"></span>
+      <span id="event-banner" class="hidden text-[11px] font-mono px-2 py-0.5 rounded bg-yellow-500/10 text-yellow-700 border border-yellow-500/30"></span>
     </div>
     <div class="bg-tata-bg border border-tata-border px-3 py-1 rounded text-xs font-mono flex items-center space-x-2">
-      <span class="text-tata-muted">내 직무:</span><span id="my-role-badge" class="font-bold text-blue-400">-</span>
+      <span class="text-tata-muted">내 직무:</span><span id="my-role-badge" class="font-bold text-blue-700">-</span>
     </div>
   </div>
-  <div class="flex-1 grid grid-cols-1 lg:grid-cols-4 overflow-hidden p-4 gap-4">
-    <div class="lg:col-span-1 flex flex-col space-y-4 overflow-hidden">
-      <div class="bg-tata-panel border border-tata-border rounded-xl p-4 flex flex-col flex-1 overflow-hidden shadow-lg">
+  <div class="flex-1 grid grid-cols-1 lg:grid-cols-5 overflow-hidden p-4 gap-4">
+    <div class="lg:col-span-2 flex flex-col space-y-4 overflow-y-auto">
+      <div id="briefing" class="bg-tata-panel border border-tata-border rounded-xl p-4 shadow-sm shrink-0"></div>
+      <div class="bg-tata-panel border border-tata-border rounded-xl p-4 flex flex-col flex-1 min-h-[160px] overflow-hidden shadow-sm">
         <h3 class="text-xs font-mono text-tata-muted mb-3">생존 영업소 (<span id="in-game-count">0</span>)</h3>
         <div id="in-game-player-list" class="flex-1 space-y-2 overflow-y-auto pr-1"></div>
       </div>
-      <div class="bg-tata-panel border border-tata-border rounded-xl p-4 shadow-lg shrink-0">
-        <h4 id="action-title" class="text-xs font-mono text-blue-400 mb-2">-</h4>
+      <div class="bg-tata-panel border border-tata-border rounded-xl p-4 shadow-sm shrink-0">
+        <h4 id="action-title" class="text-xs font-mono text-blue-700 mb-2">-</h4>
         <p id="action-desc" class="text-xs text-tata-muted mb-3">-</p>
         <div id="action-buttons"></div>
       </div>
     </div>
-    <div class="lg:col-span-3 flex flex-col bg-tata-panel border border-tata-border rounded-xl shadow-lg overflow-hidden">
-      <div class="bg-slate-900/80 px-4 py-2.5 border-b border-tata-border flex items-center justify-between">
-        <span class="font-mono text-xs text-tata-muted">🤖 AI_MODERATOR@tata-audit:~# live_feed.log</span>
-        <span class="text-[11px] font-mono bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded">시장 방어 작전 진행 중</span>
+    <div class="lg:col-span-3 flex flex-col bg-tata-panel border border-tata-border rounded-xl shadow-sm overflow-hidden">
+      <div class="bg-slate-50 px-4 py-2.5 border-b border-tata-border flex items-center justify-between">
+        <span class="font-mono text-xs text-tata-muted">📢 실시간 업무 공지 (AI 진행자)</span>
+        <span class="text-[11px] font-mono bg-blue-600/20 text-blue-700 border border-blue-500/30 px-2 py-0.5 rounded">시장 방어 작전 진행 중</span>
       </div>
-      <div id="terminal-logs" class="flex-1 p-4 overflow-auto font-mono text-xs leading-relaxed bg-[#070c1b]"></div>
+      <div id="terminal-logs" class="flex-1 p-4 overflow-auto font-mono text-xs leading-relaxed bg-white"></div>
       <div id="quick-chat" class="px-3 pt-2 bg-tata-panel border-t border-tata-border flex flex-wrap gap-1.5"></div>
       <div class="p-3 bg-tata-panel flex space-x-2">
         <input type="text" id="chat-input" maxlength="200" onkeydown="if(event.key==='Enter')sendChatMessage()"
@@ -276,7 +280,87 @@ const QUICK = [
   "😂 팀장님 지나가신다 Esc!"
 ];
 const ROLE_NAME = { mafia:'과다 DC 영업사원 (스파이)', doctor:'가격 정책 법무팀 (할인 방어)', police:'영업 감사관 (할인율 조사)', citizen:'정기가이드 준수 영업사원' };
-const ROLE_TAG = { mafia:['과다DC','text-red-400'], doctor:['법무팀','text-green-400'], police:['감사관','text-yellow-400'] };
+const ROLE_TAG = { mafia:['과다DC','text-red-600'], doctor:['법무팀','text-green-700'], police:['감사관','text-yellow-700'] };
+
+DAY_NEWS.push(
+  "화요일 오후, 복사기에서 정체불명의 견적서 한 장이 출력되었다. 단가란에는 '고객님만 특별히♡'라고 적혀 있다.",
+  "수요일, 누군가의 책상 서랍에서 '정지가이드 따위'라고 적힌 포스트잇이 발견되었다. 필체 감정은 아직이다.",
+  "목요일, 사내 식당 줄에서 '이번 달 대박 났다더라'는 수군거림이 들렸다. 정작 마감 실적은 바닥인데 말이다.",
+  "금요일 퇴근 10분 전, 본부장님이 말했다. '주말에 뭐 하세요? 아, 범인 찾으시면 되겠네요.'");
+BOT_SUS.push(
+  n => `${n}님, 왜 아까부터 계산기를 두 개 쓰세요? 하나는 비밀 계산기죠?`,
+  n => `${n}님 커피잔이 어제랑 똑같이 놓여 있어요. 야근 안 하셨죠? 수상합니다.`,
+  n => `저는 ${n}님 믿어요. ...라고 말하면 방심하겠죠? 후후.`,
+  n => `${n}님, 출고 장부 글씨체가 평소랑 달라요. 급하게 쓰셨나요?`);
+BOT_DEF.push("제 단가표는 마음처럼 투명합니다. 마음이 투명하다고요!","솔직히 저는 할인보다 점심 메뉴 고르는 게 더 어렵습니다.","스파이는 저 같은 얼굴이 아니라고요. 억울함이 얼굴에 써 있잖아요!");
+BOT_NEUTRAL.push("우선 모두 진정하고 믹스커피부터 한 잔씩 합시다 ☕","저는 조용히 지켜보는 중입니다. 팝콘 있나요? 🍿","아까 누가 '아 맞다'라고 했는데 그게 마음에 걸립니다.");
+LAST_WORDS.push("내 점심 메뉴는 김치찌개였는데...","내 책상 선인장에게 물을 주세요...","마지막 부탁입니다... 탕비실 믹스커피 좀 채워주세요.","저는 그저 계산기를 두드렸을 뿐입니다...");
+NIGHT_INTRO.push("🌙 [야간] 청소 여사님이 말합니다. '아이고, 또 야근들 하시네...' 그런데 다들 이 시간에 눈빛이 달라집니다.","🌙 [야간] 자판기 소리가 요란합니다. 누군가는 커피를, 누군가는 알리바이를 뽑습니다.");
+QUIET_LINES.push("😴 [야간 보고] 다행히 아무 일도 없었습니다. 모두 새벽까지 단톡방만 쳐다봤을 뿐입니다.");
+KILL_LINES.push((n, r) => `💥 [야간 속보] 아침에 ${n}님의 자리에는 식은 믹스커피와 포스트잇만 남아 있었습니다. 영업 정지! (정체: ${r})`);
+BLOCK_LINES.push("🛡️ [보안 보고] 새벽의 공격이 법무팀의 '검토 중' 도장 한 방에 막혔습니다. 관료주의의 승리입니다!");
+TIE_LINES.push("⚖️ [징계 결과] 동률입니다. 본부장님이 '결재는 다음 주로 미루겠습니다'라며 퇴장하셨습니다.");
+QUICK.push("🍱 일단 점심부터 정하죠","🕵️ 저 사실 스파이 아님(진짜)");
+const CALM_LINES = [
+  "🍱 [점심 논쟁] 김치찌개냐 돈까스냐로 회의가 15분 낭비되었습니다. 그 와중에 누군가는 조용히 밥을 두 그릇 먹었습니다. 수상합니다.",
+  "❄️ [온도 전쟁] 에어컨 온도를 두고 신경전이 벌어졌습니다. 덥다는 사람과 춥다는 사람 중 스파이가 있을지도 모릅니다.",
+  "🖨️ [복사기 고장] 복사기가 '용지 걸림'을 외칩니다. 누가 몰래 견적서를 대량 인쇄한 걸까요?",
+  "💾 [엑셀 사고] 누군가의 엑셀이 저장 직전에 꺼졌습니다. 비명이 사무실을 가로지릅니다.",
+  "☕ [탕비실 사건] 믹스커피가 벌써 바닥났습니다. 범인은 아직 아무도 모릅니다. (스파이와는 무관합니다)",
+  "📞 [전화 폭주] 고객 전화가 쏟아집니다. '옆 영업소는 더 깎아준다던데요?' — 오늘도 어김없이 들려옵니다.",
+  "🌤️ [사무실 일상] 별다른 소동 없이 회의가 시작됩니다. 다들 서로를 힐끔거립니다."
+];
+const REASONS = ["월말 마감 스트레스 과다","계산기 소리가 너무 수상함","표정이 지나치게 평온했음","질문에 질문으로 답변","점심 메뉴 선택이 의심스러움","남의 책상을 너무 자주 쳐다봄","'아 맞다' 한마디가 결정타"];
+const SIDE_MSG = {
+  '결재': '미결 1건: 『과다 DC 스파이 색출 건』. 결재 올리기 전에 범인부터 찾으세요 📝',
+  '메일': '새 메일 0건. 단, 스팸함에 "고객님 특가 견적"이 있습니다. 수상하군요 🕵️',
+  '게시판': '[공지] 월말 마감 D-3. 다들 힘내세요. (이 공지는 AI가 썼습니다)',
+  '문서관리': '『정지가이드_가격표_최종_진짜최종_수정3.xlsx』를 찾았지만 열 수 없습니다 📑',
+  '업무지원': '지금은 업무 지원보다 스파이 지원 차단이 우선입니다 🖥️'
+};
+window.sideClick = k => showModal(k, SIDE_MSG[k]);
+const TIPS = {
+  mafia: ["너무 조용해도, 너무 시끄러워도 의심받습니다. 적당히 억울한 척하세요.","남을 의심할 땐 이유를 하나쯤 꼭 대세요. '그냥 느낌'은 스파이의 말투입니다.","밤에 선량한 사람을 고를 땐, 말을 제일 잘하는 사람이 1순위입니다."],
+  doctor: ["스파이는 분위기 주도자를 노립니다. 그런 사람을 지켜보세요.","정체를 들키면 바로 표적입니다. 평범한 영업사원 연기를 하세요.","같은 사람을 계속 방어하면 패턴이 읽힙니다. 가끔은 본인도!"],
+  police: ["결과를 바로 공개하면 정지당하기 쉽습니다. 눈치껏 흘리세요.","'스파이 아님' 결과도 큰 정보입니다. 믿을 동료가 생깁니다.","거짓 감사관(블러핑)이 나올 수 있어요. 말보다 일관성을 보세요."],
+  citizen: ["남만 의심하는 사람, 말이 자꾸 바뀌는 사람을 주목하세요.","투표를 미루면 스파이만 좋아합니다. 일단 한 명을 찍어보세요.","'저 감사관입니다'라는 말은 진짜일 수도, 연기일 수도 있습니다."]
+};
+function renderBriefing(r, me) {
+  const P = r.players, all = Object.values(P), ended = r.status === 'ended', day = r.phase === 'day';
+  const totalM = all.filter(p => p.role === 'mafia').length, leftM = all.filter(p => p.role === 'mafia' && p.alive).length;
+  const aliveN = all.filter(p => p.alive).length, nm = id => (P[id] ? esc(P[id].name) : '?');
+  const mates = me.role === 'mafia' ? all.filter(p => p.role === 'mafia' && p.id !== myId).map(p => esc(p.name)).join(', ') : '';
+  const GOAL = {
+    mafia: '선량한 영업사원 수가 스파이 수와 같아질 때까지 살아남기!' + (mates ? `<br>🤝 동료 스파이: <b>${mates}</b>` : ''),
+    doctor: '스파이를 전원 정지시키기. 밤마다 한 명을 방어할 수 있어요 (본인도 가능).',
+    police: '밤마다 한 명을 조사해 스파이를 찾고, 낮에 투표를 이끌기.',
+    citizen: '대화와 눈치로 스파이를 찾아 투표로 정지시키기.'
+  }[me.role];
+  const inv = me.investigation;
+  const WHO = {
+    mafia: '정지 우선순위: 조사 결과를 자랑하는 사람(감사관 의심), 스파이를 콕콕 맞히는 사람.',
+    doctor: '지켜줄 사람: 분위기를 이끄는 사람, 감사관 같아 보이는 사람.',
+    police: inv ? `📌 ${esc(inv.name)} → <b>${inv.isMafia ? '스파이 확정!' + (P[inv.target] && P[inv.target].alive ? ' 이번 낮에 투표로 지목하세요!' : ' (이미 정지됨)') : '스파이 아님 (용의자 제외)'}</b>` : '아직 조사 결과가 없습니다. 밤에 한 명을 조사하세요.',
+    citizen: `용의자 후보: 말이 바뀌는 사람, 남만 의심하는 사람, 너무 조용한 사람.<br>남은 스파이는 <b>${leftM}명</b>!`
+  }[me.role];
+  const silent = day && r.event && r.event.type === 'silence';
+  const hv = all.filter(p => p.alive && !p.isAi && !p.left), voted = hv.filter(p => p.votedFor).length;
+  let now;
+  if (ended) now = '🏁 작전 종료! 서로의 연기력을 칭찬(혹은 원망)하세요.';
+  else if (!me.alive) now = '👻 영업 정지 상태입니다. 관전하며 스파이를 맞혀 보세요. 정체를 누설하면 반칙! 🙅';
+  else if (day) now = (silent ? '🤫 오늘은 채팅 금지! 눈빛과 투표로만 말하세요.' : '💬 채팅으로 의견을 내고 분위기를 이끄세요.') + '<br>' +
+    (me.votedFor ? `✅ 내 투표: <b>${nm(me.votedFor)}</b> (시간 내 변경 가능)` : '🗳️ 아래 [징계 투표]에서 용의자를 고르세요.') + `<br>📊 투표 현황 ${voted}/${hv.length}명 (모두 하면 바로 밤으로)`;
+  else if (me.role === 'citizen') now = '😴 할 일 없음! 푹 주무세요. 아침에 쓸 추리를 머릿속으로 정리해 두세요.';
+  else now = (me.nightTarget ? `✅ 선택 완료: <b>${nm(me.nightTarget)}</b>. 아침까지 시치미/평정심 연습 😇` : { mafia: '🌙 아래에서 정지시킬 영업소를 고르세요 (동료 제외).', doctor: '🛡️ 방어할 영업소를 고르세요. 스파이가 노릴 사람을 찍어보세요!', police: '🔍 조사할 영업사원을 고르세요.' }[me.role]) +
+    (me.lastNight && me.role !== 'police' ? `<br>🗒️ 지난밤 선택: ${esc(me.lastNight.name)}` : '');
+  const tips = TIPS[me.role], tip = tips[(r.dayCount + (day ? 0 : 1)) % tips.length];
+  const bg = { mafia: 'bg-red-50 text-red-700', doctor: 'bg-green-50 text-green-700', police: 'bg-yellow-50 text-yellow-700', citizen: 'bg-blue-50 text-blue-700' }[me.role];
+  $('briefing').innerHTML = `<div class="flex items-center justify-between mb-2"><span class="text-sm font-bold">📋 내 업무 브리핑</span><span class="text-[11px] px-2 py-0.5 rounded-full ${bg}">${ROLE_NAME[me.role]}</span></div>
+  <div class="text-xs leading-relaxed space-y-2 text-slate-700">
+    <p><b>🎯 목표</b><br>${GOAL}</p><p><b>🔎 누구를 잡을까?</b><br>${WHO}</p><p><b>👉 지금 할 일</b><br>${now}</p>
+    ${ended ? '' : `<p class="text-slate-400">💡 ${tip}</p>`}
+    <p class="text-[11px] text-slate-400 border-t border-tata-border pt-2">📊 생존 ${aliveN}명 · 남은 스파이 ${leftM}/${totalM}명 · 제 ${r.dayCount}일차 ${day ? '낮' : '밤'}</p></div>`;
+}
 
 let myId = sessionStorage.getItem('tata_v15_uid');
 if (!myId) { myId = 'u_' + Math.random().toString(36).slice(2, 9); sessionStorage.setItem('tata_v15_uid', myId); }
@@ -406,7 +490,7 @@ function renderWaiting() {
   hs.forEach(p => {
     const d = document.createElement('div');
     d.className = 'flex justify-between items-center p-2 bg-tata-bg border border-tata-border rounded font-mono text-xs';
-    d.innerHTML = `<span>👤 ${esc(p.name)} ${p.id === myId ? '(나)' : ''} ${p.id === hostId(room) ? '(방장)' : ''}</span><span class="text-green-400">접속 완료</span>`;
+    d.innerHTML = `<span>👤 ${esc(p.name)} ${p.id === myId ? '(나)' : ''} ${p.id === hostId(room) ? '(방장)' : ''}</span><span class="text-green-700">접속 완료</span>`;
     list.appendChild(d);
   });
   $('waiting-count').innerText = hs.length;
@@ -436,7 +520,7 @@ window.startHostGame = () => safe(async () => {
       upd['players/' + id] = { id, name: players[id].name, isAi: true, joinedAt: 0, alive: true, role: sh[i] };
     } else {
       upd[`players/${id}/role`] = sh[i]; upd[`players/${id}/alive`] = true;
-      upd[`players/${id}/votedFor`] = null; upd[`players/${id}/nightTarget`] = null; upd[`players/${id}/investigation`] = null;
+      upd[`players/${id}/votedFor`] = null; upd[`players/${id}/nightTarget`] = null; upd[`players/${id}/investigation`] = null; upd[`players/${id}/lastNight`] = null;
     }
   });
   const bot = ids.filter(i => String(i).startsWith('ai_bot_'));
@@ -488,7 +572,7 @@ function startDay(r, now) {
   } else if (ev === 'silence') {
     label = '본부장 순시 (채팅 금지)'; text = '🤫 [본부장 순시] 복도에 본부장님이 보입니다! 오늘은 채팅 금지, 투표로만 의견을 표시하세요.';
   } else {
-    ev = 'calm'; label = '평온한 아침'; text = '🌤️ [평온한 아침] 별다른 소동 없이 회의가 시작됩니다. 다들 서로를 힐끔거립니다.';
+    ev = 'calm'; label = '사무실 일상'; text = pick(CALM_LINES);
   }
   addLog(r, now, text, 'event');
   r.event = { type: ev, label }; r.phaseEndsAt = now + dur * 1000;
@@ -529,7 +613,7 @@ function advance(r, now) {
     const s = Object.entries(votes).sort((a, b) => b[1] - a[1]);
     if (s.length && (s.length === 1 || s[0][1] > s[1][1])) {
       const v = P[s[0][0]]; v.alive = false;
-      sys(pick(OUT_LINES)(v.name, ROLE_NAME[v.role]), 'death');
+      sys(pick(OUT_LINES)(v.name, ROLE_NAME[v.role]) + ` 사유: ${pick(REASONS)}`, 'death');
       if (v.isAi) addLog(r, now, '(유언) ' + pick(LAST_WORDS), 'chat', v.name);
     } else sys(s.length ? pick(TIE_LINES) : pick(NOVOTE_LINES));
     ids.forEach(i => { delete P[i].votedFor; delete P[i].nightTarget; });
@@ -552,6 +636,7 @@ function advance(r, now) {
       if (!t || !P[t]) return;
       if (p.role === 'mafia') mT = t;
       if (p.role === 'doctor') dT = t;
+      if (p.role === 'mafia' || p.role === 'doctor') p.lastNight = { name: P[t].name, day: r.dayCount };
       if (p.role === 'police') p.investigation = { target: t, name: P[t].name, isMafia: P[t].role === 'mafia', day: r.dayCount };
     });
     if (mT && P[mT].alive) {
@@ -604,11 +689,11 @@ function renderGame() {
   const r = room, P = r.players, me = P[myId];
   const ended = r.status === 'ended';
   const pb = $('phase-badge');
-  if (ended) { pb.className = 'px-3 py-1 rounded text-xs font-mono font-bold bg-slate-600/30 text-slate-300 border border-slate-500/30'; pb.innerText = '🏁 작전 종료'; $('timer-display').innerText = '-'; }
-  else if (r.phase === 'day') { pb.className = 'px-3 py-1 rounded text-xs font-mono font-bold bg-blue-600/20 text-blue-400 border border-blue-500/30'; pb.innerText = `☀️ 제 ${r.dayCount}일차 주간 (토론 및 투표)`; }
-  else { pb.className = 'px-3 py-1 rounded text-xs font-mono font-bold bg-purple-600/20 text-purple-400 border border-purple-500/30'; pb.innerText = `🌙 제 ${r.dayCount}일차 야간 (비밀 조치)`; }
+  if (ended) { pb.className = 'px-3 py-1 rounded text-xs font-mono font-bold bg-slate-600/30 text-slate-600 border border-slate-500/30'; pb.innerText = '🏁 작전 종료'; $('timer-display').innerText = '-'; }
+  else if (r.phase === 'day') { pb.className = 'px-3 py-1 rounded text-xs font-mono font-bold bg-blue-600/20 text-blue-700 border border-blue-500/30'; pb.innerText = `☀️ 제 ${r.dayCount}일차 주간 (토론 및 투표)`; }
+  else { pb.className = 'px-3 py-1 rounded text-xs font-mono font-bold bg-purple-600/20 text-purple-700 border border-purple-500/30'; pb.innerText = `🌙 제 ${r.dayCount}일차 야간 (비밀 조치)`; }
 
-  const colMap = { mafia: 'text-red-400', doctor: 'text-green-400', police: 'text-yellow-400', citizen: 'text-blue-400' };
+  const colMap = { mafia: 'text-red-600', doctor: 'text-green-700', police: 'text-yellow-700', citizen: 'text-blue-700' };
   $('my-role-badge').innerText = ROLE_NAME[me.role]; $('my-role-badge').className = 'font-bold ' + colMap[me.role];
 
   const pl = $('in-game-player-list'); pl.innerHTML = '';
@@ -619,7 +704,7 @@ function renderGame() {
     const tag = show && ROLE_TAG[p.role] ? `<span class="${ROLE_TAG[p.role][1]} text-[10px]">[${ROLE_TAG[p.role][0]}]</span>` : '';
     const d = document.createElement('div');
     d.className = `p-2.5 bg-tata-bg border rounded font-mono text-xs flex justify-between items-center ${p.alive ? 'border-tata-border' : 'border-red-500/30 opacity-50'}`;
-    d.innerHTML = `<span>👤 ${esc(p.name)} ${tag}</span><span class="${p.alive ? 'text-green-400' : 'text-red-400'}">${p.alive ? '정상영업' : '영업정지'}</span>`;
+    d.innerHTML = `<span>👤 ${esc(p.name)} ${tag}</span><span class="${p.alive ? 'text-green-700' : 'text-red-600'}">${p.alive ? '정상영업' : '영업정지'}</span>`;
     pl.appendChild(d);
   });
   $('in-game-count').innerText = aliveCount;
@@ -628,6 +713,7 @@ function renderGame() {
   const sig = [r.status, r.phase, r.dayCount, me.alive, me.votedFor, me.nightTarget, me.investigation && me.investigation.day, Object.values(P).map(p => +p.alive).join('')].join('|');
   if (sig !== lastSig) { lastSig = sig; renderPrompt(r, me); }
 
+  renderBriefing(r, me);
   const silent = r.status === 'playing' && r.phase === 'day' && r.event && r.event.type === 'silence';
   const canChat = r.status === 'playing' && r.phase === 'day' && me.alive && !silent;
   $('chat-input').disabled = !canChat;
@@ -642,13 +728,13 @@ function renderGame() {
     const term = $('terminal-logs'); term.innerHTML = '';
     keys.forEach(k => {
       const l = r.logs[k], d = document.createElement('div'); d.className = 'py-0.5';
-      const t = document.createElement('span'); t.className = 'text-slate-500'; t.textContent = `[${l.t}] `; d.appendChild(t);
+      const t = document.createElement('span'); t.className = 'text-slate-400'; t.textContent = `[${l.t}] `; d.appendChild(t);
       if (l.kind === 'chat') {
-        const n = document.createElement('strong'); n.className = 'text-blue-400'; n.textContent = l.name + ': '; d.appendChild(n);
+        const n = document.createElement('strong'); n.className = 'text-blue-700'; n.textContent = l.name + ': '; d.appendChild(n);
         const x = document.createElement('span'); x.textContent = l.text; d.appendChild(x);
       } else {
         const x = document.createElement('span');
-        x.className = { story: 'text-amber-200/90 italic', event: 'text-yellow-300 font-bold', death: 'text-red-300 font-bold' }[l.kind] || 'text-tata-text';
+        x.className = { story: 'text-amber-800 italic', event: 'text-yellow-700 font-bold', death: 'text-red-700 font-bold' }[l.kind] || 'text-tata-text';
         x.textContent = l.text; d.appendChild(x);
         if (l.kind === 'story') d.className += ' border-l-2 border-amber-500/40 pl-2 my-1';
       }
@@ -728,7 +814,7 @@ function renderPromptWithResult(r, me) {
   _renderPrompt(r, me);
   if (me.role === 'police' && me.investigation && r.status !== 'ended') {
     const i = me.investigation, d = document.createElement('div');
-    d.className = 'mt-3 p-2 rounded border border-yellow-500/30 bg-yellow-500/10 text-[11px] text-yellow-300 font-mono';
+    d.className = 'mt-3 p-2 rounded border border-yellow-500/30 bg-yellow-500/10 text-[11px] text-yellow-700 font-mono';
     d.textContent = `🔍 최근 조사 결과 (${i.day}일차 밤): ${i.name} → ${i.isMafia ? '과다 DC 스파이 맞음!' : '스파이 아님'}`;
     $('action-buttons').appendChild(d);
   }
@@ -741,7 +827,7 @@ async function resetRoom() {
     if (p.isAi || p.left) upd['players/' + p.id] = null;
     else {
       upd[`players/${p.id}/alive`] = true; upd[`players/${p.id}/role`] = 'citizen';
-      upd[`players/${p.id}/votedFor`] = null; upd[`players/${p.id}/nightTarget`] = null; upd[`players/${p.id}/investigation`] = null;
+      upd[`players/${p.id}/votedFor`] = null; upd[`players/${p.id}/nightTarget`] = null; upd[`players/${p.id}/investigation`] = null; upd[`players/${p.id}/lastNight`] = null;
     }
   });
   upd['logs/' + logKey(nowS())] = { t: clock(), text: '[AI 진행자] 새 작전을 위해 대기실로 복귀했습니다.', kind: 'sys' };
@@ -760,7 +846,7 @@ window.sendChatMessage = () => safe(async () => {
 });
 QUICK.forEach(q => {
   const b = document.createElement('button');
-  b.className = 'qchip text-[11px] px-2 py-1 rounded border border-tata-border bg-tata-bg text-slate-300 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed';
+  b.className = 'qchip text-[11px] px-2 py-1 rounded border border-tata-border bg-tata-bg text-slate-600 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed';
   b.textContent = q; b.disabled = true; b.onclick = () => safe(() => postChat(q));
   $('quick-chat').appendChild(b);
 });
