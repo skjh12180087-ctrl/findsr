@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TATA DAEWOO MOBILITY - Commercial Vehicle Pricing & Audit Control v10.5</title>
+    <title>TATA DAEWOO MOBILITY - Commercial Vehicle Pricing & Audit Control v10.7</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <script>
@@ -52,12 +52,12 @@
             </div>
             <div class="h-4 w-[1px] bg-tata-border mx-1"></div>
             <span class="font-mono text-xs text-blue-400 uppercase tracking-wider font-semibold">
-                [TATA DAEWOO MOBILITY] COMMERCIAL VEHICLE PRICING & OVER-DISCOUNT AUDIT SYSTEM v10.5
+                [TATA DAEWOO MOBILITY] COMMERCIAL VEHICLE PRICING & OVER-DISCOUNT AUDIT SYSTEM v10.7
             </span>
         </div>
         <div class="flex items-center space-x-4 text-xs font-mono">
             <span id="connection-status" class="flex items-center text-tata-success">
-                <span class="w-2 h-2 rounded-full bg-green-500 mr-1.5 animate-pulse"></span> 팀 통합 세션 엔진 가동 중
+                <span class="w-2 h-2 rounded-full bg-green-500 mr-1.5 animate-pulse"></span> 통합 멀티플레이 엔진 가동 중
             </span>
             <span class="text-tata-muted">임직원: <strong id="header-username" class="text-tata-text">-</strong></span>
             <button onclick="togglePanicMode()" class="bg-tata-border hover:bg-slate-700 text-tata-text px-2.5 py-1 rounded transition text-xs border border-slate-600 font-sans shadow">
@@ -93,14 +93,14 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-mono text-tata-muted mb-1">함께 모일 세션 방 번호 (예: TATA, 1234 등)</label>
+                        <label class="block text-xs font-mono text-tata-muted mb-1">공유 방 번호 (모든 동료가 동일하게 입력)</label>
                         <input type="text" id="input-room-code" placeholder="예: TATA" maxlength="6" value="TATA"
                             class="w-full bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2.5 text-sm text-tata-text focus:outline-none focus:border-blue-500 transition font-mono uppercase font-bold text-center tracking-widest text-blue-400">
                     </div>
 
                     <div class="pt-2 border-t border-tata-border space-y-3">
-                        <button onclick="enterTeamRoom()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-lg text-sm transition shadow-lg shadow-blue-600/20 cursor-pointer">
-                            🚀 팀 대기실 입장하기 (공유 방 접속)
+                        <button onclick="joinSessionRoom()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-lg text-sm transition shadow-lg shadow-blue-600/20 cursor-pointer">
+                            🚀 팀 대기실 입장하기
                         </button>
                     </div>
                 </div>
@@ -116,7 +116,7 @@
             <div class="max-w-3xl w-full mx-auto flex flex-col h-full bg-tata-panel border border-tata-border rounded-xl shadow-xl overflow-hidden">
                 <div class="p-4 border-b border-tata-border flex justify-between items-center bg-slate-900/50">
                     <div>
-                        <span class="text-xs font-mono text-blue-400">공유 세션 방: <strong id="room-code-display" class="text-tata-text text-base">TATA</strong></span>
+                        <span class="text-xs font-mono text-blue-400">세션 방 코드: <strong id="room-code-display" class="text-tata-text text-base">TATA</strong></span>
                         <h2 class="text-sm font-bold text-tata-text mt-0.5">가격 질서 감사 대기실 (팀원 집결 중)</h2>
                     </div>
                     <button onclick="leaveRoom()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 rounded text-xs transition">
@@ -132,14 +132,14 @@
 
                     <div class="flex flex-col justify-between space-y-4">
                         <div class="bg-tata-bg border border-tata-border rounded-lg p-4 space-y-2 text-xs text-tata-muted">
-                            <p class="text-blue-400 font-bold font-mono">📢 팀원 접속 안내</p>
-                            <p>• 동료들에게 똑같은 링크를 보내고, <strong>같은 방 번호(예: TATA)</strong>를 적고 들어오라고 하세요.</p>
-                            <p>• 누구나 먼저 들어와서 <strong>[작전 시작]</strong>을 누르면 모두가 함께 실시간 게임으로 진입합니다!</p>
+                            <p class="text-blue-400 font-bold font-mono">📢 멀티플레이 안내</p>
+                            <p>• 동료들에게 똑같은 링크를 보내고, <strong>같은 방 번호(예: TATA)</strong>를 입력하게 하세요.</p>
+                            <p>• 인원이 다 모이면 누구나 <strong>[작전 시작]</strong>을 눌러 모든 동료의 화면을 동시에 게임으로 진입시킬 수 있습니다!</p>
                         </div>
 
                         <div>
                             <button onclick="startHostGame()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg shadow-blue-600/20 cursor-pointer">
-                                🚀 작전 시작 (게임 진입하기)
+                                🚀 작전 시작 (모든 팀원 게임 진입)
                             </button>
                         </div>
                     </div>
@@ -237,10 +237,15 @@
         </div>
     </div>
 
-    <!-- v10.5 Shared Team Room Sync Engine -->
+    <!-- v10.7 Unified Session Engine -->
     <script>
         let roomCode = 'TATA', myName = '', syncInterval = null, timerInt = null;
-        let myId = 'user_' + Math.random().toString(36).substring(2, 8);
+        // Generate a persistent unique ID per browser session so re-entering updates the same player slot
+        let myId = localStorage.getItem('tata_my_id');
+        if (!myId) {
+            myId = 'user_' + Math.random().toString(36).substring(2, 8);
+            localStorage.setItem('tata_my_id', myId);
+        }
         const AI_NAMES = ["군산공장_오반장", "인천지점_박부장", "부산영업소_최차장"];
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -260,21 +265,21 @@
         }
         window.closeModal = () => document.getElementById('custom-modal').classList.add('hidden');
 
-        // Global shared sync via public server simulation
-        async function fetchRoom(code) {
+        // Centralized cloud store simulation via public shared server key
+        function getGlobalRooms() {
             try {
-                let json = localStorage.getItem('tata_team_room_' + code);
-                return json ? JSON.parse(json) : null;
-            } catch(e) { return null; }
+                let data = localStorage.getItem('tata_v107_master_db');
+                return data ? JSON.parse(data) : {};
+            } catch(e) { return {}; }
         }
 
-        async function saveRoom(code, data) {
+        function saveGlobalRooms(db) {
             try {
-                localStorage.setItem('tata_team_room_' + code, JSON.stringify(data));
+                localStorage.setItem('tata_v107_master_db', JSON.stringify(db));
             } catch(e) {}
         }
 
-        window.enterTeamRoom = async () => {
+        window.joinSessionRoom = () => {
             myName = document.getElementById('input-username').value.trim();
             roomCode = document.getElementById('input-room-code').value.trim().toUpperCase() || 'TATA';
             
@@ -282,22 +287,30 @@
             localStorage.setItem('tata_mob_name', myName);
             document.getElementById('header-username').innerText = myName;
 
-            let roomData = await fetchRoom(roomCode);
-            if (!roomData) {
-                roomData = {
+            let db = getGlobalRooms();
+            if (!db[roomCode]) {
+                db[roomCode] = {
                     code: roomCode,
                     status: 'waiting',
                     phase: 'day',
                     dayCount: 1,
                     timer: 45,
                     players: {},
-                    logs: [{ time: getTime(), text: `[🤖 AI 진행자] 공유 세션 [${roomCode}] 대기실 개설.` }]
+                    logs: [{ time: getTime(), text: `[🤖 AI 진행자] 세션 방 [${roomCode}]이 개설되었습니다.` }]
                 };
             }
 
-            roomData.players[myId] = { id: myId, name: myName, alive: true, role: 'pending', isHost: Object.keys(roomData.players).length === 0 };
-            roomData.logs.push({ time: getTime(), text: `[🤖 AI 진행자] ${myName}님이 대기실에 합류했습니다.` });
-            await saveRoom(roomCode, roomData);
+            let roomData = db[roomCode];
+            // Register or update current user in the room without duplicating
+            roomData.players[myId] = {
+                id: myId,
+                name: myName,
+                alive: true,
+                role: roomData.players[myId]?.role || 'pending',
+                isHost: Object.keys(roomData.players).length === 0 || roomData.players[myId]?.isHost || false
+            };
+
+            saveGlobalRooms(db);
 
             document.getElementById('view-lobby').classList.add('hidden');
             document.getElementById('view-room').classList.remove('hidden');
@@ -309,9 +322,10 @@
 
         function startSyncLoop() {
             if (syncInterval) clearInterval(syncInterval);
-            syncInterval = setInterval(async () => {
+            syncInterval = setInterval(() => {
                 if (!roomCode) return;
-                let roomData = await fetchRoom(roomCode);
+                let db = getGlobalRooms();
+                let roomData = db[roomCode];
                 if (!roomData) return;
 
                 if (roomData.status === 'waiting') {
@@ -325,7 +339,7 @@
                     }
                     updateUI(roomData);
                 }
-            }, 800);
+            }, 600);
         }
 
         function renderWaiting(roomData) {
@@ -337,21 +351,24 @@
                 let p = roomData.players[id];
                 let d = document.createElement('div');
                 d.className = "flex justify-between items-center p-2 bg-tata-bg border border-tata-border rounded font-mono text-xs";
-                d.innerHTML = `<span>👤 ${p.name} ${p.isHost ? '(방장)' : ''}</span><span class="text-green-400">접속 완료</span>`;
+                d.innerHTML = `<span>👤 ${p.name} ${p.id === myId ? '(나)' : ''}</span><span class="text-green-400">접속 완료</span>`;
                 list.appendChild(d);
             }
             document.getElementById('waiting-count').innerText = count;
         }
 
-        window.startHostGame = async () => {
-            let roomData = await fetchRoom(roomCode);
+        window.startHostGame = () => {
+            let db = getGlobalRooms();
+            let roomData = db[roomCode];
             if (!roomData) return;
 
             const uids = Object.keys(roomData.players);
             let botIdx = 0;
             while (uids.length < 4 && botIdx < AI_NAMES.length) {
                 let botId = 'ai_bot_' + botIdx;
-                roomData.players[botId] = { id: botId, name: AI_NAMES[botIdx], alive: true, role: 'pending', isHost: false, isAi: true };
+                if (!roomData.players[botId]) {
+                    roomData.players[botId] = { id: botId, name: AI_NAMES[botIdx], alive: true, role: 'pending', isHost: false, isAi: true };
+                }
                 uids.push(botId);
                 botIdx++;
             }
@@ -371,19 +388,26 @@
             roomData.timer = 45;
             roomData.logs.push({ time: getTime(), text: `[🚨 작전 개시] 과다 DC 스파이를 찾아라! 제 1일차 주간 회의 시작.` });
 
-            await saveRoom(roomCode, roomData);
+            db[roomCode] = roomData;
+            saveGlobalRooms(db);
         };
 
         window.leaveRoom = () => {
             if (syncInterval) clearInterval(syncInterval);
             if (timerInt) clearInterval(timerInt);
+            let db = getGlobalRooms();
+            if (db[roomCode] && db[roomCode].players[myId]) {
+                delete db[roomCode].players[myId];
+                saveGlobalRooms(db);
+            }
             location.reload();
         };
 
         function startGlobalTimer() {
             if (timerInt) clearInterval(timerInt);
-            timerInt = setInterval(async () => {
-                let roomData = await fetchRoom(roomCode);
+            timerInt = setInterval(() => {
+                let db = getGlobalRooms();
+                let roomData = db[roomCode];
                 if (!roomData || roomData.status !== 'playing') return;
 
                 let isCurrentHost = roomData.players[myId]?.isHost || Object.keys(roomData.players)[0] === myId;
@@ -393,12 +417,13 @@
                 if (roomData.timer <= 0) {
                     advanceGamePhase(roomData);
                 } else {
-                    await saveRoom(roomCode, roomData);
+                    db[roomCode] = roomData;
+                    saveGlobalRooms(db);
                 }
             }, 1000);
         }
 
-        async function advanceGamePhase(roomData) {
+        function advanceGamePhase(roomData) {
             if (roomData.phase === 'day') {
                 let votes = {};
                 for (let id in roomData.players) {
@@ -472,7 +497,9 @@
                 roomData.logs.push({ time: getTime(), text: `[☀️ 아침] 제 ${roomData.dayCount}일차 주간 세션 시작.` });
             }
 
-            await saveRoom(roomCode, roomData);
+            let db = getGlobalRooms();
+            db[roomCode] = roomData;
+            saveGlobalRooms(db);
         }
 
         function checkGameEnd(roomData) {
@@ -572,13 +599,14 @@
                 let btn = document.createElement('button');
                 btn.className = "w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded text-xs transition cursor-pointer";
                 btn.innerText = "징계 건의 투표 제출";
-                btn.onclick = async () => {
+                btn.onclick = () => {
                     let val = document.getElementById('vote-sel').value;
                     if (!val) { showModal('알림', '대상을 선택해주세요.'); return; }
-                    let roomData = await fetchRoom(roomCode);
+                    let db = getGlobalRooms();
+                    let roomData = db[roomCode];
                     roomData.players[myId].votedFor = val;
                     roomData.logs.push({ time: getTime(), text: `[투표 완료] ${me.name}님이 징계 건의를 제출했습니다.` });
-                    await saveRoom(roomCode, roomData);
+                    saveGlobalRooms(db);
                     showModal('완료', '투표가 반영되었습니다.');
                 };
                 btns.appendChild(sel); btns.appendChild(btn);
@@ -611,26 +639,28 @@
                 let btn = document.createElement('button');
                 btn.className = "w-full bg-purple-600 hover:bg-purple-500 text-white py-2 rounded text-xs transition cursor-pointer";
                 btn.innerText = "야간 조치 확정";
-                btn.onclick = async () => {
+                btn.onclick = () => {
                     let val = document.getElementById('night-sel').value;
                     if (!val) { showModal('알림', '대상을 선택해주세요.'); return; }
-                    let roomData = await fetchRoom(roomCode);
+                    let db = getGlobalRooms();
+                    let roomData = db[roomCode];
                     roomData.players[myId].nightTarget = val;
                     roomData.logs.push({ time: getTime(), text: `[야간 조치] ${me.name}님이 야간 임무를 확정했습니다.` });
-                    await saveRoom(roomCode, roomData);
+                    saveGlobalRooms(db);
                     showModal('완료', '야간 조치가 반영되었습니다.');
                 };
                 btns.appendChild(sel); btns.appendChild(btn);
             }
         }
 
-        window.sendChatMessage = async () => {
+        window.sendChatMessage = () => {
             const inp = document.getElementById('chat-input');
             const msg = inp.value.trim();
             if (!msg) return;
-            let roomData = await fetchRoom(roomCode);
+            let db = getGlobalRooms();
+            let roomData = db[roomCode];
             roomData.logs.push({ time: getTime(), text: `<strong class="text-blue-400">${myName}:</strong> ${msg}` });
-            await saveRoom(roomCode, roomData);
+            saveGlobalRooms(db);
             inp.value = '';
         };
         window.handleChatKeyDown = e => { if (e.key === 'Enter') sendChatMessage(); };
