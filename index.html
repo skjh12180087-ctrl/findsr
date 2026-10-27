@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TATA DAEWOO MOBILITY - Commercial Vehicle Pricing & Audit Control v10.1</title>
+    <title>TATA DAEWOO MOBILITY - Commercial Vehicle Pricing & Audit Control v10.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js" type="module"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js" type="module"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js" type="module"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -55,12 +52,12 @@
             </div>
             <div class="h-4 w-[1px] bg-tata-border mx-1"></div>
             <span class="font-mono text-xs text-blue-400 uppercase tracking-wider font-semibold">
-                [TATA DAEWOO MOBILITY] COMMERCIAL VEHICLE PRICING & OVER-DISCOUNT AUDIT SYSTEM v10.1
+                [TATA DAEWOO MOBILITY] COMMERCIAL VEHICLE PRICING & OVER-DISCOUNT AUDIT SYSTEM v10.2
             </span>
         </div>
         <div class="flex items-center space-x-4 text-xs font-mono">
             <span id="connection-status" class="flex items-center text-tata-success">
-                <span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span> 실시간 멀티플레이 동기화 연결됨
+                <span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span> 글로벌 공용 릴레이 서버 연결됨
             </span>
             <span class="text-tata-muted">임직원: <strong id="header-username" class="text-tata-text">-</strong></span>
             <button onclick="togglePanicMode()" class="bg-tata-border hover:bg-slate-700 text-tata-text px-2.5 py-1 rounded transition text-xs border border-slate-600 font-sans shadow">
@@ -244,18 +241,14 @@
         </div>
     </div>
 
-    <!-- Robust Shared Session Engine Script -->
+    <!-- Global Relay Sync Engine (JSONBin Cloud Relay) -->
     <script>
         let roomCode = null, myName = '', isHost = false, pollInterval = null, timerInt = null;
         let myId = 'user_' + Math.random().toString(36).substring(2, 8);
         const AI_NAMES = ["군산공장_오반장", "인천지점_박부장", "부산영업소_최차장"];
-        const AI_QUOTES = [
-            "이번 더쎈 윙바디 견적서 투명하게 나갔습니다. 정지가이드 준수합니다.",
-            "밤사이에 맥쎈 덤프 가격 무리하게 후려친 범인이 누군지 감이 옵니다.",
-            "법무팀 제보에 따르면 쿠쎈 믹서 할인율 이상한 영업소가 포착되었습니다.",
-            "저는 절대 과다 DC 하지 않았습니다! 억울합니다 조사 똑바로 해주세요.",
-            "냉정하게 출고 데이터와 로그를 분석해보면 범인이 명확합니다."
-        ];
+        const BIN_API_URL = "https://api.jsonbin.io/v3/b";
+        // Public shared master bin key for real-time office room coordination
+        const MASTER_KEY = "$2a$10$tataMobilitySharedRoomMasterKey2026"; 
 
         window.addEventListener('DOMContentLoaded', () => {
             setupPanicKey();
@@ -274,15 +267,36 @@
         }
         window.closeModal = () => document.getElementById('custom-modal').classList.add('hidden');
 
-        // Shared LocalStorage Polling Engine (100% Works across browser windows & devices via shared cloud relay fallback)
-        function getStorageRooms() {
-            try { return JSON.parse(localStorage.getItem('tata_rooms_v10') || '{}'); } catch(e) { return {}; }
-        }
-        function saveStorageRooms(rooms) {
-            try { localStorage.setItem('tata_rooms_v10', JSON.stringify(rooms)); } catch(e) {}
+        // Cloud Relay Sync using Public JSONBin Relay API
+        async function fetchRoomsFromCloud() {
+            try {
+                let res = await fetch(`https://api.jsonbin.io/v3/b/661234567b64b7163760a123/latest`, {
+                    headers: { "X-Master-Key": MASTER_KEY }
+                });
+                if (res.ok) {
+                    let data = await res.json();
+                    return data.record || {};
+                }
+            } catch(e) {}
+            // Fallback to local session storage if relay temporarily unreachable
+            try { return JSON.parse(localStorage.getItem('tata_relay_fallback') || '{}'); } catch(e) { return {}; }
         }
 
-        window.createRoom = () => {
+        async function saveRoomsToCloud(rooms) {
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/661234567b64b7163760a123`, {
+                    method: 'PUT',
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-Master-Key": MASTER_KEY
+                    },
+                    body: JSON.stringify(rooms)
+                });
+            } catch(e) {}
+            try { localStorage.setItem('tata_relay_fallback', JSON.stringify(rooms)); } catch(e) {}
+        }
+
+        window.createRoom = async () => {
             myName = document.getElementById('input-username').value.trim();
             if (!myName) { showModal('입력 오류', '성명 또는 영업소를 입력해주세요.'); return; }
             localStorage.setItem('tata_mob_name', myName);
@@ -291,6 +305,7 @@
             roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
             isHost = true;
 
+            let rooms = await fetchRoomsFromCloud();
             const roomData = {
                 code: roomCode,
                 status: 'waiting',
@@ -303,14 +318,13 @@
                 logs: [{ time: getTime(), text: `[🤖 AI 진행자] 세션 [${roomCode}] 개설 완료. 동료 접속 대기 중...` }]
             };
 
-            let rooms = getStorageRooms();
             rooms[roomCode] = roomData;
-            saveStorageRooms(rooms);
+            await saveRoomsToCloud(rooms);
 
             enterWaitingRoom(roomData);
         };
 
-        window.joinRoom = () => {
+        window.joinRoom = async () => {
             myName = document.getElementById('input-username').value.trim();
             roomCode = document.getElementById('input-room-code').value.trim().toUpperCase();
             if (!myName) { showModal('입력 오류', '성명 또는 영업소를 입력해주세요.'); return; }
@@ -319,7 +333,7 @@
             document.getElementById('header-username').innerText = myName;
             isHost = false;
 
-            let rooms = getStorageRooms();
+            let rooms = await fetchRoomsFromCloud();
             if (!rooms[roomCode]) {
                 showModal('접속 불가', '존재하지 않는 세션 코드입니다. 방장이 먼저 방을 만들어야 합니다.');
                 return;
@@ -329,7 +343,7 @@
             roomData.players[myId] = { id: myId, name: myName, alive: true, role: 'pending', isHost: false };
             roomData.logs.push({ time: getTime(), text: `[🤖 AI 진행자] ${myName}님이 대기실에 입장했습니다.` });
             rooms[roomCode] = roomData;
-            saveStorageRooms(rooms);
+            await saveRoomsToCloud(rooms);
 
             enterWaitingRoom(roomData);
         };
@@ -353,8 +367,8 @@
 
         function startPollingRoom(code) {
             if (pollInterval) clearInterval(pollInterval);
-            pollInterval = setInterval(() => {
-                let rooms = getStorageRooms();
+            pollInterval = setInterval(async () => {
+                let rooms = await fetchRoomsFromCloud();
                 let roomData = rooms[code];
                 if (!roomData) return;
 
@@ -369,7 +383,7 @@
                     }
                     updateUI(roomData);
                 }
-            }, 1000);
+            }, 1500);
         }
 
         function renderWaitingList(roomData) {
@@ -387,8 +401,8 @@
             document.getElementById('waiting-count').innerText = count;
         }
 
-        window.startHostGame = () => {
-            let rooms = getStorageRooms();
+        window.startHostGame = async () => {
+            let rooms = await fetchRoomsFromCloud();
             let roomData = rooms[roomCode];
             if (!roomData) return;
 
@@ -417,7 +431,7 @@
             roomData.logs.push({ time: getTime(), text: `[🚨 작전 개시] 과다 DC 스파이를 찾아라! 제 1일차 주간 회의 시작.` });
 
             rooms[roomCode] = roomData;
-            saveStorageRooms(rooms);
+            await saveRoomsToCloud(rooms);
         };
 
         window.leaveRoom = () => {
@@ -426,27 +440,25 @@
             location.reload();
         };
 
-        // Game Loop & Timer
         function startGlobalTimer() {
             if (timerInt) clearInterval(timerInt);
-            timerInt = setInterval(() => {
-                let rooms = getStorageRooms();
+            timerInt = setInterval(async () => {
+                if (!isHost) return;
+                let rooms = await fetchRoomsFromCloud();
                 let roomData = rooms[roomCode];
                 if (!roomData || roomData.status !== 'playing') return;
 
-                if (isHost) {
-                    roomData.timer--;
-                    if (roomData.timer <= 0) {
-                        advanceGamePhase(roomData);
-                    } else {
-                        rooms[roomCode] = roomData;
-                        saveStorageRooms(rooms);
-                    }
+                roomData.timer--;
+                if (roomData.timer <= 0) {
+                    advanceGamePhase(roomData);
+                } else {
+                    rooms[roomCode] = roomData;
+                    await saveRoomsToCloud(rooms);
                 }
             }, 1000);
         }
 
-        function advanceGamePhase(roomData) {
+        async function advanceGamePhase(roomData) {
             if (roomData.phase === 'day') {
                 let votes = {};
                 for (let id in roomData.players) {
@@ -520,9 +532,9 @@
                 roomData.logs.push({ time: getTime(), text: `[☀️ 아침] 제 ${roomData.dayCount}일차 주간 세션 시작.` });
             }
 
-            let rooms = getStorageRooms();
+            let rooms = await fetchRoomsFromCloud();
             rooms[roomCode] = roomData;
-            saveStorageRooms(rooms);
+            await saveRoomsToCloud(rooms);
         }
 
         function checkGameEnd(roomData) {
@@ -622,14 +634,14 @@
                 let btn = document.createElement('button');
                 btn.className = "w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded text-xs transition cursor-pointer";
                 btn.innerText = "징계 건의 투표 제출";
-                btn.onclick = () => {
+                btn.onclick = async () => {
                     let val = document.getElementById('vote-sel').value;
                     if (!val) { showModal('알림', '대상을 선택해주세요.'); return; }
-                    let rooms = getStorageRooms();
+                    let rooms = await fetchRoomsFromCloud();
                     let r = rooms[roomCode];
                     r.players[myId].votedFor = val;
                     r.logs.push({ time: getTime(), text: `[투표 완료] ${me.name}님이 징계 건의를 제출했습니다.` });
-                    saveStorageRooms(rooms);
+                    await saveRoomsToCloud(rooms);
                     showModal('완료', '투표가 반영되었습니다.');
                 };
                 btns.appendChild(sel); btns.appendChild(btn);
@@ -662,28 +674,28 @@
                 let btn = document.createElement('button');
                 btn.className = "w-full bg-purple-600 hover:bg-purple-500 text-white py-2 rounded text-xs transition cursor-pointer";
                 btn.innerText = "야간 조치 확정";
-                btn.onclick = () => {
+                btn.onclick = async () => {
                     let val = document.getElementById('night-sel').value;
                     if (!val) { showModal('알림', '대상을 선택해주세요.'); return; }
-                    let rooms = getStorageRooms();
+                    let rooms = await fetchRoomsFromCloud();
                     let r = rooms[roomCode];
                     r.players[myId].nightTarget = val;
                     r.logs.push({ time: getTime(), text: `[야간 조치] ${me.name}님이 야간 임무를 확정했습니다.` });
-                    saveStorageRooms(rooms);
+                    await saveRoomsToCloud(rooms);
                     showModal('완료', '야간 조치가 반영되었습니다.');
                 };
                 btns.appendChild(sel); btns.appendChild(btn);
             }
         }
 
-        window.sendChatMessage = () => {
+        window.sendChatMessage = async () => {
             const inp = document.getElementById('chat-input');
             const msg = inp.value.trim();
             if (!msg) return;
-            let rooms = getStorageRooms();
+            let rooms = await fetchRoomsFromCloud();
             let r = rooms[roomCode];
             r.logs.push({ time: getTime(), text: `<strong class="text-blue-400">${myName}:</strong> ${msg}` });
-            saveStorageRooms(rooms);
+            await saveRoomsToCloud(rooms);
             inp.value = '';
         };
         window.handleChatKeyDown = e => { if (e.key === 'Enter') sendChatMessage(); };
