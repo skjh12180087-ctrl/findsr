@@ -341,8 +341,13 @@ window.startHostGame = () => safe(async () => {
   while (roles.length < ids.length) roles.push('citizen');
   const sh = roles.sort(() => Math.random() - 0.5);
   ids.forEach((id, i) => {
-    upd[`players/${id}/role`] = sh[i]; upd[`players/${id}/alive`] = true;
-    upd[`players/${id}/votedFor`] = null; upd[`players/${id}/nightTarget`] = null; upd[`players/${id}/investigation`] = null;
+    if (players[id].isAi) {
+      // 봇은 객체 전체를 한 번에 씀 (상위/하위 경로 동시 쓰기 금지)
+      upd['players/' + id] = { id, name: players[id].name, isAi: true, joinedAt: 0, alive: true, role: sh[i] };
+    } else {
+      upd[`players/${id}/role`] = sh[i]; upd[`players/${id}/alive`] = true;
+      upd[`players/${id}/votedFor`] = null; upd[`players/${id}/nightTarget`] = null; upd[`players/${id}/investigation`] = null;
+    }
   });
   const bot = ids.filter(i => String(i).startsWith('ai_bot_'));
   const t = nowS();
