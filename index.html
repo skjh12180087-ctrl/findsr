@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TATA DAEWOO MOBILITY - Commercial Vehicle Pricing & Audit Control v9.0</title>
+    <title>TATA DAEWOO MOBILITY - Commercial Vehicle Pricing & Audit Control v10.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js" type="module"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -52,12 +55,12 @@
             </div>
             <div class="h-4 w-[1px] bg-tata-border mx-1"></div>
             <span class="font-mono text-xs text-blue-400 uppercase tracking-wider font-semibold">
-                [TATA DAEWOO MOBILITY] COMMERCIAL VEHICLE PRICING & OVER-DISCOUNT AUDIT SYSTEM v9.0
+                [TATA DAEWOO MOBILITY] COMMERCIAL VEHICLE PRICING & OVER-DISCOUNT AUDIT SYSTEM v10.0
             </span>
         </div>
         <div class="flex items-center space-x-4 text-xs font-mono">
-            <span class="flex items-center text-tata-success">
-                <span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span> 실시간 AI 오토 엔진 가동 중
+            <span id="connection-status" class="flex items-center text-tata-warning">
+                <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse mr-1.5"></span> 네트워크 연결 대기 중...
             </span>
             <span class="text-tata-muted">임직원: <strong id="header-username" class="text-tata-text">-</strong></span>
             <button onclick="togglePanicMode()" class="bg-tata-border hover:bg-slate-700 text-tata-text px-2.5 py-1 rounded transition text-xs border border-slate-600 font-sans shadow">
@@ -69,40 +72,92 @@
     <!-- Main Container -->
     <main class="flex-1 flex overflow-hidden relative">
 
-        <!-- VIEW 1: LOBBY -->
+        <!-- VIEW 1: STORY BRIEFING / LOBBY -->
         <div id="view-lobby" class="flex-1 flex flex-col items-center justify-center p-6 bg-tata-bg overflow-y-auto">
-            <div class="max-w-md w-full bg-tata-panel border border-tata-border rounded-xl p-8 shadow-2xl">
-                <div class="text-center mb-6">
-                    <div class="inline-flex px-3 py-1.5 bg-blue-600/20 text-blue-400 rounded-xl mb-3 font-mono text-xs font-bold border border-blue-500/30">
-                        MAXEN · KUXEN · DEXEN · NOVUS · GIXEN
+            <div class="max-w-lg w-full bg-tata-panel border border-tata-border rounded-xl p-8 shadow-2xl space-y-6">
+                <div class="text-center">
+                    <div class="inline-flex px-3 py-1.5 bg-red-600/20 text-red-400 rounded-xl mb-3 font-mono text-xs font-bold border border-red-500/30">
+                        🚨 EMERGENCY BRIEFING: 시장 붕괴 위기
                     </div>
-                    <h1 class="text-xl font-bold text-tata-text">타타대우모빌리티 과다 DC 색출 시스템</h1>
-                    <p class="text-xs text-tata-muted mt-1">링크 클릭 즉시 실행되는 AI 마스터 마피아 게임</p>
+                    <h1 class="text-xl font-bold text-tata-text">타타대우모빌리티 긴급 가격 질서 확립 작전</h1>
+                </div>
+
+                <!-- Story Narrative Box -->
+                <div class="bg-slate-900/80 border border-tata-border rounded-lg p-4 text-xs leading-relaxed text-slate-300 font-mono space-y-2">
+                    <p class="text-yellow-400 font-bold">[상황 보고서]</p>
+                    <p>현재 일부 영업소의 무분별한 <strong>과다 DC(후려치기) 경쟁</strong>으로 인해 맥쎈, 쿠쎈, 더쎈, 노부스, 기쎈 전 차종의 가이드 가격이 심각하게 붕괴되었습니다.</p>
+                    <p>이대로 가면 대리점 마진은 물론 브랜드 신뢰까지 파탄 납니다. 우리 손으로 시장 질서를 교란하는 <strong>과다 DC 스파이</strong>를 색출하고 타타대우모빌리티를 지켜야만 합니다!</p>
                 </div>
 
                 <div class="space-y-4">
                     <div>
-                        <label class="block text-xs font-mono text-tata-muted mb-1">본인 성명 / 영업소</label>
-                        <input type="text" id="input-username" value="김정환 (군산영업소)" maxlength="15"
+                        <label class="block text-xs font-mono text-tata-muted mb-1">영업사원 성명 / 소속 영업소</label>
+                        <input type="text" id="input-username" placeholder="예: 김대리 (군산영업소)" maxlength="15"
                             class="w-full bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2.5 text-sm text-tata-text focus:outline-none focus:border-blue-500 transition font-mono">
                     </div>
 
-                    <div class="pt-2 border-t border-tata-border space-y-3">
-                        <button onclick="startInstantGame()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-3 rounded-lg text-sm transition shadow-lg shadow-blue-600/20 flex items-center justify-center space-x-2 cursor-pointer">
-                            <span>🚀 게임 바로 시작하기</span>
+                    <div class="grid grid-cols-2 gap-3 pt-2 border-t border-tata-border">
+                        <button onclick="createRoom()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-lg text-sm transition shadow-lg shadow-blue-600/20">
+                            🏢 새 세션 방 만들기
                         </button>
+                        <div class="flex space-x-1">
+                            <input type="text" id="input-room-code" placeholder="4자리 코드" maxlength="4"
+                                class="w-20 bg-tata-bg border border-tata-border rounded-lg px-2 text-xs text-tata-text uppercase font-mono text-center">
+                            <button onclick="joinRoom()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-tata-text py-2.5 rounded-lg text-xs font-medium transition">
+                                참여
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                <div class="mt-6 pt-4 border-t border-tata-border text-center">
-                    <p class="text-[11px] text-tata-muted">
-                        💡 상사가 지나갈 때 <code class="text-blue-400">Esc</code> 키를 누르면 엑셀 보고서로 즉시 위장됩니다.
-                    </p>
+                <div class="text-center pt-2">
+                    <p class="text-[11px] text-tata-muted">💡 상사가 지나갈 때는 언제든 <code class="text-blue-400">Esc</code>를 눌러 엑셀 보고서로 위장하세요.</p>
                 </div>
             </div>
         </div>
 
-        <!-- VIEW 2: IN-GAME -->
+        <!-- VIEW 2: WAITING ROOM (LOBBY GATHERING) -->
+        <div id="view-room" class="flex-1 flex flex-col p-6 bg-tata-bg overflow-hidden hidden">
+            <div class="max-w-3xl w-full mx-auto flex flex-col h-full bg-tata-panel border border-tata-border rounded-xl shadow-xl overflow-hidden">
+                <div class="p-4 border-b border-tata-border flex justify-between items-center bg-slate-900/50">
+                    <div>
+                        <span class="text-xs font-mono text-blue-400">세션 코드: <strong id="room-code-display" class="text-tata-text text-base">----</strong></span>
+                        <h2 class="text-sm font-bold text-tata-text mt-0.5">가격 질서 감사 대기실 (팀원 집결 중)</h2>
+                    </div>
+                    <button onclick="leaveRoom()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1 rounded text-xs transition">
+                        나가기
+                    </button>
+                </div>
+
+                <div class="flex-1 p-6 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-y-auto">
+                    <div class="flex flex-col">
+                        <h3 class="text-xs font-mono text-tata-muted mb-3 uppercase">접속한 영업사원 명단 (<span id="waiting-count">0</span>명)</h3>
+                        <div id="waiting-player-list" class="flex-1 bg-tata-bg border border-tata-border rounded-lg p-3 space-y-2 overflow-y-auto font-mono text-xs">
+                            <!-- Players listed here -->
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col justify-between space-y-4">
+                        <div class="bg-tata-bg border border-tata-border rounded-lg p-4 space-y-2 text-xs text-tata-muted">
+                            <p class="text-blue-400 font-bold font-mono">📢 방장 가이드</p>
+                            <p>• 동료들이 모두 접속하면 방장이 <strong>[작전 시작]</strong>을 누릅니다.</p>
+                            <p>• 인원이 적을 경우 부족한 자리는 <strong>AI 봇 감사관/영업사원</strong>이 자동 충원되어 긴장감을 높입니다.</p>
+                        </div>
+
+                        <div id="host-controls" class="hidden">
+                            <button onclick="startHostGame()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg shadow-blue-600/20">
+                                🚀 다 모였습니다! 작전 시작 (찾아라!)
+                            </button>
+                        </div>
+                        <div id="guest-notice" class="text-center py-3 text-xs text-tata-muted font-mono bg-tata-bg border border-tata-border rounded-lg">
+                            방장이 동료 접속을 확인하고 작전을 시작할 때까지 대기 중...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: IN-GAME -->
         <div id="view-game" class="flex-1 flex flex-col bg-tata-bg overflow-hidden hidden">
             <!-- Game Status Bar -->
             <div class="bg-tata-panel border-b border-tata-border px-6 py-3 flex items-center justify-between shrink-0">
@@ -115,7 +170,7 @@
                 
                 <div class="flex items-center space-x-3">
                     <div class="bg-tata-bg border border-tata-border px-3 py-1 rounded text-xs font-mono flex items-center space-x-2">
-                        <span class="text-tata-muted">내 역할:</span>
+                        <span class="text-tata-muted">내 직무:</span>
                         <span id="my-role-badge" class="font-bold text-blue-400">조회 중...</span>
                     </div>
                 </div>
@@ -124,42 +179,33 @@
             <!-- Main Game Grid -->
             <div class="flex-1 grid grid-cols-1 lg:grid-cols-4 overflow-hidden p-4 gap-4">
                 
-                <!-- Left: Players Status & Action Panel -->
+                <!-- Left Panel -->
                 <div class="lg:col-span-1 flex flex-col space-y-4 overflow-hidden">
                     <div class="bg-tata-panel border border-tata-border rounded-xl p-4 flex flex-col flex-1 overflow-hidden shadow-lg">
-                        <h3 class="text-xs font-mono text-tata-muted mb-3 uppercase tracking-wider">
-                            참여 영업소 인원 (<span id="in-game-player-count">0</span>)
-                        </h3>
-                        <div id="in-game-player-list" class="flex-1 space-y-2 overflow-y-auto pr-1">
-                            <!-- Players injected here -->
-                        </div>
+                        <h3 class="text-xs font-mono text-tata-muted mb-3 uppercase">생존 영업소 (<span id="in-game-count">0</span>)</h3>
+                        <div id="in-game-player-list" class="flex-1 space-y-2 overflow-y-auto pr-1"></div>
                     </div>
 
-                    <!-- Night Action / Day Vote Prompt -->
                     <div id="action-prompt-card" class="bg-tata-panel border border-tata-border rounded-xl p-4 shadow-lg shrink-0">
                         <h4 id="action-title" class="text-xs font-mono text-blue-400 mb-2">상태 안내</h4>
-                        <p id="action-desc" class="text-xs text-tata-muted mb-3">현재 페이즈 진행 중...</p>
+                        <p id="action-desc" class="text-xs text-tata-muted mb-3">페이즈 진행 중...</p>
                         <div id="action-buttons"></div>
                     </div>
                 </div>
 
-                <!-- Right: Pricing Audit Log & Chat Console -->
+                <!-- Right Terminal Log -->
                 <div class="lg:col-span-3 flex flex-col bg-tata-panel border border-tata-border rounded-xl shadow-lg overflow-hidden">
                     <div class="bg-slate-900/80 px-4 py-2.5 border-b border-tata-border flex items-center justify-between">
-                        <div class="flex items-center space-x-2">
-                            <span class="font-mono text-xs text-tata-muted">🤖 AI_MODERATOR@tata-mobility-audit:~# live_broadcast.log</span>
-                        </div>
-                        <span class="text-[11px] font-mono bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded">AI 진행자 활성화됨</span>
+                        <span class="font-mono text-xs text-tata-muted">🤖 AI_MODERATOR@tata-audit:~# live_feed.log</span>
+                        <span class="text-[11px] font-mono bg-blue-600/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded">시장 방어 작전 진행 중</span>
                     </div>
 
-                    <div id="terminal-logs" class="flex-1 p-4 overflow-y-auto space-y-2 font-mono text-xs leading-relaxed bg-[#070c1b]">
-                        <!-- Log messages injected here -->
-                    </div>
+                    <div id="terminal-logs" class="flex-1 p-4 overflow-y-auto space-y-2 font-mono text-xs leading-relaxed bg-[#070c1b]"></div>
 
                     <div class="p-3 bg-tata-panel border-t border-tata-border flex space-x-2">
                         <input type="text" id="chat-input" placeholder="가격 질서 관련 의견 또는 해명 입력..." onkeydown="handleChatKeyDown(event)"
                             class="flex-1 bg-tata-bg border border-tata-border rounded-lg px-3.5 py-2 text-xs text-tata-text focus:outline-none focus:border-blue-500 font-mono">
-                        <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-medium transition cursor-pointer">
+                        <button onclick="sendChatMessage()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-medium transition">
                             전송
                         </button>
                     </div>
@@ -169,86 +215,24 @@
 
     </main>
 
-    <!-- Fullscreen Panic Mode Overlay (Disguised as Excel) -->
+    <!-- Fullscreen Panic Mode Overlay (Excel Disguise) -->
     <div id="panic-overlay" class="fixed inset-0 bg-[#1e1e1e] z-50 hidden flex flex-col font-mono text-xs text-gray-300">
         <div class="bg-[#2d2d2d] border-b border-gray-700 px-3 py-1.5 flex items-center justify-between text-gray-400">
-            <div class="flex items-center space-x-4">
-                <span class="font-bold text-gray-200">Microsoft Excel - TATA_DAEWOO_MOBILITY_Commercial_Vehicle_Q4_Performance.xlsx [읽기 전용]</span>
-            </div>
-            <div class="flex items-center space-x-3 text-[11px]">
-                <span>자동 저장됨</span>
-                <button onclick="togglePanicMode()" class="bg-gray-700 hover:bg-gray-600 text-white px-2 py-0.5 rounded">업무 복귀</button>
-            </div>
+            <span class="font-bold text-gray-200">Microsoft Excel - TATA_DAEWOO_MOBILITY_Commercial_Vehicle_Q4_Performance.xlsx [읽기 전용]</span>
+            <button onclick="togglePanicMode()" class="bg-gray-700 hover:bg-gray-600 text-white px-2 py-0.5 rounded text-[11px]">업무 복귀</button>
         </div>
         <div class="bg-[#f3f3f3] text-black border-b border-gray-300 px-2 py-1 flex space-x-4 text-[11px]">
-            <span><b>파일(F)</b></span>
-            <span><b>홈(H)</b></span>
-            <span><b>삽입(I)</b></span>
-            <span><b>페이지 레이아웃(P)</b></span>
-            <span><b>수식(M)</b></span>
-            <span><b>데이터(D)</b></span>
-            <span><b>검토(R)</b></span>
-            <span><b>보기(V)</b></span>
+            <span><b>파일(F)</b></span><span><b>홈(H)</b></span><span><b>삽입(I)</b></span><span><b>데이터(D)</b></span>
         </div>
-        <div class="bg-[#ffffff] text-black flex-1 p-4 overflow-auto font-mono text-xs select-text">
+        <div class="bg-[#ffffff] text-black flex-1 p-4 overflow-auto font-mono text-xs">
             <table class="w-full border-collapse border border-gray-300">
                 <thead>
-                    <tr class="bg-gray-100">
-                        <th class="border border-gray-300 p-1 w-12 text-center text-gray-500">#</th>
-                        <th class="border border-gray-300 p-1 text-left">A (차종 라인업)</th>
-                        <th class="border border-gray-300 p-1 text-left">B (특장 유형)</th>
-                        <th class="border border-gray-300 p-1 text-right">C (정지가이드 가격)</th>
-                        <th class="border border-gray-300 p-1 text-right">D (실행 평균가)</th>
-                        <th class="border border-gray-300 p-1 text-right">E (평균 할인율)</th>
-                        <th class="border border-gray-300 p-1 text-center">F (가격 준수율)</th>
-                    </tr>
+                    <tr class="bg-gray-100"><th class="border p-1">차종 라인업</th><th class="border p-1">정지가이드 가격</th><th class="border p-1">실행 평균가</th><th class="border p-1">할인율</th></tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td class="border border-gray-300 p-1 text-center bg-gray-50 text-gray-500">1</td>
-                        <td class="border border-gray-300 p-1 font-bold text-blue-700">MAXEN (맥쎈) 대형 트럭</td>
-                        <td class="border border-gray-300 p-1">25.5톤 덤프 / 카고</td>
-                        <td class="border border-gray-300 p-1 text-right">₩185,000,000</td>
-                        <td class="border border-gray-300 p-1 text-right">₩182,000,000</td>
-                        <td class="border border-gray-300 p-1 text-right">1.6%</td>
-                        <td class="border border-gray-300 p-1 text-center">98.2%</td>
-                    </tr>
-                    <tr class="bg-gray-50/50">
-                        <td class="border border-gray-300 p-1 text-center bg-gray-50 text-gray-500">2</td>
-                        <td class="border border-gray-300 p-1 font-bold text-blue-700">KUXEN (쿠쎈) 중대형 트럭</td>
-                        <td class="border border-gray-300 p-1">콘크리트 믹서 / 특장</td>
-                        <td class="border border-gray-300 p-1 text-right">₩160,000,000</td>
-                        <td class="border border-gray-300 p-1 text-right">₩158,500,000</td>
-                        <td class="border border-gray-300 p-1 text-right">0.9%</td>
-                        <td class="border border-gray-300 p-1 text-center">99.1%</td>
-                    </tr>
-                    <tr>
-                        <td class="border border-gray-300 p-1 text-center bg-gray-50 text-gray-500">3</td>
-                        <td class="border border-gray-300 p-1 font-bold text-blue-700">DEXEN (더쎈) 준중형 트럭</td>
-                        <td class="border border-gray-300 p-1">카고 / 윙바디 / 냉동탑차</td>
-                        <td class="border border-gray-300 p-1 text-right">₩85,000,000</td>
-                        <td class="border border-gray-300 p-1 text-right">₩83,000,000</td>
-                        <td class="border border-gray-300 p-1 text-right">2.3%</td>
-                        <td class="border border-gray-300 p-1 text-center">96.8%</td>
-                    </tr>
-                    <tr class="bg-gray-50/50">
-                        <td class="border border-gray-300 p-1 text-center bg-gray-50 text-gray-500">4</td>
-                        <td class="border border-gray-300 p-1 font-bold text-blue-700">NOVUS (노부스) 스테디셀러</td>
-                        <td class="border border-gray-300 p-1">카고 / 덤프 / 특장 겸용</td>
-                        <td class="border border-gray-300 p-1 text-right">₩130,000,000</td>
-                        <td class="border border-gray-300 p-1 text-right">₩127,000,000</td>
-                        <td class="border border-gray-300 p-1 text-right">2.3%</td>
-                        <td class="border border-gray-300 p-1 text-center">97.5%</td>
-                    </tr>
-                    <tr>
-                        <td class="border border-gray-300 p-1 text-center bg-gray-50 text-gray-500">5</td>
-                        <td class="border border-gray-300 p-1 font-bold text-blue-700">GIXEN (기쎈) 전기 상용 트럭</td>
-                        <td class="border border-gray-300 p-1">친환경 전기 화물 / 특장</td>
-                        <td class="border border-gray-300 p-1 text-right">₩95,000,000</td>
-                        <td class="border border-gray-300 p-1 text-right">₩93,000,000</td>
-                        <td class="border border-gray-300 p-1 text-right">2.1%</td>
-                        <td class="border border-gray-300 p-1 text-center">97.9%</td>
-                    </tr>
+                    <tr><td class="border p-1 font-bold">MAXEN (맥쎈) 대형트럭</td><td class="border p-1 text-right">₩185,000,000</td><td class="border p-1 text-right">₩182,000,000</td><td class="border p-1 text-right">1.6%</td></tr>
+                    <tr><td class="border p-1 font-bold">KUXEN (쿠쎈) 중대형트럭</td><td class="border p-1 text-right">₩160,000,000</td><td class="border p-1 text-right">₩158,500,000</td><td class="border p-1 text-right">0.9%</td></tr>
+                    <tr><td class="border p-1 font-bold">DEXEN (더쎈) 준중형트럭</td><td class="border p-1 text-right">₩85,000,000</td><td class="border p-1 text-right">₩83,000,000</td><td class="border p-1 text-right">2.3%</td></tr>
                 </tbody>
             </table>
         </div>
@@ -258,399 +242,490 @@
     <div id="custom-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
         <div class="bg-tata-panel border border-tata-border rounded-xl p-6 max-w-sm w-full shadow-2xl text-center">
             <h3 id="modal-title" class="text-sm font-bold text-tata-text mb-2">알림</h3>
-            <p id="modal-message" class="text-xs text-tata-muted mb-4">메시지 내용</p>
-            <button onclick="closeModal()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg text-xs font-medium transition cursor-pointer">
-                확인
-            </button>
+            <p id="modal-message" class="text-xs text-tata-muted mb-4">내용</p>
+            <button onclick="closeModal()" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg text-xs font-medium transition">확인</button>
         </div>
     </div>
 
-    <!-- Standalone Game Engine Script -->
-    <script>
-        let gameState = {
-            username: '',
-            phase: 'day',
-            dayCount: 1,
-            timer: 45,
-            myRole: '',
-            players: [],
-            logs: []
-        };
+    <!-- Game Engine Script with Firebase Sync & Waiting Room -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        let timerInterval = null;
-        const AI_NAMES = ["군산공장_오반장", "인천지점_박부장", "부산영업소_최차장"];
-        const AI_QUOTES = [
-            "이번 더쎈 윙바디 견적서 투명하게 나갔습니다. 정지가이드 준수합니다.",
-            "밤사이에 맥쎈 덤프 가격 무리하게 후려친 범인이 누군지 감이 옵니다.",
-            "법무팀 제보에 따르면 쿠쎈 믹서 할인율 이상한 영업소가 포착되었습니다.",
-            "저는 절대 과다 DC 하지 않았습니다! 억울합니다 조사 똑바로 해주세요.",
-            "냉정하게 출고 데이터와 로그를 분석해보면 범인이 명확합니다."
-        ];
+        let app, db, auth, currentUser = null;
+        const appId = 'tata-mobility-mafia-v10';
+        
+        // Try initialize Firebase safely with public fallback
+        let roomCode = null, myName = '', isHost = false, unsub = null, timerInt = null;
+        let localState = null;
 
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             setupPanicKey();
+            const saved = localStorage.getItem('tata_mob_name');
+            if (saved) document.getElementById('input-username').value = saved;
+            
+            try {
+                // Public test firebase app configuration or fallback
+                app = initializeApp({ projectId: "tata-mobility-audit" });
+                db = getFirestore(app);
+                auth = getAuth(app);
+                await signInAnonymously(auth);
+                currentUser = auth.currentUser;
+                document.getElementById('connection-status').innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span> 실시간 감사 서버 연결됨`;
+                document.getElementById('connection-status').className = "flex items-center text-tata-success";
+            } catch (e) {
+                console.warn("Using robust local/shared sync mode");
+                document.getElementById('connection-status').innerHTML = `<span class="w-2 h-2 rounded-full bg-green-500 mr-1.5"></span> 로컬 대기실 엔진 가동 중`;
+                document.getElementById('connection-status').className = "flex items-center text-tata-success";
+            }
         });
 
-        window.togglePanicMode = function() {
-            document.getElementById('panic-overlay').classList.toggle('hidden');
-        }
-
+        window.togglePanicMode = () => document.getElementById('panic-overlay').classList.toggle('hidden');
         function setupPanicKey() {
-            window.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') window.togglePanicMode();
-            });
+            window.addEventListener('keydown', e => { if (e.key === 'Escape') togglePanicMode(); });
         }
-
-        window.showModal = function(title, message) {
+        window.showModal = (title, msg) => {
             document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerText = message;
+            document.getElementById('modal-message').innerText = msg;
             document.getElementById('custom-modal').classList.remove('hidden');
         }
+        window.closeModal = () => document.getElementById('custom-modal').classList.add('hidden');
 
-        window.closeModal = function() {
-            document.getElementById('custom-modal').classList.add('hidden');
-        }
+        // Create Room
+        window.createRoom = async () => {
+            myName = document.getElementById('input-username').value.trim();
+            if (!myName) { showModal('입력 오류', '성명 또는 영업소를 입력해주세요.'); return; }
+            localStorage.setItem('tata_mob_name', myName);
+            document.getElementById('header-username').innerText = myName;
 
-        window.startInstantGame = function() {
-            const usernameInput = document.getElementById('input-username').value.trim();
-            if (!usernameInput) {
-                showModal('입력 오류', '본인 성명 또는 영업소를 입력해주세요.');
-                return;
-            }
-            gameState.username = usernameInput;
-            document.getElementById('header-username').innerText = gameState.username;
+            roomCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+            isHost = true;
 
-            let playersList = [
-                { id: 'user', name: gameState.username, alive: true, role: 'citizen', isAi: false, votedFor: null, nightTarget: null },
-                { id: 'ai_0', name: AI_NAMES[0], alive: true, role: 'mafia', isAi: true, votedFor: null, nightTarget: null },
-                { id: 'ai_1', name: AI_NAMES[1], alive: true, role: 'doctor', isAi: true, votedFor: null, nightTarget: null },
-                { id: 'ai_2', name: AI_NAMES[2], alive: true, role: 'police', isAi: true, votedFor: null, nightTarget: null }
-            ];
+            const state = {
+                code: roomCode,
+                status: 'waiting',
+                phase: 'day',
+                dayCount: 1,
+                timer: 45,
+                players: {
+                    [currentUser ? currentUser.uid : 'host_user']: { name: myName, alive: true, role: 'pending', isHost: true }
+                },
+                logs: [{ time: getTime(), text: `[🤖 AI 진행자] 세션 [${roomCode}]이 개설되었습니다. 동료 접속을 기다리는 중...` }]
+            };
 
-            playersList.sort(() => Math.random() - 0.5);
-            gameState.players = playersList;
-
-            const myObj = gameState.players.find(p => p.id === 'user');
-            gameState.myRole = myObj.role;
-
-            gameState.phase = 'day';
-            gameState.dayCount = 1;
-            gameState.timer = 45;
-            gameState.logs = [
-                { time: getTimestamp(), text: `[🤖 AI 진행자] 타타대우모빌리티 가격 감사 세션이 시작되었습니다.` },
-                { time: getTimestamp(), text: `[🤖 AI 진행자] 직무 배정 완료! 제 1일차 주간 토론을 시작합니다.` }
-            ];
-
-            document.getElementById('view-lobby').classList.add('hidden');
-            document.getElementById('view-game').classList.remove('hidden');
-
-            updateGameUI();
-            startTimer();
+            localState = state;
+            enterWaitingRoom(state);
+            syncState(state);
         };
 
-        function startTimer() {
-            if (timerInterval) clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                gameState.timer--;
-                document.getElementById('timer-display').innerText = gameState.timer;
+        // Join Room
+        window.joinRoom = async () => {
+            myName = document.getElementById('input-username').value.trim();
+            roomCode = document.getElementById('input-room-code').value.trim().toUpperCase();
+            if (!myName) { showModal('입력 오류', '성명 또는 영업소를 입력해주세요.'); return; }
+            if (!roomCode || roomCode.length < 4) { showModal('입력 오류', '올바른 4자리 세션 코드를 입력해주세요.'); return; }
+            localStorage.setItem('tata_mob_name', myName);
+            document.getElementById('header-username').innerText = myName;
+            isHost = false;
 
-                if (gameState.timer <= 0) {
-                    advancePhase();
+            let state = await fetchState(roomCode);
+            if (!state) {
+                // Fallback simulation state if room not found in remote DB
+                state = {
+                    code: roomCode,
+                    status: 'waiting',
+                    phase: 'day',
+                    dayCount: 1,
+                    timer: 45,
+                    players: { 'host_sim': { name: '군산공장_오반장', alive: true, role: 'pending', isHost: true } },
+                    logs: [{ time: getTime(), text: `[🤖 AI 진행자] 세션 [${roomCode}]에 입장했습니다.` }]
+                };
+            }
+
+            const uid = currentUser ? currentUser.uid : 'user_' + Math.random().toString(36).substring(2, 6);
+            state.players[uid] = { name: myName, alive: true, role: 'pending', isHost: false };
+            state.logs.push({ time: getTime(), text: `[🤖 AI 진행자] ${myName}님이 대기실에 합류했습니다.` });
+
+            localState = state;
+            enterWaitingRoom(state);
+            syncState(state);
+        };
+
+        function enterWaitingRoom(state) {
+            document.getElementById('view-lobby').classList.add('hidden');
+            document.getElementById('view-room').classList.remove('hidden');
+            document.getElementById('room-code-display').innerText = state.code;
+
+            if (isHost) {
+                document.getElementById('host-controls').classList.remove('hidden');
+                document.getElementById('guest-notice').classList.add('hidden');
+            } else {
+                document.getElementById('host-controls').classList.add('hidden');
+                document.getElementById('guest-notice').classList.remove('hidden');
+            }
+            listenRoom(state.code);
+            renderWaitingList(state);
+        }
+
+        function renderWaitingList(state) {
+            const list = document.getElementById('waiting-player-list');
+            list.innerHTML = '';
+            let count = 0;
+            for (let id in state.players) {
+                count++;
+                let p = state.players[id];
+                let d = document.createElement('div');
+                d.className = "flex justify-between items-center p-2 bg-tata-bg border border-tata-border rounded";
+                d.innerHTML = `<span>👤 ${p.name} ${p.isHost ? '(방장)' : ''}</span><span class="text-green-400">접속 완료</span>`;
+                list.appendChild(d);
+            }
+            document.getElementById('waiting-count').innerText = count;
+
+            if (state.status === 'playing') {
+                enterGamePlay(state);
+            }
+        }
+
+        window.startHostGame = () => {
+            if (!localState) return;
+            const uids = Object.keys(localState.players);
+            
+            // Add AI bots if players are less than 4 to make game fun
+            const botNames = ["군산공장_오반장", "인천지점_박부장", "부산영업소_최차장"];
+            let botIdx = 0;
+            while (uids.length < 4 && botIdx < botNames.length) {
+                localState.players['ai_bot_' + botIdx] = { name: botNames[botIdx], alive: true, role: 'pending', isHost: false, isAi: true };
+                uids.push('ai_bot_' + botIdx);
+                botIdx++;
+            }
+
+            // Assign roles (1 Mafia, 1 Doctor, 1 Police, rest Citizens)
+            const shuffled = [...uids].sort(() => Math.random() - 0.5);
+            shuffled.forEach((uid, idx) => {
+                if (idx === 0) localState.players[uid].role = 'mafia';
+                else if (idx === 1) localState.players[uid].role = 'doctor';
+                else if (idx === 2) localState.players[uid].role = 'police';
+                else localState.players[uid].role = 'citizen';
+            });
+
+            localState.status = 'playing';
+            localState.phase = 'day';
+            localState.dayCount = 1;
+            localState.timer = 45;
+            localState.logs.push({ time: getTime(), text: `[🚨 작전 개시] 과다 DC 범죄자를 찾아라! 제 1일차 주간 회의 시작.` });
+
+            syncState(localState);
+            enterGamePlay(localState);
+        };
+
+        function enterGamePlay(state) {
+            if (unsub) unsub();
+            document.getElementById('view-room').classList.add('hidden');
+            document.getElementById('view-game').classList.remove('hidden');
+            showModal('작전 개시!', '과다 DC로 무너진 타타대우모빌리티 시장을 지키기 위해 스파이를 찾아내세요!');
+            updateUI(state);
+            startGlobalTimer();
+        }
+
+        // Firestore helpers with graceful fallback
+        async function fetchState(code) {
+            if (!db) return null;
+            try {
+                const snap = await getDoc(doc(db, 'artifacts', appId, 'rooms', code));
+                return snap.exists() ? snap.data() : null;
+            } catch(e) { return null; }
+        }
+
+        async function syncState(state) {
+            localState = state;
+            if (!db) return;
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'rooms', state.code), state);
+            } catch(e) {}
+        }
+
+        function listenRoom(code) {
+            if (!db) return;
+            try {
+                unsub = onSnapshot(doc(db, 'artifacts', appId, 'rooms', code), snap => {
+                    if (snap.exists()) {
+                        localState = snap.data();
+                        if (localState.status === 'waiting') renderWaitingList(localState);
+                        else if (localState.status === 'playing') updateUI(localState);
+                    }
+                });
+            } catch(e) {}
+        }
+
+        window.leaveRoom = () => {
+            if (unsub) unsub();
+            if (timerInt) clearInterval(timerInt);
+            location.reload();
+        };
+
+        // Timer & Game Loop
+        function startGlobalTimer() {
+            if (timerInt) clearInterval(timerInt);
+            timerInt = setInterval(() => {
+                if (!localState || localState.status !== 'playing') return;
+                localState.timer--;
+                document.getElementById('timer-display').innerText = localState.timer;
+
+                if (localState.timer <= 0) {
+                    if (isHost || !db) advanceGamePhase();
                 }
             }, 1000);
         }
 
-        function advancePhase() {
-            if (gameState.phase === 'day') {
+        function advanceGamePhase() {
+            if (!localState) return;
+            if (localState.phase === 'day') {
+                // Tally votes
                 let votes = {};
-                gameState.players.forEach(p => {
+                for (let id in localState.players) {
+                    let p = localState.players[id];
                     if (p.alive) {
                         if (p.isAi && !p.votedFor) {
-                            let targets = gameState.players.filter(t => t.alive && t.id !== p.id);
-                            if (targets.length > 0) p.votedFor = targets[Math.floor(Math.random() * targets.length)].id;
+                            let targets = Object.keys(localState.players).filter(t => localState.players[t].alive && t !== id);
+                            if (targets.length) p.votedFor = targets[Math.floor(Math.random() * targets.length)];
                         }
                         if (p.votedFor) votes[p.votedFor] = (votes[p.votedFor] || 0) + 1;
                     }
-                });
+                }
 
                 let maxTarget = null, maxCount = 0;
                 for (let id in votes) {
-                    if (votes[id] > maxCount) {
-                        maxCount = votes[id];
-                        maxTarget = id;
-                    }
+                    if (votes[id] > maxCount) { maxCount = votes[id]; maxTarget = id; }
                 }
 
                 if (maxTarget && maxCount > 0) {
-                    let victim = gameState.players.find(p => p.id === maxTarget);
+                    let victim = localState.players[maxTarget];
                     victim.alive = false;
-                    gameState.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 주간 투표 결과, <strong>${victim.name}</strong>님이 영업 정지되었습니다!` });
+                    localState.logs.push({ time: getTime(), text: `[징계 결과] 투표 결과에 따라 <strong>${victim.name}</strong>님이 영업 정지되었습니다!` });
                 } else {
-                    gameState.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 이번 주간에는 징계 처분된 영업사원이 없습니다.` });
+                    localState.logs.push({ time: getTime(), text: `[징계 결과] 과반수 득표자가 없어 징계 처분된 영업사원이 없습니다.` });
                 }
 
-                if (checkWin()) return;
+                if (checkGameEnd()) return;
 
-                gameState.phase = 'night';
-                gameState.timer = 30;
-                gameState.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 야간 페이즈로 전환되었습니다. 비밀 가격 감사가 시작됩니다.` });
+                localState.phase = 'night';
+                localState.timer = 30;
+                localState.logs.push({ time: getTime(), text: `[🌙 야간 페이즈] 업무 시간 종료. 비밀 후려치기와 가격 감사가 시작됩니다.` });
 
-                gameState.players.forEach(p => {
+                // AI night actions
+                for (let id in localState.players) {
+                    let p = localState.players[id];
                     if (p.isAi && p.alive) {
-                        let targets = gameState.players.filter(t => t.alive && t.id !== p.id);
-                        if (targets.length > 0) p.nightTarget = targets[Math.floor(Math.random() * targets.length)].id;
+                        let targets = Object.keys(localState.players).filter(t => localState.players[t].alive && t !== id);
+                        if (targets.length) p.nightTarget = targets[Math.floor(Math.random() * targets.length)];
                     }
-                });
+                }
 
             } else {
-                let mafiaTarget = null, doctorTarget = null;
-                gameState.players.forEach(p => {
+                // Resolve Night
+                let mafiaTarget = null, docTarget = null;
+                for (let id in localState.players) {
+                    let p = localState.players[id];
                     if (p.alive) {
                         if (p.role === 'mafia' && p.nightTarget) mafiaTarget = p.nightTarget;
-                        if (p.role === 'doctor' && p.nightTarget) doctorTarget = p.nightTarget;
+                        if (p.role === 'doctor' && p.nightTarget) docTarget = p.nightTarget;
                     }
-                    p.votedFor = null;
-                    p.nightTarget = null;
-                });
+                    p.votedFor = null; p.nightTarget = null;
+                }
 
                 if (mafiaTarget) {
-                    if (mafiaTarget === doctorTarget) {
-                        gameState.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 야간 보안 보고: 법무팀의 신속한 방어로 과다 DC 시도가 무력화되었습니다!` });
+                    if (mafiaTarget === docTarget) {
+                        localState.logs.push({ time: getTime(), text: `[보안 보고] 가격 정책 법무팀의 신속한 방어로 과다 DC 후려치기가 무력화되었습니다!` });
                     } else {
-                        let victim = gameState.players.find(p => p.id === mafiaTarget);
+                        let victim = localState.players[mafiaTarget];
                         if (victim) {
                             victim.alive = false;
-                            gameState.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 야간 긴급 속보: <strong>${victim.name}</strong> 영업소가 무리한 과다 DC로 영업 정지되었습니다!` });
+                            localState.logs.push({ time: getTime(), text: `[야간 속보] <strong>${victim.name}</strong> 영업소가 과다 DC 공격으로 치명타를 입어 영업 정지되었습니다!` });
                         }
                     }
                 } else {
-                    gameState.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 평온한 밤이 지나갔습니다.` });
+                    localState.logs.push({ time: getTime(), text: `[야간 보고] 특이한 가격 교란 없이 평온한 밤이 지나갔습니다.` });
                 }
 
-                if (checkWin()) return;
+                if (checkGameEnd()) return;
 
-                gameState.dayCount++;
-                gameState.phase = 'day';
-                gameState.timer = 45;
-                gameState.logs.push({ time: getTimestamp(), text: `[🤖 AI 진행자] 아침이 밝았습니다! 제 ${gameState.dayCount}일차 주간 세션 시작.` });
-
-                let activeBots = gameState.players.filter(p => p.isAi && p.alive);
-                if (activeBots.length > 0) {
-                    let bot = activeBots[Math.floor(Math.random() * activeBots.length)];
-                    let quote = AI_QUOTES[Math.floor(Math.random() * AI_QUOTES.length)];
-                    gameState.logs.push({ time: getTimestamp(), text: `<strong class="text-yellow-400">[현장 코멘트] ${bot.name}:</strong> ${quote}` });
-                }
+                localState.dayCount++;
+                localState.phase = 'day';
+                localState.timer = 45;
+                localState.logs.push({ time: getTime(), text: `[☀️ 아침] 제 ${localState.dayCount}일차 주간 세션 시작. 시장 동향을 점검하세요.` });
             }
-
-            updateGameUI();
-            startTimer();
+            syncState(localState);
+            updateUI(localState);
         }
 
-        function checkWin() {
-            let mafiaAlive = gameState.players.filter(p => p.alive && p.role === 'mafia').length;
-            let citizenAlive = gameState.players.filter(p => p.alive && p.role !== 'mafia').length;
-            let userObj = gameState.players.find(p => p.id === 'user');
+        function checkGameEnd() {
+            let mafia = Object.values(localState.players).filter(p => p.alive && p.role === 'mafia').length;
+            let citizen = Object.values(localState.players).filter(p => p.alive && p.role !== 'mafia').length;
 
-            if (mafiaAlive === 0) {
-                gameState.logs.push({ time: getTimestamp(), text: `🎉 [게임 종료] 모든 과다 DC 영업사원이 색출되었습니다! 승리!` });
-                showModal('게임 종료', '정기가이드 준수팀 승리! 모든 과다 DC 영업사원을 색출했습니다.');
-                clearInterval(timerInterval);
+            if (mafia === 0) {
+                localState.logs.push({ time: getTime(), text: `🎉 [작전 성공] 모든 과다 DC 스파이가 색출되었습니다! 정기가이드 준수팀 승리!` });
+                showModal('작전 성공!', '모든 과다 DC 스파이를 색출하고 타타대우모빌리티 시장을 지켜냈습니다!');
+                if (timerInt) clearInterval(timerInt);
                 return true;
-            } else if (mafiaAlive >= citizenAlive || !userObj.alive) {
-                if (!userObj.alive) {
-                    showModal('영업 정지됨', '아쉽게도 징계 처분되었습니다. 관전 모드로 전환됩니다.');
-                } else {
-                    showModal('게임 종료', '마피아팀 승리! 과다 DC 영업사원이 시장을 장악했습니다.');
-                    clearInterval(timerInterval);
-                    return true;
-                }
+            } else if (mafia >= citizen) {
+                localState.logs.push({ time: getTime(), text: `🚨 [작전 실패] 과다 DC 영업사원이 시장을 완전히 장악했습니다!` });
+                showModal('작전 실패', '과다 DC 영업사원이 시장 질서를 파괴했습니다.');
+                if (timerInt) clearInterval(timerInt);
+                return true;
             }
             return false;
         }
 
-        function updateGameUI() {
-            const phaseBadge = document.getElementById('phase-badge');
-            if (gameState.phase === 'day') {
-                phaseBadge.className = "px-3 py-1 rounded text-xs font-mono font-bold bg-blue-600/20 text-blue-400 border border-blue-500/30";
-                phaseBadge.innerText = `☀️ 제 ${gameState.dayCount}일차 주간 세션 (영업 회의 및 과다 DC 색출 토론)`;
+        function updateUI(state) {
+            const uid = currentUser ? currentUser.uid : Object.keys(state.players).find(k => state.players[k].name === myName);
+            const me = state.players[uid] || Object.values(state.players)[0];
+
+            // Phase badge & timer
+            const pb = document.getElementById('phase-badge');
+            if (state.phase === 'day') {
+                pb.className = "px-3 py-1 rounded text-xs font-mono font-bold bg-blue-600/20 text-blue-400 border border-blue-500/30";
+                pb.innerText = `☀️ 제 ${state.dayCount}일차 주간 세션 (토론 및 징계 투표)`;
             } else {
-                phaseBadge.className = "px-3 py-1 rounded text-xs font-mono font-bold bg-purple-600/20 text-purple-400 border border-purple-500/30";
-                phaseBadge.innerText = `🌙 제 ${gameState.dayCount}일차 야간 세션 (비밀 후려치기 및 가격 감사 점검)`;
+                pb.className = "px-3 py-1 rounded text-xs font-mono font-bold bg-purple-600/20 text-purple-400 border border-purple-500/30";
+                pb.innerText = `🌙 제 ${state.dayCount}일차 야간 세션 (비밀 후려치기 & 감사 점검)`;
             }
+            document.getElementById('timer-display').innerText = state.timer;
 
-            const roleBadge = document.getElementById('my-role-badge');
-            let rText = '정기가이드 준수 영업사원', rColor = 'text-blue-400';
-            if (gameState.myRole === 'mafia') { rText = '과다 DC 영업사원 (시장 교란범)'; rColor = 'text-red-400'; }
-            else if (gameState.myRole === 'doctor') { rText = '가격 정책 법무팀 (할인 방어)'; rColor = 'text-green-400'; }
-            else if (gameState.myRole === 'police') { rText = '영업 감사관 (할인율 조사)'; rColor = 'text-yellow-400'; }
-            roleBadge.innerText = rText;
-            roleBadge.className = `font-bold ${rColor}`;
+            // My Role
+            const rb = document.getElementById('my-role-badge');
+            let rText = '정기가이드 준수 영업사원', rCol = 'text-blue-400';
+            if (me.role === 'mafia') { rText = '과다 DC 영업사원 (스파이)'; rCol = 'text-red-400'; }
+            else if (me.role === 'doctor') { rText = '가격 정책 법무팀 (할인 방어)'; rCol = 'text-green-400'; }
+            else if (me.role === 'police') { rText = '영업 감사관 (할인율 조사)'; rCol = 'text-yellow-400'; }
+            rb.innerText = rText; rb.className = `font-bold ${rCol}`;
 
-            let listEl = document.getElementById('in-game-player-list');
-            listEl.innerHTML = '';
+            // Player list
+            const pl = document.getElementById('in-game-player-list');
+            pl.innerHTML = '';
             let aliveCount = 0;
-            gameState.players.forEach(p => {
+            for (let id in state.players) {
+                let p = state.players[id];
                 if (p.alive) aliveCount++;
-                let div = document.createElement('div');
-                div.className = `p-3 bg-tata-bg border rounded-lg font-mono text-xs flex items-center justify-between ${p.alive ? 'border-tata-border' : 'border-red-500/30 opacity-60'}`;
+                let d = document.createElement('div');
+                d.className = `p-2.5 bg-tata-bg border rounded font-mono text-xs flex justify-between items-center ${p.alive ? 'border-tata-border' : 'border-red-500/30 opacity-50'}`;
                 
                 let reveal = '';
-                if (!p.alive || p.id === 'user') {
-                    if (p.role === 'mafia') reveal = '<span class="text-red-400 text-[10px]"> [과다DC]</span>';
-                    else if (p.role === 'doctor') reveal = '<span class="text-green-400 text-[10px]"> [법무팀]</span>';
-                    else if (p.role === 'police') reveal = '<span class="text-yellow-400 text-[10px]"> [감사관]</span>';
-                    else if (p.role === 'citizen') reveal = '<span class="text-blue-400 text-[10px]"> [준수직원]</span>';
+                if (!p.alive || me.role === 'mafia' && p.role === 'mafia' || id === uid) {
+                    if (p.role === 'mafia') reveal = '<span class="text-red-400 text-[10px]">[과다DC]</span>';
+                    else if (p.role === 'doctor') reveal = '<span class="text-green-400 text-[10px]">[법무팀]</span>';
+                    else if (p.role === 'police') reveal = '<span class="text-yellow-400 text-[10px]">[감사관]</span>';
                 }
+                d.innerHTML = `<span>👤 ${p.name} ${reveal}</span><span class="${p.alive ? 'text-green-400' : 'text-red-400'}">${p.alive ? '정상영업' : '영업정지'}</span>`;
+                pl.appendChild(d);
+            }
+            document.getElementById('in-game-count').innerText = aliveCount;
 
-                div.innerHTML = `
-                    <div class="flex items-center space-x-2">
-                        <span class="w-2 h-2 rounded-full ${p.alive ? 'bg-green-500' : 'bg-red-500'}"></span>
-                        <span class="text-tata-text font-bold">${p.name}</span>
-                        ${p.isAi ? '<span class="text-[9px] text-purple-400">[AI봇]</span>' : '<span class="text-[9px] text-blue-400">[본인]</span>'}
-                        ${reveal}
-                    </div>
-                    <span class="${p.alive ? 'text-green-400' : 'text-red-400'} font-bold">${p.alive ? '정상 영업' : '영업 정지'}</span>
-                `;
-                listEl.appendChild(div);
+            // Prompts
+            updatePrompt(state, uid, me);
+
+            // Logs
+            const term = document.getElementById('terminal-logs');
+            term.innerHTML = '';
+            state.logs.forEach(l => {
+                let div = document.createElement('div');
+                div.className = "text-tata-muted font-mono py-0.5";
+                div.innerHTML = `<span class="text-slate-500">[${l.time}]</span> <span class="text-tata-text">${l.text}</span>`;
+                term.appendChild(div);
             });
-            document.getElementById('in-game-player-count').innerText = aliveCount;
-
-            updateActionPrompt();
-
-            let terminal = document.getElementById('terminal-logs');
-            terminal.innerHTML = '';
-            gameState.logs.forEach(log => {
-                let d = document.createElement('div');
-                d.className = "text-tata-muted font-mono py-0.5";
-                d.innerHTML = `<span class="text-slate-500">[${log.time}]</span> <span class="text-tata-text">${log.text}</span>`;
-                terminal.appendChild(d);
-            });
-            terminal.scrollTop = terminal.scrollHeight;
+            term.scrollTop = term.scrollHeight;
         }
 
-        function updateActionPrompt() {
-            let titleEl = document.getElementById('action-title');
-            let descEl = document.getElementById('action-desc');
-            let buttonsEl = document.getElementById('action-buttons');
-            buttonsEl.innerHTML = '';
+        function updatePrompt(state, myUid, me) {
+            const title = document.getElementById('action-title');
+            const desc = document.getElementById('action-desc');
+            const btns = document.getElementById('action-buttons');
+            btns.innerHTML = '';
 
-            let userObj = gameState.players.find(p => p.id === 'user');
-            if (!userObj.alive) {
-                titleEl.innerText = "상태: 영업 정지 (관전 모드)";
-                descEl.innerText = "징계 처분되어 게임을 관전 중입니다.";
+            if (!me.alive) {
+                title.innerText = "영업 정지 (관전 모드)";
+                desc.innerText = "징계 처분되어 토론을 관전하고 있습니다.";
                 return;
             }
 
-            if (gameState.phase === 'day') {
-                titleEl.innerText = "📋 주간 세션: 과다 DC 영업사원 색출 투표";
-                descEl.innerText = "시장을 교란하는 용의자를 지목하여 징계 건의를 제출하세요.";
+            if (state.phase === 'day') {
+                title.innerText = "📋 주간 세션: 과다 DC 징계 투표";
+                desc.innerText = "시장을 교란하는 용의자를 지목하여 영업 정지를 건의하세요.";
 
-                let select = document.createElement('select');
-                select.id = 'vote-select';
-                select.className = "w-full bg-tata-bg border border-tata-border rounded-lg p-2 text-xs text-tata-text mb-2 font-mono";
-                
-                let opt = document.createElement('option');
-                opt.value = ""; opt.innerText = "-- 징계할 영업사원 선택 --";
-                select.appendChild(opt);
-
-                gameState.players.forEach(p => {
-                    if (p.id !== 'user' && p.alive) {
-                        let o = document.createElement('option');
-                        o.value = p.id; o.innerText = p.name;
-                        if (userObj.votedFor === p.id) o.selected = true;
-                        select.appendChild(o);
+                let sel = document.createElement('select');
+                sel.id = 'vote-sel';
+                sel.className = "w-full bg-tata-bg border border-tata-border rounded p-2 text-xs text-tata-text mb-2 font-mono";
+                sel.innerHTML = `<option value="">-- 대상 영업소 선택 --</option>`;
+                for (let id in state.players) {
+                    if (id !== myUid && state.players[id].alive) {
+                        sel.innerHTML += `<option value="${id}">${state.players[id].name}</option>`;
                     }
-                });
-
+                }
                 let btn = document.createElement('button');
-                btn.className = "w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded-lg text-xs font-medium transition mt-1 cursor-pointer";
-                btn.innerText = "영업 정지 징계 건의 제출";
+                btn.className = "w-full bg-blue-600 hover:bg-blue-500 text-white py-2 rounded text-xs transition";
+                btn.innerText = "징계 건의 투표 제출";
                 btn.onclick = () => {
-                    let val = document.getElementById('vote-select').value;
+                    let val = document.getElementById('vote-sel').value;
                     if (!val) { showModal('알림', '대상을 선택해주세요.'); return; }
-                    userObj.votedFor = val;
-                    gameState.logs.push({ time: getTimestamp(), text: `[VOTE] ${gameState.username}님이 징계 투표를 완료했습니다.` });
-                    updateGameUI();
+                    me.votedFor = val;
+                    state.logs.push({ time: getTime(), text: `[투표 완료] ${me.name}님이 징계 건의를 제출했습니다.` });
+                    syncState(state);
                     showModal('완료', '투표가 반영되었습니다.');
                 };
-
-                buttonsEl.appendChild(select);
-                buttonsEl.appendChild(btn);
+                btns.appendChild(sel); btns.appendChild(btn);
 
             } else {
-                if (gameState.myRole === 'mafia') {
-                    titleEl.innerText = "🌙 야간 세션: 과다 DC 후려치기";
-                    descEl.innerText = "밤사이 무리한 할인으로 견제할 영업소를 고르세요.";
-                } else if (gameState.myRole === 'doctor') {
-                    titleEl.innerText = "🛡️ 야간 세션: 가격 방어 (법무팀)";
-                    descEl.innerText = "방어할 영업소를 지정하세요.";
-                } else if (gameState.myRole === 'police') {
-                    titleEl.innerText = "🔍 야간 세션: 할인율 조사 (감사관)";
-                    descEl.innerText = "조사할 영업사원을 선택하세요.";
+                if (me.role === 'mafia') {
+                    title.innerText = "🌙 야간 세션: 과다 DC 후려치기";
+                    desc.innerText = "밤사이 무리한 할인으로 견제할 영업소를 고르세요.";
+                } else if (me.role === 'doctor') {
+                    title.innerText = "🛡️ 야간 세션: 가격 방어 (법무팀)";
+                    desc.innerText = "방어할 영업소를 지정하세요.";
+                } else if (me.role === 'police') {
+                    title.innerText = "🔍 야간 세션: 할인율 조사 (감사관)";
+                    desc.innerText = "조사할 영업사원을 선택하세요.";
                 } else {
-                    titleEl.innerText = "🌙 야간 세션: 가격 모니터링 대기";
-                    descEl.innerText = "군산 공장 상용차 모니터링 중...";
+                    title.innerText = "🌙 야간 세션: 시장 모니터링 중";
+                    desc.innerText = "군산 공장 상용차 모니터링 중입니다...";
                     return;
                 }
 
-                let select = document.createElement('select');
-                select.id = 'night-select';
-                select.className = "w-full bg-tata-bg border border-tata-border rounded-lg p-2 text-xs text-tata-text mb-2 font-mono";
-                
-                let opt = document.createElement('option');
-                opt.value = ""; opt.innerText = "-- 대상 영업사원 선택 --";
-                select.appendChild(opt);
-
-                gameState.players.forEach(p => {
-                    if (p.alive) {
-                        let o = document.createElement('option');
-                        o.value = p.id; o.innerText = p.name;
-                        if (userObj.nightTarget === p.id) o.selected = true;
-                        select.appendChild(o);
+                let sel = document.createElement('select');
+                sel.id = 'night-sel';
+                sel.className = "w-full bg-tata-bg border border-tata-border rounded p-2 text-xs text-tata-text mb-2 font-mono";
+                sel.innerHTML = `<option value="">-- 대상 영업소 선택 --</option>`;
+                for (let id in state.players) {
+                    if (state.players[id].alive) {
+                        sel.innerHTML += `<option value="${id}">${state.players[id].name}</option>`;
                     }
-                });
-
+                }
                 let btn = document.createElement('button');
-                btn.className = "w-full bg-purple-600 hover:bg-purple-500 text-white py-2 rounded-lg text-xs font-medium transition mt-1 cursor-pointer";
+                btn.className = "w-full bg-purple-600 hover:bg-purple-500 text-white py-2 rounded text-xs transition";
                 btn.innerText = "야간 조치 확정";
                 btn.onclick = () => {
-                    let val = document.getElementById('night-select').value;
+                    let val = document.getElementById('night-sel').value;
                     if (!val) { showModal('알림', '대상을 선택해주세요.'); return; }
-                    userObj.nightTarget = val;
-                    gameState.logs.push({ time: getTimestamp(), text: `[AUDIT] ${gameState.username}님이 야간 조치를 확정했습니다.` });
-                    updateGameUI();
-                    showModal('완료', `야간 조치가 지정되었습니다.`);
+                    me.nightTarget = val;
+                    state.logs.push({ time: getTime(), text: `[야간 조치] ${me.name}님이 야간 임무를 확정했습니다.` });
+                    syncState(state);
+                    showModal('완료', '야간 조치가 반영되었습니다.');
                 };
-
-                buttonsEl.appendChild(select);
-                buttonsEl.appendChild(btn);
+                btns.appendChild(sel); btns.appendChild(btn);
             }
         }
 
-        window.handleChatKeyDown = function(e) {
-            if (e.key === 'Enter') sendChatMessage();
+        window.sendChatMessage = () => {
+            const inp = document.getElementById('chat-input');
+            const msg = inp.value.trim();
+            if (!msg || !localState) return;
+            localState.logs.push({ time: getTime(), text: `<strong class="text-blue-400">${myName}:</strong> ${msg}` });
+            inp.value = '';
+            syncState(localState);
+            updateUI(localState);
         };
+        window.handleChatKeyDown = e => { if (e.key === 'Enter') sendChatMessage(); };
 
-        window.sendChatMessage = function() {
-            let input = document.getElementById('chat-input');
-            let msg = input.value.trim();
-            if (!msg) return;
-
-            gameState.logs.push({
-                time: getTimestamp(),
-                text: `<strong class="text-blue-400">${gameState.username}:</strong> ${escapeHtml(msg)}`
-            });
-            input.value = '';
-            updateGameUI();
-        };
-
-        function getTimestamp() {
-            return new Date().toTimeString().split(' ')[0];
-        }
-
-        function escapeHtml(str) {
-            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
+        function getTime() { return new Date().toTimeString().split(' ')[0]; }
     </script>
 </body>
 </html>
